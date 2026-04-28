@@ -1,17 +1,19 @@
 import { Component, input } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-import { MatListModule } from "@angular/material/list";
+import { MatToolbar } from "@angular/material/toolbar";
 import { NavigationModel } from "./shared/navigation-model";
 
 @Component({
   selector: 'app-navigation-title',
-  imports: [MatIconModule, MatListModule ],
+  imports: [MatIconModule, MatToolbar],
 
   template: `
-    <mat-list-item>
-      <mat-icon mat-list-icon>{{ title().icon }}</mat-icon>
-      <h3 mat-line>{{ title().label }}</h3>
-    </mat-list-item>
+    <mat-toolbar>
+      <div class="flex gap-2">
+        <mat-icon mat-list-icon>{{ title().icon }}</mat-icon>
+        <h3 mat-line>{{ title().label }}</h3>
+      </div>
+    </mat-toolbar>
   `,
   styles: ``,
 })

@@ -1,15 +1,17 @@
-import { Component, input, output } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
-import { AppHeaderLogo } from "./app-header-logo";
+import { AppHeaderTitle } from "./app-header-title";
 
 @Component({
   selector: 'app-header',
-  imports: [AppHeaderLogo, MatToolbar],
+  imports: [MatToolbar, AppHeaderTitle],
 
   template: `
-    <!-- <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.toggle()"> -->
     <mat-toolbar color="primary">
-      <app-header-logo [isHandset]="isHandset()" (onToggle)="onToggle.emit()" />
+      @if (isHandset()) {
+      } @else {
+        <app-header-title />
+      }
     </mat-toolbar>
   `,
   styles: `
@@ -22,5 +24,4 @@ import { AppHeaderLogo } from "./app-header-logo";
 })
 export class AppHeader {
   isHandset = input.required<boolean>();
-  onToggle = output();
 }

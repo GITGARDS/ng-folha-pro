@@ -46,7 +46,7 @@ import { DASHBOARD } from "../navigation/shared/navigation-model";
   styles: `
     :host {
       display: block;
-      margin: 20px;
+      margin-top: 20px;
     }
 
     .dashboard-card {

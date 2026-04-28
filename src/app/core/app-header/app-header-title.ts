@@ -1,22 +1,13 @@
 import { Component, signal } from "@angular/core";
-import { MatToolbar } from "@angular/material/toolbar";
 import { Title } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-header-logo',
-  imports: [MatToolbar],
+  selector: 'app-header-title',
+  imports: [],
 
   template: `
     <!-- <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.toggle()"> -->
-    <mat-toolbar>
-      <div class="h-8 w-8">
-        <p
-          class="w-full h-full flex items-center justify-center text-lg p-1 rounded-full font-bold border"
-        >
-          FP
-        </p>
-      </div>
-    </mat-toolbar>
+    <span>{{ title() }}</span>
   `,
   styles: `
     .flex {
@@ -24,7 +15,7 @@ import { Title } from "@angular/platform-browser";
     }
   `,
 })
-export class AppHeaderLogo {
+export class AppHeaderTitle {
   title = signal<string>('');
 
   constructor(private stitle: Title) {

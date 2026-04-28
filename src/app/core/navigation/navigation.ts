@@ -11,9 +11,7 @@ import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { AppHeader } from "../app-header/app-header";
 import { AppHeaderLogo } from "../app-header/app-header-logo";
-import { NavigationListItems } from "./navigation-list-items";
-import { NAVIGATION_LIST } from "./shared/navigation-model";
-import { NavigationService } from "./shared/navigation.service";
+import { NavigationList } from "./navigation-list";
 
 @Component({
   selector: 'app-navigation',
@@ -25,10 +23,10 @@ import { NavigationService } from "./shared/navigation.service";
     MatIconModule,
     AsyncPipe,
     RouterOutlet,
-    NavigationListItems,
+    NavigationList,
     AppHeader,
-    AppHeaderLogo,
     CommonModule,
+    AppHeaderLogo,
   ],
 
   template: `
@@ -37,21 +35,14 @@ import { NavigationService } from "./shared/navigation.service";
       <mat-sidenav
         #drawer
         class="sidenav"
+        [style.width]="(isHandset$ | async) === true ? '60px' : 'auto'"
         fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-        [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="navigationService.navigationToogle() === true || (isHandset$ | async) === false"
-        (opened)="navigationService.navigationToogle.set(true)"
+        mode="side"
+        opened="true"
       >
-        @if (isHandset$ | async) {
-          <app-header-logo
-            [isHandset]="(isHandset$ | async) ? true : false"
-            (onToggle)="drawer.toggle()"
-          />
-        } @else {
-          <mat-toolbar>Menu</mat-toolbar>
-        }
-        <app-navigation-list-items [navigationList]="navigationList" [isHandset]="(isHandset$ | async) ? true : false" />
+        <app-header-logo />
+        <app-navigation-list [isHandset]="(isHandset$ | async) ? true : false" />
       </mat-sidenav>
       <mat-sidenav-content>
         <app-header
@@ -59,17 +50,13 @@ import { NavigationService } from "./shared/navigation.service";
           (onToggle)="drawer.toggle()"
         />
         <!-- Add Content Here -->
-        <router-outlet />
+        <router-outlet></router-outlet>
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
   styles: `
     .sidenav-container {
       height: 100%;
-    }
-
-    .sidenav {
-      width: auto;
     }
 
     .sidenav .mat-toolbar {
@@ -84,19 +71,15 @@ import { NavigationService } from "./shared/navigation.service";
   `,
 })
 export class Navigation {
-  navigationList = NAVIGATION_LIST;
-
-  navigationService = inject(NavigationService);
 
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => {
-      console.log(' isHandset',result.matches);
+      console.log(' isHandset', result.matches);
       // this.navigationService.navigationToogle.set(result.matches);
       return result.matches;
     }),
     shareReplay(),
   );
-
 }
