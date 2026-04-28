@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -13,6 +13,7 @@ import { AppHeader } from "../app-header/app-header";
 import { AppHeaderLogo } from "../app-header/app-header-logo";
 import { NavigationListItems } from "./navigation-list-items";
 import { NAVIGATION_LIST } from "./shared/navigation-model";
+import { NavigationService } from "./shared/navigation.service";
 
 @Component({
   selector: 'app-navigation',
@@ -27,6 +28,7 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
     NavigationListItems,
     AppHeader,
     AppHeaderLogo,
+    CommonModule,
   ],
 
   template: `
@@ -38,7 +40,8 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
         fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false"
+        [opened]="navigationService.navigationToogle() === true || (isHandset$ | async) === false"
+        (opened)="navigationService.navigationToogle.set(true)"
       >
         @if (isHandset$ | async) {
           <app-header-logo
@@ -48,7 +51,7 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
         } @else {
           <mat-toolbar>Menu</mat-toolbar>
         }
-        <app-navigation-list-items [navigationList]="navigationList" />
+        <app-navigation-list-items [navigationList]="navigationList" [isHandset]="(isHandset$ | async) ? true : false" />
       </mat-sidenav>
       <mat-sidenav-content>
         <app-header
@@ -83,10 +86,17 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
 export class Navigation {
   navigationList = NAVIGATION_LIST;
 
+  navigationService = inject(NavigationService);
+
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map((result) => result.matches),
+    map((result) => {
+      console.log(' isHandset',result.matches);
+      // this.navigationService.navigationToogle.set(result.matches);
+      return result.matches;
+    }),
     shareReplay(),
   );
+
 }
