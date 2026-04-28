@@ -6,11 +6,22 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatListModule } from "@angular/material/list";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { RouterOutlet } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 
 @Component({
   selector: 'app-navigation',
+    imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    AsyncPipe,
+    RouterOutlet
+  ],
+
   template: `
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav
@@ -43,6 +54,8 @@ import { map, shareReplay } from "rxjs/operators";
           <span>ng-folha-pro</span>
         </mat-toolbar>
         <!-- Add Content Here -->
+         <router-outlet/>
+         
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -65,14 +78,6 @@ import { map, shareReplay } from "rxjs/operators";
       z-index: 1;
     }
   `,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    AsyncPipe,
-  ],
 })
 export class Navigation {
   private breakpointObserver = inject(BreakpointObserver);
