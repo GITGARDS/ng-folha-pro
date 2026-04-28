@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { computed, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { TabelaModel } from "./tabela.model";
@@ -20,7 +20,9 @@ export const TabelaStore = signalStore(
   },
   withState(initialState),
 
-  withComputed((store) => ({})),
+  withComputed(({list}) => ({
+    totalAtivos: computed(() => list().filter((f) => f.ativo)),
+  })),
 
   withMethods(
     (store, tabelaService = inject(TabelaService), router = inject(Router)) => ({
@@ -36,9 +38,9 @@ export const TabelaStore = signalStore(
         });
       }),
 
-      create: signalMethod(async (param: { data: TabelaModel }) => {
+      create: signalMethod(async (param: { data: Partial<TabelaModel> }) => {
         patchState(store, { isLoading: true });
-        await tabelaService.create(param.data).then((list) => {
+        await tabelaService.create(param.data as TabelaModel).then((list) => {
           patchState(store, (state) => ({
             ...state,
             list,
@@ -47,9 +49,9 @@ export const TabelaStore = signalStore(
         });
       }),
 
-      updateById: signalMethod(async (params: { id: string; data: TabelaModel }) => {
+      updateById: signalMethod(async (params: { id: string; data: Partial<TabelaModel> }) => {
         patchState(store, { isLoading: true });
-        await tabelaService.updateById(params.id, params.data).then((list) => {
+        await tabelaService.updateById(params.id, params.data as TabelaModel).then((list) => {
           console.log('update', list);
           patchState(store, (state) => ({
             ...state,

@@ -37,6 +37,11 @@ import { TabelaStore } from "../shared/tabela.store";
           <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="ativo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ativo</th>
+          <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
+        </ng-container>
+
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let row">
@@ -78,7 +83,7 @@ export class TabelaList {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns = ['id', 'nome', 'actions'];
+  displayedColumns = ['id', 'nome', 'ativo', 'actions'];
 
   constructor() {
     effect(() => {

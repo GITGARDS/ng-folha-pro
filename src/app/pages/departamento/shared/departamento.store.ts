@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { computed, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { DepartamentoModel } from "./departamento.model";
@@ -20,7 +20,9 @@ export const DepartamentoStore = signalStore(
   },
   withState(initialState),
 
-  withComputed((store) => ({})),
+  withComputed(({ list }) => ({
+    totalAtivos: computed(() => list().filter((f) => f.ativo)),
+  })),
 
   withMethods(
     (store, departamentoService = inject(DepartamentoService), router = inject(Router)) => ({
@@ -36,9 +38,9 @@ export const DepartamentoStore = signalStore(
         });
       }),
 
-      create: signalMethod(async (param: { data: DepartamentoModel }) => {
+      create: signalMethod(async (param: { data: Partial<DepartamentoModel> }) => {
         patchState(store, { isLoading: true });
-        await departamentoService.create(param.data).then((list) => {
+        await departamentoService.create(param.data as DepartamentoModel).then((list) => {
           patchState(store, (state) => ({
             ...state,
             list,
@@ -47,9 +49,9 @@ export const DepartamentoStore = signalStore(
         });
       }),
 
-      updateById: signalMethod(async (params: { id: string; data: DepartamentoModel }) => {
+      updateById: signalMethod(async (params: { id: string; data: Partial<DepartamentoModel> }) => {
         patchState(store, { isLoading: true });
-        await departamentoService.updateById(params.id, params.data).then((list) => {
+        await departamentoService.updateById(params.id, params.data as DepartamentoModel).then((list) => {
           console.log('update', list);
           patchState(store, (state) => ({
             ...state,

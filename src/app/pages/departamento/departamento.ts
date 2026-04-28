@@ -3,16 +3,20 @@ import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
+import DepartamentoCard from "./departamento-card";
 import { DepartamentoList } from "./departamento-list/departamento-list";
 import { DepartamentoStore } from "./shared/departamento.store";
 
 @Component({
   selector: 'app-departamento',
-  imports: [NavigationTitle, MatDivider, IsLoading, DepartamentoList],
+  imports: [NavigationTitle, MatDivider, IsLoading, DepartamentoList, DepartamentoCard],
   template: `
     <div>
       <section>
-        <app-navigation-title [title]="title" />
+        <div class="flex flex-wrap items-center">
+          <app-navigation-title [title]="title" />
+          <app-departamento-card />
+        </div>
       </section>
       <mat-divider></mat-divider>
       <section class="relative">

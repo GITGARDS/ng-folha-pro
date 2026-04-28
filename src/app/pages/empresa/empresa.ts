@@ -3,16 +3,20 @@ import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { EMPRESA } from "../../core/navigation/shared/navigation-model";
+import EmpresaCard from "./empresa-card";
 import { EmpresaList } from "./empresa-list/empresa-list";
 import { EmpresaStore } from "./shared/empresa.store";
 
 @Component({
   selector: 'app-empresa',
-  imports: [NavigationTitle, MatDivider, IsLoading, EmpresaList],
+  imports: [NavigationTitle, MatDivider, IsLoading, EmpresaList, EmpresaCard],
   template: `
     <div>
       <section>
-        <app-navigation-title [title]="title" />
+        <div class="flex flex-wrap items-center">
+          <app-navigation-title [title]="title" />
+          <app-empresa-card />
+        </div>
       </section>
       <mat-divider></mat-divider>
       <section class="relative">

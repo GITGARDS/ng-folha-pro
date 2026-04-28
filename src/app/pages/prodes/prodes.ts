@@ -3,16 +3,20 @@ import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { PRODES } from "../../core/navigation/shared/navigation-model";
+import ProdesCard from "./prodes-card";
 import { ProdesList } from "./prodes-list/prodes-list";
 import { ProdesStore } from "./shared/prodes.store";
 
 @Component({
   selector: 'app-prodes',
-  imports: [NavigationTitle, MatDivider, IsLoading, ProdesList],
+  imports: [NavigationTitle, MatDivider, IsLoading, ProdesList, ProdesCard],
   template: `
     <div>
       <section>
-        <app-navigation-title [title]="title" />
+        <div class="flex flex-wrap items-center">
+          <app-navigation-title [title]="title" />
+          <app-prodes-card />
+        </div>
       </section>
       <mat-divider></mat-divider>
       <section class="relative">

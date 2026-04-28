@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { computed, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { FuncionarioModel } from "./funcionario.model";
@@ -20,7 +20,10 @@ export const FuncionarioStore = signalStore(
   },
   withState(initialState),
 
-  withComputed((store) => ({})),
+  withComputed(({list}) => ({
+    totalAtivos: computed(() => list().filter((f) => f.ativo)),
+    totalSalarioBase: computed(() => list().reduce((acc, f) => acc + f.salarioBase, 0)),
+  })),
 
   withMethods(
     (store, funcionarioService = inject(FuncionarioService), router = inject(Router)) => ({

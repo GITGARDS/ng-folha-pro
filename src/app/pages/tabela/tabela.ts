@@ -4,15 +4,19 @@ import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { TABELA } from "../../core/navigation/shared/navigation-model";
 import { TabelaStore } from "./shared/tabela.store";
+import TabelaCard from "./tabela-card";
 import { TabelaList } from "./tabela-list/tabela-list";
 
 @Component({
   selector: 'app-tabela',
-  imports: [NavigationTitle, MatDivider, IsLoading, TabelaList],
+  imports: [NavigationTitle, MatDivider, IsLoading, TabelaList, TabelaCard],
   template: `
-    <div>
+   <div>
       <section>
-        <app-navigation-title [title]="title" />
+        <div class="flex flex-wrap items-center">
+          <app-navigation-title [title]="title" />
+          <app-tabela-card />
+        </div>
       </section>
       <mat-divider></mat-divider>
       <section class="relative">
