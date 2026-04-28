@@ -14,7 +14,10 @@ import { Title } from "@angular/platform-browser";
       <button type="button" aria-label="Toggle sidenav" matIconButton (click)="onToggle.emit()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>{{ title() }}</span>
+      <div class="flex gap-2">
+        <p>FP</p>
+        <span>{{ title() }}</span>
+      </div>
     </mat-toolbar>
   `,
   styles: `
