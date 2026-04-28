@@ -41,14 +41,20 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
         [opened]="(isHandset$ | async) === false"
       >
         @if (isHandset$ | async) {
-          <app-header-logo (onToggle)="drawer.toggle()" />
+          <app-header-logo
+            [isHandset]="(isHandset$ | async) ? true : false"
+            (onToggle)="drawer.toggle()"
+          />
         } @else {
           <mat-toolbar>Menu</mat-toolbar>
         }
         <app-navigation-list-items [navigationList]="navigationList" />
       </mat-sidenav>
       <mat-sidenav-content>
-        <app-header [isHandset]="isHandset$ | async" (onToggle)="drawer.toggle()" />
+        <app-header
+          [isHandset]="(isHandset$ | async) ? true : false"
+          (onToggle)="drawer.toggle()"
+        />
         <!-- Add Content Here -->
         <router-outlet />
       </mat-sidenav-content>
@@ -60,7 +66,7 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
     }
 
     .sidenav {
-      width: 200px;
+      width: auto;
     }
 
     .sidenav .mat-toolbar {

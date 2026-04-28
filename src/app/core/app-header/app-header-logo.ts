@@ -1,4 +1,4 @@
-import { Component, output, signal } from "@angular/core";
+import { Component, input, output, signal } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatToolbar } from "@angular/material/toolbar";
@@ -16,7 +16,11 @@ import { Title } from "@angular/platform-browser";
       </button>
       <div class="flex gap-2">
         <p>FP</p>
-        <span>{{ title() }}</span>
+        @if (isHandset()) {
+          <span></span>
+        } @else {
+          <span>{{ title() }}</span>
+        }
       </div>
     </mat-toolbar>
   `,
@@ -30,9 +34,11 @@ import { Title } from "@angular/platform-browser";
 })
 export class AppHeaderLogo {
   title = signal<string>('');
+  isHandset = input.required<boolean>();
   onToggle = output();
 
+
   constructor(private stitle: Title) {
-    this.title.set(stitle.getTitle());
+    this.title.set(stitle.getTitle());    
   }
 }

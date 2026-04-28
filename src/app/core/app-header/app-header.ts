@@ -9,7 +9,7 @@ import { AppHeaderLogo } from "./app-header-logo";
   template: `
     <!-- <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.toggle()"> -->
     <mat-toolbar color="primary">
-      <app-header-logo (onToggle)="onToggle.emit()"/>
+      <app-header-logo [isHandset]="isHandset()" (onToggle)="onToggle.emit()" />
     </mat-toolbar>
   `,
   styles: `
@@ -21,7 +21,6 @@ import { AppHeaderLogo } from "./app-header-logo";
   `,
 })
 export class AppHeader {
-  isHandset = input.required<boolean | null>();
+  isHandset = input.required<boolean>();
   onToggle = output();
-
 }
