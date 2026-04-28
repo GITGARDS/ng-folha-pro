@@ -9,18 +9,21 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { RouterOutlet } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
+import { NavigationListItems } from "./navigation-list-items";
+import { NAVIGATION_LIST } from "./shared/navigation-model";
 
 @Component({
   selector: 'app-navigation',
-    imports: [
+  imports: [
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
     AsyncPipe,
-    RouterOutlet
-  ],
+    RouterOutlet,
+    NavigationListItems
+],
 
   template: `
     <mat-sidenav-container class="sidenav-container">
@@ -33,11 +36,7 @@ import { map, shareReplay } from "rxjs/operators";
         [opened]="(isHandset$ | async) === false"
       >
         <mat-toolbar>Menu</mat-toolbar>
-        <mat-nav-list>
-          <a mat-list-item href="#">Link 1</a>
-          <a mat-list-item href="#">Link 2</a>
-          <a mat-list-item href="#">Link 3</a>
-        </mat-nav-list>
+        <app-navigation-list-items [navigationList]="navigationList" />
       </mat-sidenav>
       <mat-sidenav-content>
         <mat-toolbar color="primary">
@@ -54,8 +53,7 @@ import { map, shareReplay } from "rxjs/operators";
           <span>ng-folha-pro</span>
         </mat-toolbar>
         <!-- Add Content Here -->
-         <router-outlet/>
-         
+        <router-outlet />
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -80,6 +78,8 @@ import { map, shareReplay } from "rxjs/operators";
   `,
 })
 export class Navigation {
+  navigationList = NAVIGATION_LIST;
+
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
