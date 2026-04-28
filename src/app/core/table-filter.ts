@@ -16,7 +16,13 @@ import { MatInput } from "@angular/material/input";
       <button matButton="filled" class="mt-[-20px]" (click)="onCreate.emit('new')">novo</button>
     </div>
   `,
-  styles: ``,
+  styles: `
+  :host {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  `,
 })
 export class TableFilter {
   applyFilter = output<Event>();

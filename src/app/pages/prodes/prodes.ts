@@ -1,12 +1,14 @@
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { PRODES } from "../../core/navigation/shared/navigation-model";
+import { ProdesList } from "./prodes-list/prodes-list";
+import { ProdesStore } from "./shared/prodes.store";
 
 @Component({
   selector: 'app-prodes',
-  imports: [NavigationTitle, IsLoading, MatDivider],
+  imports: [NavigationTitle, MatDivider, IsLoading, ProdesList],
   template: `
     <div>
       <section>
@@ -14,7 +16,10 @@ import { PRODES } from "../../core/navigation/shared/navigation-model";
       </section>
       <mat-divider></mat-divider>
       <section class="relative">
-        <app-is-loading [isLoading]="isLoading()" />
+        <app-is-loading [isLoading]="prodesStore.isLoading()" />
+      </section>
+      <section>
+        <app-prodes-list />
       </section>
     </div>
   `,
@@ -28,4 +33,5 @@ import { PRODES } from "../../core/navigation/shared/navigation-model";
 export default class Prodes {
   title = PRODES;
   isLoading = signal<boolean>(false);
+  prodesStore = inject(ProdesStore);
 }
