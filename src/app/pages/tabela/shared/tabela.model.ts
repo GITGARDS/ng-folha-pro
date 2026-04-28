@@ -1,0 +1,13 @@
+export type TabelaModel = {
+  id: string;
+  nome: string;
+};
+
+export const MOCK_TABELAS: TabelaModel[] = [
+  { id: '1', nome: 'TI' },
+  { id: '2', nome: 'RH' },
+  { id: '3', nome: 'Vendas' },
+  { id: '4', nome: 'Comercial' },
+  { id: '5', nome: 'Logística' },
+  { id: '6', nome: 'Administração' },
+];
