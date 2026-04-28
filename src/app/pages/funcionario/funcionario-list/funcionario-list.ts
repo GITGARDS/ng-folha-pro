@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
@@ -17,7 +17,6 @@ import { FuncionarioStore } from "../shared/funcionario.store";
     MatSortModule,
     MatPaginatorModule,
     TableFilter,
-    MatButton,
     MatMenuModule,
     MatIcon,
     MatIconButton,
@@ -26,11 +25,7 @@ import { FuncionarioStore } from "../shared/funcionario.store";
   ],
   template: `
     <section>
-      <app-table-filter (applyFilter)="applyFilter($event)" />
-    </section>
-
-    <section>
-      <button matButton="filled" (click)="onCreate('new')">Novo</button>
+      <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
     </section>
 
     <section>

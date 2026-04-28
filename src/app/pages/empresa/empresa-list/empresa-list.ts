@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
-import { MatButton, MatIconButton } from "@angular/material/button";
+import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
@@ -17,7 +17,6 @@ import { EmpresaStore } from "../shared/empresa.store";
     MatSortModule,
     MatPaginatorModule,
     TableFilter,
-    MatButton,
     MatMenuModule,
     MatIcon,
     MatIconButton,
@@ -25,13 +24,9 @@ import { EmpresaStore } from "../shared/empresa.store";
   ],
   template: `
     <section>
-      <app-table-filter (applyFilter)="applyFilter($event)" />
+      <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
     </section>
-
-    <section>
-      <button matButton="filled" (click)="onCreate('new')">Novo</button>
-    </section>
-
+    
     <section>
       <table mat-table [dataSource]="dataSource" matSort>
         <!-- Id Column -->

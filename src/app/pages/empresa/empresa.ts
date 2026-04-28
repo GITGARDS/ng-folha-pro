@@ -2,7 +2,7 @@ import { Component, inject, signal } from "@angular/core";
 import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
-import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
+import { EMPRESA } from "../../core/navigation/shared/navigation-model";
 import { EmpresaList } from "./empresa-list/empresa-list";
 import { EmpresaStore } from "./shared/empresa.store";
 
@@ -31,7 +31,7 @@ import { EmpresaStore } from "./shared/empresa.store";
   `,
 })
 export default class Empresa {
-  title = DEPARTAMENTO;
+  title = EMPRESA;
   isLoading = signal<boolean>(false);
   empresaStore = inject(EmpresaStore);
 }
