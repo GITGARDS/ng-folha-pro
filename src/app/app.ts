@@ -1,15 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, signal } from "@angular/core";
+import { Navigation } from "./core/navigation/navigation";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  template: `
-    <h1>Hello, {{ title() }}</h1>
-
-    <router-outlet />
+  imports: [Navigation],
+  template: ` <app-navigation /> `,
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;    
+    }
   `,
-  styles: [],
 })
 export class App {
   protected readonly title = signal('ng-folha-pro');
