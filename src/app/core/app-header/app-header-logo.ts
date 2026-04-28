@@ -15,10 +15,10 @@ import { Title } from "@angular/platform-browser";
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <div class="flex gap-2">
-        <p>FP</p>
         @if (isHandset()) {
           <span></span>
         } @else {
+          <p>FP</p>
           <span>{{ title() }}</span>
         }
       </div>

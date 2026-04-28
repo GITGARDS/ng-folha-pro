@@ -19,9 +19,11 @@ import { NavigationService } from "./shared/navigation.service";
           (click)="isHandset() && navigationService.navigationToogle.set(false)"
         >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>
-            {{ item.label }}
-          </span>
+          @if (!isHandset()) {
+            <span matListItemTitle>
+              {{ item.label }}
+            </span>
+          }
         </a>
       }
     </mat-nav-list>
