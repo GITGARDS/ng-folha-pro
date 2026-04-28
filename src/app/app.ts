@@ -7,9 +7,6 @@ import { Navigation } from "./core/navigation/navigation";
   template: ` <app-navigation /> `,
   styles: `
     :host {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;    
     }
   `,
 })
