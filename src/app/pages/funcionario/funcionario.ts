@@ -1,9 +1,18 @@
 import { Component } from "@angular/core";
+import { NavigationTitle } from "../../core/navigation/navigation-title";
+import { FUNCIONARIO } from "../../core/navigation/shared/navigation-model";
 
 @Component({
   selector: 'app-funcionario',
-  imports: [],
-  template: ` <p>funcionario works!</p> `,
-  styles: ``,
+  imports: [NavigationTitle],
+  template: ` <app-navigation-title [title]="title" /> `,
+  styles: `
+    :host {
+      display: block;
+      margin: 20px;
+    }
+  `,
 })
-export default class Funcionario {}
+export default class Funcionario {
+  title = FUNCIONARIO;
+}

@@ -7,44 +7,45 @@ import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { map } from "rxjs/operators";
+import { NavigationTitle } from "../navigation/navigation-title";
+import { DASHBOARD } from "../navigation/shared/navigation-model";
 
 @Component({
   selector: 'app-dashboard',
   template: `
-    <div class="grid-container">
-      <h1 class="mat-h1">Dashboard</h1>
-      <mat-grid-list cols="2" rowHeight="350px">
-        @for (card of cards | async; track card) {
-          <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
-            <mat-card class="dashboard-card">
-              <mat-card-header>
-                <mat-card-title>
-                  {{ card.title }}
-                  <button
-                    matIconButton
-                    class="more-button"
-                    [matMenuTriggerFor]="menu"
-                    aria-label="Toggle menu"
-                  >
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                  <mat-menu #menu="matMenu" xPosition="before">
-                    <button mat-menu-item>Expand</button>
-                    <button mat-menu-item>Remove</button>
-                  </mat-menu>
-                </mat-card-title>
-              </mat-card-header>
-              <mat-card-content class="dashboard-card-content">
-                <div>Card Content Here</div>
-              </mat-card-content>
-            </mat-card>
-          </mat-grid-tile>
-        }
-      </mat-grid-list>
-    </div>
+    <app-navigation-title [title]="title" />
+    <mat-grid-list cols="2" rowHeight="350px">
+      @for (card of cards | async; track card) {
+        <mat-grid-tile [colspan]="card.cols" [rowspan]="card.rows">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-card-title>
+                {{ card.title }}
+                <button
+                  matIconButton
+                  class="more-button"
+                  [matMenuTriggerFor]="menu"
+                  aria-label="Toggle menu"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" xPosition="before">
+                  <button mat-menu-item>Expand</button>
+                  <button mat-menu-item>Remove</button>
+                </mat-menu>
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="dashboard-card-content">
+              <div>Card Content Here</div>
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      }
+    </mat-grid-list>
   `,
   styles: `
-    .grid-container {
+    :host {
+      display: block;
       margin: 20px;
     }
 
@@ -73,9 +74,11 @@ import { map } from "rxjs/operators";
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    NavigationTitle,
   ],
 })
 export default class Dashboard {
+  title = DASHBOARD;
   private breakpointObserver = inject(BreakpointObserver);
 
   /** Based on the screen size, switch from standard to one column per row */
