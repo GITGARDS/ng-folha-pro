@@ -17,8 +17,6 @@ import { EmpresaStore } from "./shared/empresa.store";
       <mat-divider></mat-divider>
       <section class="relative">
         <app-is-loading [isLoading]="empresaStore.isLoading()" />
-      </section>
-      <section>
         <app-empresa-list />
       </section>
     </div>

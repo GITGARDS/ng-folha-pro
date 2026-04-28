@@ -17,8 +17,6 @@ import { ProdesStore } from "./shared/prodes.store";
       <mat-divider></mat-divider>
       <section class="relative">
         <app-is-loading [isLoading]="prodesStore.isLoading()" />
-      </section>
-      <section>
         <app-prodes-list />
       </section>
     </div>

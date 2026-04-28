@@ -17,8 +17,6 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <mat-divider></mat-divider>
       <section class="relative">
         <app-is-loading [isLoading]="funcionarioStore.isLoading()" />
-      </section>
-      <section>
         <app-funcionario-list />
       </section>
     </div>

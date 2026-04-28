@@ -17,8 +17,6 @@ import { DepartamentoStore } from "./shared/departamento.store";
       <mat-divider></mat-divider>
       <section class="relative">
         <app-is-loading [isLoading]="departamentoStore.isLoading()" />
-      </section>
-      <section>
         <app-departamento-list />
       </section>
     </div>
