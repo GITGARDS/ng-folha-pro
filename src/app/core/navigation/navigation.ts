@@ -9,6 +9,8 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { RouterOutlet } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
+import { AppHeader } from "../app-header/app-header";
+import { AppHeaderLogo } from "../app-header/app-header-logo";
 import { NavigationListItems } from "./navigation-list-items";
 import { NAVIGATION_LIST } from "./shared/navigation-model";
 
@@ -22,10 +24,13 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
     MatIconModule,
     AsyncPipe,
     RouterOutlet,
-    NavigationListItems
-],
+    NavigationListItems,
+    AppHeader,
+    AppHeaderLogo,
+  ],
 
   template: `
+    <!-- mode="over" -->
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav
         #drawer
@@ -35,23 +40,15 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
         [opened]="(isHandset$ | async) === false"
       >
-        <mat-toolbar>Menu</mat-toolbar>
+        @if (isHandset$ | async) {
+          <app-header-logo (onToggle)="drawer.toggle()" />
+        } @else {
+          <mat-toolbar>Menu</mat-toolbar>
+        }
         <app-navigation-list-items [navigationList]="navigationList" />
       </mat-sidenav>
       <mat-sidenav-content>
-        <mat-toolbar color="primary">
-          @if (isHandset$ | async) {
-            <button
-              type="button"
-              aria-label="Toggle sidenav"
-              matIconButton
-              (click)="drawer.toggle()"
-            >
-              <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-            </button>
-          }
-          <span>ng-folha-pro</span>
-        </mat-toolbar>
+        <app-header [isHandset]="isHandset$ | async" (onToggle)="drawer.toggle()" />
         <!-- Add Content Here -->
         <router-outlet />
       </mat-sidenav-content>
