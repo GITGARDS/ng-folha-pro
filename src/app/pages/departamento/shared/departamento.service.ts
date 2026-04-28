@@ -19,8 +19,8 @@ export class DepartamentoService {
 
   async create(param: DepartamentoModel) {
     return new Promise<DepartamentoModel[]>((resolve) => {
+      MOCK_DEPARTAMENTOS.push(param);
       setTimeout(() => {
-        MOCK_DEPARTAMENTOS.push({ ...param, id: MOCK_DEPARTAMENTOS.length.toString()})
         resolve(MOCK_DEPARTAMENTOS);
       }, this.isDelay);
     });
@@ -29,7 +29,7 @@ export class DepartamentoService {
   async updateById(id: string, param: DepartamentoModel) {
     return new Promise<DepartamentoModel[]>((resolve) => {
       setTimeout(() => {
-        resolve(MOCK_DEPARTAMENTOS.map((d) => (d.id === id ? { ...d, ...param } : d)));
+        resolve(MOCK_DEPARTAMENTOS.map((d) => (d.id === id.toString() ? { ...d, ...param } : d)));
       }, this.isDelay);
     });
   }

@@ -50,7 +50,11 @@ import { NavigationList } from "./navigation-list";
           (onToggle)="drawer.toggle()"
         />
         <!-- Add Content Here -->
-        <router-outlet></router-outlet>
+        <div class="p-2">
+          <div class="p-2 border border-gray-200 rounded-lg h-full">
+            <router-outlet />
+          </div>
+        </div>
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -71,7 +75,6 @@ import { NavigationList } from "./navigation-list";
   `,
 })
 export class Navigation {
-
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(

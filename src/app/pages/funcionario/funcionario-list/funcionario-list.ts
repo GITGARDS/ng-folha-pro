@@ -1,3 +1,4 @@
+import { CurrencyPipe, DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatButton, MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
@@ -6,11 +7,11 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/table-filter";
-import { DepartamentoModel } from "../shared/departamento.model";
-import { DepartamentoStore } from "../shared/departamento.store";
+import { FuncionarioModel } from "../shared/funcionario.model";
+import { FuncionarioStore } from "../shared/funcionario.store";
 
 @Component({
-  selector: 'app-departamento-list',
+  selector: 'app-funcionario-list',
   imports: [
     MatTableModule,
     MatSortModule,
@@ -20,6 +21,8 @@ import { DepartamentoStore } from "../shared/departamento.store";
     MatMenuModule,
     MatIcon,
     MatIconButton,
+    CurrencyPipe,
+    DatePipe,
   ],
   template: `
     <section>
@@ -32,18 +35,47 @@ import { DepartamentoStore } from "../shared/departamento.store";
 
     <section>
       <table mat-table [dataSource]="dataSource" matSort>
+        <!-- Id Column -->
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
           <td mat-cell *matCellDef="let row">{{ row.id }}</td>
         </ng-container>
-
+        <!-- empresa Column -->
+        <ng-container matColumnDef="empresa">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Empresa</th>
+          <td mat-cell *matCellDef="let row">{{ row.empresa }}</td>
+        </ng-container>
+        <!-- Nome Column -->
         <ng-container matColumnDef="nome">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
-          <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
+          <td mat-cell *matCellDef="let row">
+            {{ row.nome }}
+          </td>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <!-- Salario Base Column -->
+        <ng-container matColumnDef="salarioBase">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Salario</th>
+          <td mat-cell *matCellDef="let row">{{ row.salarioBase | currency: 'BRL' }}</td>
+        </ng-container>
+
+        <!-- Data Admissao Column -->
+        <ng-container matColumnDef="dataAdmissao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Admissao</th>
+          <td mat-cell *matCellDef="let row">{{ row.dataAdmissao | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="ativo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ativo</th>
+          <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-icon>menu</mat-icon>
+          </th>
           <td mat-cell *matCellDef="let row">
             <button
               matIconButton
@@ -53,7 +85,7 @@ import { DepartamentoStore } from "../shared/departamento.store";
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onUpdateById(row.id)">
+              <button mat-menu-item (click)="onUpdateById(row)">
                 <mat-icon>edit</mat-icon>
                 <span>Editar</span>
               </button>
@@ -76,32 +108,39 @@ import { DepartamentoStore } from "../shared/departamento.store";
   `,
   styles: ``,
 })
-export class DepartamentoList {
-  departamentoStore = inject(DepartamentoStore);
+export class FuncionarioList {
+  funcionarioStore = inject(FuncionarioStore);
 
-  dataSource = new MatTableDataSource<DepartamentoModel>([]);
+  dataSource = new MatTableDataSource<FuncionarioModel>([]);
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns = ['id', 'nome', 'actions'];
+  displayedColumns: string[] = [
+    // 'id',
+    // 'empresa',
+    'nome',
+    'salarioBase',
+    'dataAdmissao',
+    'ativo',
+    'actions',
+  ];
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.departamentoStore.list();
+      this.dataSource.data = this.funcionarioStore.list();
       setTimeout(() => {
         this.dataSource.paginator = this.paginator();
         this.dataSource.sort = this.sort();
       }, 100);
-
     });
   }
   onCreate(opcao: string) {
     if (confirm('Deseja realmente criar?')) {
       const novoData = {
-        id: (this.departamentoStore.list().length + 1).toString(),
-        nome: ('Novo' + this.departamentoStore.list().length + 1).toString(),
+        id: (this.funcionarioStore.list().length + 1).toString(),
+        nome: ('Novo' + this.funcionarioStore.list().length + 1).toString(),
       };
-      this.departamentoStore.create({
+      this.funcionarioStore.create({
         data: novoData,
       });
     }
@@ -111,7 +150,7 @@ export class DepartamentoList {
     console.log('update', data);
     if (confirm('Deseja realmente alterar?')) {
       const dataUpdate = { ...data, nome: 'Alterado Para' + data };
-      this.departamentoStore.updateById({
+      this.funcionarioStore.updateById({
         id: data,
         data: dataUpdate,
       });
@@ -120,7 +159,7 @@ export class DepartamentoList {
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       console.log('delete', id);
-      this.departamentoStore.deleteById(id);
+      this.funcionarioStore.deleteById(id);
     }
   }
 

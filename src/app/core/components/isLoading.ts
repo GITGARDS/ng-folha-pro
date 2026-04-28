@@ -8,7 +8,7 @@ import { Component, input } from "@angular/core";
     @if (isLoading()) {
       @let eltexto = 'bg-[var(--mat-sys-surface-variant)]';
       @let animate = 'animate-pulse';
-      <div class="absolute w-full h-full rounded-lg inset-0 z-10 bg-[var(--mat-sys-surface)]">
+      <div class="absolute w-full h-full rounded-lg inset-0 z-300 bg-[var(--mat-sys-surface)]">
         <div [class]="animate">
           <div class="flex flex-col gap-8">
             @for (item of [1, 2]; track $index) {

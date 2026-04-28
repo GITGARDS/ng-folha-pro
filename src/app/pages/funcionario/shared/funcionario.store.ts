@@ -1,20 +1,20 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { DepartamentoModel } from "./departamento.model";
-import { DepartamentoService } from "./departamento.service";
+import { FuncionarioModel } from "./funcionario.model";
+import { FuncionarioService } from "./funcionario.service";
 
-type DepartamentoState = {
-  list: DepartamentoModel[];
+type FuncionarioState = {
+  list: FuncionarioModel[];
   isLoading: boolean;
 };
 
-const initialState: DepartamentoState = {
+const initialState: FuncionarioState = {
   list: [],
   isLoading: false,
 };
 
-export const DepartamentoStore = signalStore(
+export const FuncionarioStore = signalStore(
   {
     providedIn: 'root',
   },
@@ -23,11 +23,11 @@ export const DepartamentoStore = signalStore(
   withComputed((store) => ({})),
 
   withMethods(
-    (store, departamentoService = inject(DepartamentoService), router = inject(Router)) => ({
+    (store, funcionarioService = inject(FuncionarioService), router = inject(Router)) => ({
       carregaLista: signalMethod(async () => {
         if (store.list.length > 0) return;
         patchState(store, { isLoading: true });
-        await departamentoService.findAll().then((list) => {
+        await funcionarioService.findAll().then((list) => {
           patchState(store, (state) => ({
             ...state,
             list,
@@ -36,9 +36,9 @@ export const DepartamentoStore = signalStore(
         });
       }),
 
-      create: signalMethod(async (param: { data: DepartamentoModel }) => {
+      create: signalMethod(async (param: { data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
-        await departamentoService.create(param.data).then((list) => {
+        await funcionarioService.create(param.data as FuncionarioModel).then((list) => {
           patchState(store, (state) => ({
             ...state,
             list,
@@ -47,9 +47,9 @@ export const DepartamentoStore = signalStore(
         });
       }),
 
-      updateById: signalMethod(async (params: { id: string; data: DepartamentoModel }) => {
+      updateById: signalMethod(async (params: { id: string; data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
-        await departamentoService.updateById(params.id, params.data).then((list) => {
+        await funcionarioService.updateById(params.id, params.data as FuncionarioModel).then((list) => {
           console.log('update', list);
           patchState(store, (state) => ({
             ...state,
@@ -61,7 +61,7 @@ export const DepartamentoStore = signalStore(
 
       deleteById: signalMethod(async (id: string) => {
         patchState(store, { isLoading: true });
-        await departamentoService.deleteById(id.toString()).then((list) => {
+        await funcionarioService.deleteById(id.toString()).then((list) => {
           patchState(store, (state) => ({
             ...state,
             list,
