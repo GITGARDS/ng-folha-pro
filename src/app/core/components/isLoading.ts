@@ -8,9 +8,9 @@ import { MatIconModule } from "@angular/material/icon";
   template: `
     @let bgFundo = 'bg-white';
     @let textFundo = 'bg-gray-200';
-    @if (!isLoading()) {
+    @if (isLoading()) {
       <div
-        class="absolute border border-gray-300 w-full h-full z-10 rounded-lg overflow-hidden"
+        class="absolute border border-gray-300 w-full h-[calc(100vh-200px)] z-10 rounded-lg overflow-hidden"
         [class]="bgFundo"
       >
         <div class="animate-pulse">
