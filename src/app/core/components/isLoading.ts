@@ -15,9 +15,13 @@ import { MatIconModule } from "@angular/material/icon";
       >
         <div class="animate-pulse">
           <div class="w-full h-full bg-sky-200">
-            <div class="grid grid-cols-5 gap-6 p-2">
-              <div class="col-span-1 h-20 w-20 rounded-full bg-gray-400"></div>
-              <div class="col-span-4 h-full w-full">
+            <div class="grid grid-cols-7 gap-6 p-2">
+              <div class="col-span-2">
+                <div class="flex items-center justify-center h-full w-full">
+                  <div class="h-20 w-20 rounded-full bg-gray-400"></div>
+                </div>
+              </div>
+              <div class="col-span-5 h-full w-full">
                 <div class="grid grid-cols-8 gap-6 p-2">
                   <div class="col-span-8 h-6 w-full" [class]="textFundo"></div>
                   <div class="col-span-5 h-6 w-full" [class]="textFundo"></div>
