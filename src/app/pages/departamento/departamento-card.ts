@@ -10,7 +10,7 @@ import { DepartamentoStore } from "./shared/departamento.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="departamentoStore.totalAtivos().length || null"
+        [valor]="departamentoStore.totalAtivos().length"
       />
     </div>
   `,
@@ -21,5 +21,5 @@ import { DepartamentoStore } from "./shared/departamento.store";
   `,
 })
 export default class DepartamentoCard {
-  departamentoStore = inject(DepartamentoStore);
+  departamentoStore = inject(DepartamentoStore);  
 }

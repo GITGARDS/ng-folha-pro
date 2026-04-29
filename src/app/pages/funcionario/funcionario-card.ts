@@ -11,12 +11,12 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="funcionarioStore.totalAtivos().length || null"
+        [valor]="funcionarioStore.totalAtivos().length"
       />
       <app-mini-card
         icone="attach_money"
         title="total salario base"
-        [valor]="(funcionarioStore.totalSalarioBase() | currency) || null"
+        [valor]="(funcionarioStore.totalSalarioBase() | currency)"
       />
     </div>
   `,
@@ -28,6 +28,4 @@ import { FuncionarioStore } from "./shared/funcionario.store";
 })
 export default class FuncionarioCard {
   funcionarioStore = inject(FuncionarioStore);
-
-  constructor() {}
 }
