@@ -10,7 +10,7 @@ import { MatIconModule } from "@angular/material/icon";
     @let textFundo = 'bg-gray-200';
     @if (!isLoading()) {
       <div
-        class="absolute border border-gray-300 w-full h-[calc(100vh-160px)] z-10 rounded-lg overflow-hidden"
+        class="absolute border border-gray-300 w-full h-[calc(100vh-160px)] z-299 rounded-lg overflow-hidden"
         [class]="bgFundo"
       >
         <div class="animate-pulse">
