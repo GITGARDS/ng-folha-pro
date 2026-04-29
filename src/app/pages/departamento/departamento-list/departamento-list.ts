@@ -116,7 +116,7 @@ export class DepartamentoList {
   onUpdateById(data: any) {
     console.log('update', data);
     if (confirm('Deseja realmente alterar?')) {
-      const dataUpdate = { ...data, nome: 'Alterado Para' + data, ativo: !data.ativo };
+      const dataUpdate = { ...data, nome: 'Alterado Para' + data, ativo: data.ativo ? false : true };
       this.departamentoStore.updateById({
         id: data,
         data: dataUpdate,

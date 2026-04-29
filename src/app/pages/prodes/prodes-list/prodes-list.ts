@@ -148,7 +148,7 @@ export class ProdesList {
   onUpdateById(data: any) {
     console.log('update', data);
     if (confirm('Deseja realmente alterar?')) {
-      const dataUpdate = { ...data, descricao: 'Alterado Para' + data, ativo: !data.ativo };
+      const dataUpdate = { ...data, descricao: 'Alterado Para' + data, ativo: data.ativo ? false : true };
       this.prodesStore.updateById({
         id: data,
         data: dataUpdate,
