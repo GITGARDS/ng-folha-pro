@@ -45,7 +45,7 @@ import { TabelaStore } from "../shared/tabela.store";
                 <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
               </ng-container>
 
-              <ng-container matColumnDef="actions">
+              <ng-container matColumnDef="actions" stickyEnd>
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let row">
                   <button
