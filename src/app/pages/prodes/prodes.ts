@@ -1,5 +1,4 @@
 import { Component, inject, signal } from "@angular/core";
-import { MatCard } from "@angular/material/card";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { PRODES } from "../../core/navigation/shared/navigation-model";
@@ -9,7 +8,7 @@ import { ProdesStore } from "./shared/prodes.store";
 
 @Component({
   selector: 'app-prodes',
-  imports: [NavigationTitle, IsLoading, ProdesList, ProdesCard, MatCard],
+  imports: [NavigationTitle, IsLoading, ProdesList, ProdesCard],
   template: `
     <section>
       <div class="flex flex-wrap items-center">
@@ -17,7 +16,6 @@ import { ProdesStore } from "./shared/prodes.store";
         <app-prodes-card />
       </div>
     </section>
-
     <section class="h-[calc(100vh-200px)] relative">
       <app-is-loading [isLoading]="prodesStore.isLoading()" />
       <app-prodes-list />

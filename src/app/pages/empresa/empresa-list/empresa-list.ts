@@ -1,6 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
+import { MatCard } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
@@ -21,78 +22,86 @@ import { EmpresaStore } from "../shared/empresa.store";
     MatIcon,
     MatIconButton,
     DatePipe,
+    MatCard,
   ],
   template: `
-    <section>
-      <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
-    </section>
-    
-    <section>
-      <table mat-table [dataSource]="dataSource" matSort>
-        <!-- Id Column -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-        </ng-container>
-        <!-- tipoInscricao Column -->
-        <ng-container matColumnDef="tipoInscricao">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.tipoInscricao }}
-          </td>
-        </ng-container>
-        <!-- Inscricao Column -->
-        <ng-container matColumnDef="inscricao">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Inscricao</th>
-          <td mat-cell *matCellDef="let row">{{ row.inscricao }}</td>
-        </ng-container>
-        <!-- nomeEmpresaRazaoSocial Column -->
-        <ng-container matColumnDef="nomeEmpresaRazaoSocial">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome da Empresa/Razao Social</th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.nomeEmpresaRazaoSocial }}
-          </td>
-        </ng-container>
-        <!-- dataAbertura Column -->
-        <ng-container matColumnDef="dataAbertura">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Data da Abertura</th>
-          <td mat-cell *matCellDef="let row">{{ row.dataAbertura | date: 'dd/MM/yyyy' }}</td>
-        </ng-container>
+    <div class="h-full flex flex-col justify-between">
+      <section>
+        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions" stickyEnd>
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-icon>menu</mat-icon>
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <button
-              matIconButton
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onUpdateById(row)">
-                <mat-icon>edit</mat-icon>
-                <span>Editar</span>
-              </button>
-              <button mat-menu-item (click)="onDeleteById(row.id)">
-                <mat-icon>delete</mat-icon>
-                <span>Excluir</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
+        <mat-card class="py-2" appearance="outlined">
+          <div class="h-[60vh] overflow-auto">
+            <table mat-table [dataSource]="dataSource" matSort>
+              <!-- Id Column -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+              </ng-container>
+              <!-- tipoInscricao Column -->
+              <ng-container matColumnDef="tipoInscricao">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.tipoInscricao }}
+                </td>
+              </ng-container>
+              <!-- Inscricao Column -->
+              <ng-container matColumnDef="inscricao">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Inscricao</th>
+                <td mat-cell *matCellDef="let row">{{ row.inscricao }}</td>
+              </ng-container>
+              <!-- nomeEmpresaRazaoSocial Column -->
+              <ng-container matColumnDef="nomeEmpresaRazaoSocial">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Nome da Empresa/Razao Social
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.nomeEmpresaRazaoSocial }}
+                </td>
+              </ng-container>
+              <!-- dataAbertura Column -->
+              <ng-container matColumnDef="dataAbertura">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Data da Abertura</th>
+                <td mat-cell *matCellDef="let row">{{ row.dataAbertura | date: 'dd/MM/yyyy' }}</td>
+              </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </section>
-    <section>
-      <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
-    </section>
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-icon>menu</mat-icon>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <button
+                    matIconButton
+                    [matMenuTriggerFor]="menu"
+                    aria-label="Example icon-button with a menu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="onUpdateById(row)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Editar</span>
+                    </button>
+                    <button mat-menu-item (click)="onDeleteById(row.id)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Excluir</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </mat-card>
+      </section>
+
+      <section>
+        <mat-paginator #paginator [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+      </section>
+    </div>
   `,
   styles: ``,
 })

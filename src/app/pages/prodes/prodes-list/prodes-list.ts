@@ -1,6 +1,6 @@
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
+import { MatCard } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
@@ -20,7 +20,7 @@ import { ProdesStore } from "../shared/prodes.store";
     MatMenuModule,
     MatIcon,
     MatIconButton,
-    MatCardModule,
+    MatCard,
   ],
   template: `
     <div class="h-full flex flex-col justify-between">

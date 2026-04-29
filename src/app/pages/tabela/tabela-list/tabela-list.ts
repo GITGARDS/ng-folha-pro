@@ -1,5 +1,6 @@
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
+import { MatCard } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
@@ -19,60 +20,66 @@ import { TabelaStore } from "../shared/tabela.store";
     MatMenuModule,
     MatIcon,
     MatIconButton,
+    MatCard,
   ],
   template: `
-    <section>
-      <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
-    </section>
+    <div class="h-full flex flex-col justify-between">
+      <section>
+        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
 
-    <section>
-      <table mat-table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-        </ng-container>
+        <mat-card class="py-2" appearance="outlined">
+          <div class="h-[60vh] overflow-auto">
+            <table mat-table [dataSource]="dataSource" matSort>
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+              </ng-container>
 
-        <ng-container matColumnDef="nome">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
-          <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
-        </ng-container>
+              <ng-container matColumnDef="nome">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
+                <td mat-cell *matCellDef="let row">{{ row.nome }}</td>
+              </ng-container>
 
-        <ng-container matColumnDef="ativo">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ativo</th>
-          <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
-        </ng-container>
+              <ng-container matColumnDef="ativo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ativo</th>
+                <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
+              </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let row">
-            <button
-              matIconButton
-              [matMenuTriggerFor]="menu"
-              aria-label="Example icon-button with a menu"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onUpdateById(row.id)">
-                <mat-icon>edit</mat-icon>
-                <span>Editar</span>
-              </button>
-              <button mat-menu-item (click)="onDeleteById(row.id)">
-                <mat-icon>delete</mat-icon>
-                <span>Excluir</span>
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let row">
+                  <button
+                    matIconButton
+                    [matMenuTriggerFor]="menu"
+                    aria-label="Example icon-button with a menu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="onUpdateById(row.id)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Editar</span>
+                    </button>
+                    <button mat-menu-item (click)="onDeleteById(row.id)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Excluir</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </section>
-    <section>
-      <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
-      </mat-paginator>
-    </section>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </mat-card>
+      </section>
+
+      <section>
+        <mat-paginator #paginator [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+      </section>
+    </div>
   `,
   styles: ``,
 })

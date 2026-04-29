@@ -1,5 +1,4 @@
 import { Component, inject, signal } from "@angular/core";
-import { MatDivider } from "@angular/material/divider";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
@@ -9,21 +8,18 @@ import { DepartamentoStore } from "./shared/departamento.store";
 
 @Component({
   selector: 'app-departamento',
-  imports: [NavigationTitle, MatDivider, IsLoading, DepartamentoList, DepartamentoCard],
+  imports: [NavigationTitle, IsLoading, DepartamentoList, DepartamentoCard],
   template: `
-    <div>
-      <section>
-        <div class="flex flex-wrap items-center">
-          <app-navigation-title [title]="title" />
-          <app-departamento-card />
-        </div>
-      </section>
-      <mat-divider></mat-divider>
-      <section class="relative">
-        <app-is-loading [isLoading]="departamentoStore.isLoading()" />
-        <app-departamento-list />
-      </section>
-    </div>
+    <section>
+      <div class="flex flex-wrap items-center">
+        <app-navigation-title [title]="title" />
+        <app-departamento-card />
+      </div>
+    </section>
+    <section class="h-[calc(100vh-200px)] relative">
+      <app-is-loading [isLoading]="departamentoStore.isLoading()" />
+      <app-departamento-list />
+    </section>
   `,
   styles: `
     :host {
