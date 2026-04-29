@@ -1,5 +1,4 @@
-import { computed, inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { TabelaModel } from "./tabela.model";
 import { TabelaService } from "./tabela.service";
@@ -20,62 +19,69 @@ export const TabelaStore = signalStore(
   },
   withState(initialState),
 
-  withComputed(({list}) => ({
-    totalAtivos: computed(() => list().filter((f) => f.ativo)),
+  withComputed((store) => ({
   })),
 
-  withMethods(
-    (store, tabelaService = inject(TabelaService), router = inject(Router)) => ({
-      carregaLista: signalMethod(async () => {
-        if (store.list.length > 0) return;
-        patchState(store, { isLoading: true });
-        await tabelaService.findAll().then((list) => {
+  withMethods((store, tabelaService = inject(TabelaService)) => ({
+    carregaLista: signalMethod((params: { empresa: string }) => {
+      if (store.list.length > 0) return;
+      patchState(store, { isLoading: true });
+      tabelaService.findAll({ empresa: params.empresa }).subscribe({
+        next: (list) => {
           patchState(store, (state) => ({
             ...state,
             list,
             isLoading: false,
           }));
-        });
-      }),
-
-      create: signalMethod(async (param: { data: Partial<TabelaModel> }) => {
-        patchState(store, { isLoading: true });
-        await tabelaService.create(param.data as TabelaModel).then((list) => {
-          patchState(store, (state) => ({
-            ...state,
-            list,
-            isLoading: false,
-          }));
-        });
-      }),
-
-      updateById: signalMethod(async (params: { id: string; data: Partial<TabelaModel> }) => {
-        patchState(store, { isLoading: true });
-        await tabelaService.updateById(params.id, params.data as TabelaModel).then((list) => {
-          console.log('update', list);
-          patchState(store, (state) => ({
-            ...state,
-            list,
-            isLoading: false,
-          }));
-        });
-      }),
-
-      deleteById: signalMethod(async (id: string) => {
-        patchState(store, { isLoading: true });
-        await tabelaService.deleteById(id.toString()).then((list) => {
-          patchState(store, (state) => ({
-            ...state,
-            list,
-            isLoading: false,
-          }));
-        });
-      }),
+        },
+      });
     }),
-  ),
+    carregaListaVazia: signalMethod(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      patchState(store, (state) => ({
+        ...state,
+        list: [],
+      }));
+    }),
+
+    create: signalMethod(async (params: { data: Partial<TabelaModel> }) => {
+      patchState(store, { isLoading: true });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const id = await tabelaService.create(params.data as TabelaModel);
+      patchState(store, (state) => ({
+        ...state,
+        list: [...state.list, { ...(params.data as TabelaModel), id }],
+        isLoading: false,
+      }));
+    }),
+
+    updateById: signalMethod(async (params: { id: string; data: Partial<TabelaModel> }) => {
+      patchState(store, { isLoading: true });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await tabelaService.updateById(params.id, params.data as TabelaModel);
+      patchState(store, (state) => ({
+        ...state,
+        list: state.list.map((f) =>
+          f.id === params.id ? { ...f, ...(params.data as TabelaModel) } : f,
+        ),
+        isLoading: false,
+      }));
+    }),
+
+    deleteById: signalMethod(async (params: { id: string }) => {
+      patchState(store, { isLoading: true });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      await tabelaService.deleteById(params.id.toString());
+      patchState(store, (state) => ({
+        ...state,
+        list: state.list.filter((f) => f.id !== params.id.toString()),
+        isLoading: false,
+      }));
+    }),
+  })),
   withHooks((store) => ({
     onInit() {
-      store.carregaLista(null);
+      store.carregaLista({ empresa: '1' });
     },
   })),
 );

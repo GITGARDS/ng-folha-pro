@@ -1,44 +1,49 @@
 import { Injectable } from "@angular/core";
-import { FuncionarioModel, MOCK_FUNCIONARIOS } from "./funcionario.model";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import { Observable, delay } from "rxjs";
+import { db } from "../../../../firebase";
+import { FuncionarioModel } from "./funcionario.model";
 
 @Injectable({
   providedIn: 'root',
 })
 export class FuncionarioService {
+  colectionLabel = 'funcionario';
+  collectionName = collection(db, this.colectionLabel);
+
   private isDelay = 500;
 
-  async findAll() {
-    return new Promise<FuncionarioModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_FUNCIONARIOS);
-      }, this.isDelay);
-    });
+  findAll(param: { empresa: string }) {
+    const q = query(this.collectionName, orderBy('nome'));
+    return new Observable<FuncionarioModel[]>((observer) => {
+      onSnapshot(q, (snapshot) => {
+        const items: FuncionarioModel[] = snapshot.docs
+          // .filter((f: any) => f.data().empresa === param.empresa)
+          .map(
+            (d) =>
+              ({
+                id: d.id,
+                ...d.data(),
+              }) as FuncionarioModel,
+          );
+        // const items: FuncionarioModel[] = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as FuncionarioModel);
+        observer.next(items);
+      });
+    }).pipe(delay(this.isDelay));
   }
-
-  async findById(id: number) {}
 
   async create(param: FuncionarioModel) {
-    return new Promise<FuncionarioModel[]>((resolve) => {
-      MOCK_FUNCIONARIOS.push(param);
-      setTimeout(() => {
-        resolve(MOCK_FUNCIONARIOS);
-      }, this.isDelay);
-    });
+    const docRef = await addDoc(this.collectionName, { ...param });
+    return docRef.id;
   }
 
-  async updateById(id: string, param: FuncionarioModel) {
-    return new Promise<FuncionarioModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_FUNCIONARIOS.map((d) => (d.id === id.toString() ? { ...d, ...param } : d)));
-      }, this.isDelay);
-    });
+  async updateById(id: string, data: FuncionarioModel) {
+    const docRef = doc(db, this.colectionLabel, id);
+    await updateDoc(docRef, { ...data });
   }
 
   async deleteById(id: string) {
-    return new Promise<FuncionarioModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_FUNCIONARIOS.filter((d) => d.id !== id));
-      }, this.isDelay);
-    });
+    const docRef = doc(db, this.colectionLabel, this.colectionLabel, id);
+    await deleteDoc(docRef);
   }
 }

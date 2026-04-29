@@ -1,44 +1,45 @@
-import { Injectable } from "@angular/core";
-import { DepartamentoModel, MOCK_DEPARTAMENTOS } from "./departamento.model";
+import { Injectable, signal } from "@angular/core";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import { Observable, delay } from "rxjs";
+import { db } from "../../../../firebase";
+import { DepartamentoModel } from "./departamento.model";
 
 @Injectable({
   providedIn: 'root',
 })
 export class DepartamentoService {
+  colectionLabel = 'departamento';
+  collectionName = collection(db, this.colectionLabel);
+  idDepartamentoLogada = signal<string | number | null>(null);
   private isDelay = 500;
 
-  async findAll() {
-    return new Promise<DepartamentoModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_DEPARTAMENTOS);
-      }, this.isDelay);
-    });
+  findAll() {
+    const q = query(this.collectionName, orderBy('nome'));
+    return new Observable<DepartamentoModel[]>((observer) => {
+      onSnapshot(q, (snapshot) => {
+        const items: DepartamentoModel[] = snapshot.docs.map(
+          (d) => ({ id: d.id, ...d.data() }) as DepartamentoModel,
+        );
+        observer.next(items);
+      });
+    }).pipe(delay(this.isDelay));
   }
 
   async findById(id: number) {}
 
   async create(param: DepartamentoModel) {
-    return new Promise<DepartamentoModel[]>((resolve) => {
-      MOCK_DEPARTAMENTOS.push(param);
-      setTimeout(() => {
-        resolve(MOCK_DEPARTAMENTOS);
-      }, this.isDelay);
-    });
+    const docRef = await addDoc(this.collectionName, { ...param });
+    return docRef.id;
   }
 
   async updateById(id: string, param: DepartamentoModel) {
-    return new Promise<DepartamentoModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_DEPARTAMENTOS.map((d) => (d.id === id.toString() ? { ...d, ...param } : d)));
-      }, this.isDelay);
-    });
+    const docRef = doc(db, this.colectionLabel, id);
+    await updateDoc(docRef, { ...param });
   }
 
   async deleteById(id: string) {
-    return new Promise<DepartamentoModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_DEPARTAMENTOS.filter((d) => d.id !== id));
-      }, this.isDelay);
-    });
+    const docRef = doc(db, this.colectionLabel, id);
+    await deleteDoc(docRef);
   }
+  
 }

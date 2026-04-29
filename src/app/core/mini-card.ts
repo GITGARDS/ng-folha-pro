@@ -10,9 +10,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     @if (valor() !== null) {
       <mat-icon
         [matBadge]="valor()"
-        matBadgeSize="large"
         [matTooltip]="title()"
-        class="!text-[var(--var-fundo)]"
         >{{ icone() }}</mat-icon
       >
     } @else {

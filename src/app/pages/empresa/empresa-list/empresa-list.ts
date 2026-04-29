@@ -2,12 +2,14 @@ import { DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/table-filter";
+import { EmpresaForm } from "../empresa-form";
 import { EmpresaModel } from "../shared/empresa.model";
 import { EmpresaStore } from "../shared/empresa.store";
 
@@ -27,7 +29,7 @@ import { EmpresaStore } from "../shared/empresa.store";
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
       <section class="flex flex-col gap-2">
-        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
+        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate()" />
 
         <mat-card class="py-2" appearance="outlined">
           <div class="h-[60vh] overflow-auto">
@@ -98,7 +100,7 @@ import { EmpresaStore } from "../shared/empresa.store";
       </section>
 
       <section>
-        <mat-paginator #paginator [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </section>
     </div>
@@ -130,32 +132,55 @@ export class EmpresaList {
       }, 100);
     });
   }
-  onCreate(opcao: string) {
-    if (confirm('Deseja realmente criar?')) {
-      const novoData = {
-        id: (this.empresaStore.list().length + 1).toString(),
-        nomeEmpresaRazaoSocial: ('Novo' + this.empresaStore.list().length + 1).toString(),
-      };
-      this.empresaStore.create({
-        data: novoData,
-      });
-    }
+
+  readonly dialog = inject(MatDialog);
+  onCreate() {
+    const ultimoEmpresa = this.empresaStore.list().length + 1;
+    const novo: Partial<EmpresaModel> = {
+      nomeEmpresaRazaoSocial: `Empresa ultima ${ultimoEmpresa}`,
+      nomeFantasia: `Empresa ${ultimoEmpresa}`,
+      email: 'a@b.com',
+      dataAbertura: new Date().toISOString().split('T')[0],
+    };
+    this.openDialog('new', novo as EmpresaModel);
   }
 
-  onUpdateById(data: any) {
-    console.log('update', data);
-    if (confirm('Deseja realmente alterar?')) {
-      const dataUpdate = { ...data, nomeEmpresaRazaoSocial: 'Alterado Para' + data };
-      this.empresaStore.updateById({
-        id: data,
-        data: dataUpdate,
-      });
-    }
+  onUpdateById(params: EmpresaModel) {
+    this.openDialog('update', params);
+  }
+
+  openDialog(opcao: string, data: EmpresaModel) {
+    const dialogRef = this.dialog.open(EmpresaForm, {
+      width: 'auto',
+      height: '750px',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '300ms',
+      data: { opcao, data },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      switch (opcao) {
+        case 'new':
+          this.empresaStore.create({
+            data: result as EmpresaModel,
+          });
+
+          break;
+        case 'update':
+          this.empresaStore.updateById({
+            id: data.id as string,
+            data: result as EmpresaModel,
+          });
+          break;
+      }
+    });
   }
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       console.log('delete', id);
-      this.empresaStore.deleteById(id);
+      this.empresaStore.deleteById({ id });
     }
   }
 

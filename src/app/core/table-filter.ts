@@ -13,7 +13,7 @@ import { MatInput } from "@angular/material/input";
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilter.emit($event)" placeholder="Ex. abcd" #input />
       </mat-form-field>
-      <button matButton="filled" class="mt-[-20px]" (click)="onCreate.emit('new')">novo</button>
+      <button matButton="filled" class="mt-[-20px]" (click)="onCreate.emit()">novo</button>
     </div>
   `,
   styles: `
@@ -26,5 +26,5 @@ import { MatInput } from "@angular/material/input";
 })
 export class TableFilter {
   applyFilter = output<Event>();
-  onCreate = output<string>();
+  onCreate = output();
 }

@@ -1,12 +1,14 @@
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/table-filter";
+import { ProdesForm } from "../prodes-form";
 import { ProdesModel } from "../shared/prodes.model";
 import { ProdesStore } from "../shared/prodes.store";
 
@@ -25,7 +27,7 @@ import { ProdesStore } from "../shared/prodes.store";
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
       <section class="flex flex-col gap-2">
-        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
+        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate()" />
 
         <mat-card class="py-2" appearance="outlined">
           <div class="h-[60vh] overflow-auto">
@@ -99,7 +101,7 @@ import { ProdesStore } from "../shared/prodes.store";
       </section>
 
       <section>
-        <mat-paginator #paginator [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </section>
     </div>
@@ -133,32 +135,52 @@ export class ProdesList {
       }, 100);
     });
   }
-  onCreate(opcao: string) {
-    if (confirm('Deseja realmente criar?')) {
-      const novoData = {
-        id: (this.prodesStore.list().length + 1).toString(),
-        descricao: ('Novo' + this.prodesStore.list().length + 1).toString(),
-      };
-      this.prodesStore.create({
-        data: novoData,
-      });
-    }
+  readonly dialog = inject(MatDialog);
+  onCreate() {
+    const ultimoProdes = this.prodesStore.list().length + 1;
+
+    const novo: Partial<ProdesModel> = {
+      codigo: `P${ultimoProdes}`,
+      descricao: `prodes ultimo ${ultimoProdes}`,
+      tipo: 'provento',
+      incidencias: ['INSS', 'FGTS', 'IRRF'],
+      automatico: true,
+      ativo: true,
+    };
+    this.openDialog('new', novo as ProdesModel);
+  }
+  onUpdateById(params: ProdesModel) {
+    this.openDialog('update', params);
   }
 
-  onUpdateById(data: any) {
-    console.log('update', data);
-    if (confirm('Deseja realmente alterar?')) {
-      const dataUpdate = { ...data, descricao: 'Alterado Para' + data, ativo: data.ativo ? false : true };
-      this.prodesStore.updateById({
-        id: data,
-        data: dataUpdate,
-      });
-    }
+  openDialog(opcao: string, data: ProdesModel) {
+    const dialogRef = this.dialog.open(ProdesForm, {
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '300ms',
+      data: { opcao, data },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      switch (opcao) {
+        case 'new':
+          this.prodesStore.create({
+            data: result as ProdesModel,
+          });
+          break;
+        case 'update':
+          this.prodesStore.updateById({
+            id: data.id as string,
+            data: result as ProdesModel,
+          });
+          break;
+      }
+    });
   }
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
-      console.log('delete', id);
-      this.prodesStore.deleteById(id);
+      this.prodesStore.deleteById({ id });
     }
   }
 

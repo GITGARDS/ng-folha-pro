@@ -23,6 +23,12 @@ export type EmpresaModel = {
   codigoDeOutrasEntidades: string;
   codigoDePagamentoGps: string;
 };
+
+export type EmpresaLogadaModel = {
+  empresa: EmpresaModel;
+  isLogada: boolean;
+};
+
 export const MOCK_EMPRESAS: EmpresaModel[] = [
   {
     id: '1',

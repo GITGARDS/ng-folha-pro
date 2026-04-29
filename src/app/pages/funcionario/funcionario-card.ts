@@ -1,10 +1,11 @@
+import { CurrencyPipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { MiniCard } from "../../core/mini-card";
 import { FuncionarioStore } from "./shared/funcionario.store";
 
 @Component({
   selector: 'app-funcionario-card',
-  imports: [MiniCard],
+  imports: [MiniCard, CurrencyPipe],
   template: `
     <div class="flex flex-wrap gap-2">
       <app-mini-card
@@ -15,7 +16,7 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <app-mini-card
         icone="attach_money"
         title="total salario base"
-        [valor]="funcionarioStore.totalSalarioBase() || null"
+        [valor]="(funcionarioStore.totalSalarioBase() | currency) || null"
       />
     </div>
   `,
@@ -27,4 +28,6 @@ import { FuncionarioStore } from "./shared/funcionario.store";
 })
 export default class FuncionarioCard {
   funcionarioStore = inject(FuncionarioStore);
+
+  constructor() {}
 }

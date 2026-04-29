@@ -1,44 +1,49 @@
 import { Injectable } from "@angular/core";
-import { MOCK_TABELAS, TabelaModel } from "./tabela.model";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import { Observable, delay } from "rxjs";
+import { db } from "../../../../firebase";
+import { TabelaModel } from "./tabela.model";
 
 @Injectable({
   providedIn: 'root',
 })
 export class TabelaService {
+  colectionLabel = 'tabela';
+  collectionName = collection(db, this.colectionLabel);
+
   private isDelay = 500;
 
-  async findAll() {
-    return new Promise<TabelaModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_TABELAS);
-      }, this.isDelay);
-    });
+  findAll(param: { empresa: string }) {
+    const q = query(this.collectionName, orderBy('nome'));
+    return new Observable<TabelaModel[]>((observer) => {
+      onSnapshot(q, (snapshot) => {
+        const items: TabelaModel[] = snapshot.docs
+          // .filter((f: any) => f.data().empresa === param.empresa)
+          .map(
+            (d) =>
+              ({
+                id: d.id,
+                ...d.data(),
+              }) as TabelaModel,
+          );
+        // const items: TabelaModel[] = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as TabelaModel);
+        observer.next(items);
+      });
+    }).pipe(delay(this.isDelay));
   }
-
-  async findById(id: number) {}
 
   async create(param: TabelaModel) {
-    return new Promise<TabelaModel[]>((resolve) => {
-      MOCK_TABELAS.push(param);
-      setTimeout(() => {
-        resolve(MOCK_TABELAS);
-      }, this.isDelay);
-    });
+    const docRef = await addDoc(this.collectionName, { ...param });
+    return docRef.id;
   }
 
-  async updateById(id: string, param: TabelaModel) {
-    return new Promise<TabelaModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_TABELAS.map((d) => (d.id === id.toString() ? { ...d, ...param } : d)));
-      }, this.isDelay);
-    });
+  async updateById(id: string, data: TabelaModel) {
+    const docRef = doc(db, this.colectionLabel, id);
+    await updateDoc(docRef, { ...data });
   }
 
   async deleteById(id: string) {
-    return new Promise<TabelaModel[]>((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_TABELAS.filter((d) => d.id !== id));
-      }, this.isDelay);
-    });
+    const docRef = doc(db, this.colectionLabel, this.colectionLabel, id);
+    await deleteDoc(docRef);
   }
 }

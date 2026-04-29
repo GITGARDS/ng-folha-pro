@@ -1,0 +1,102 @@
+import { UpperCasePipe } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButton } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
+
+/**
+ * @title Dialog with header, scrollable content and actions
+ */
+@Component({
+  selector: 'app-departamento-form',
+  imports: [
+    MatButton,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatInputModule,
+    MatError,
+    MatLabel,
+    UpperCasePipe,
+    MatCheckboxModule,
+  ],
+  template: `
+    <h2 mat-dialog-title class="!font-bold">
+      {{ formOpcao() === 'new' ? 'Novo' : ('Editar' | uppercase) }}
+      /
+      {{ dataForm.value.nome }}
+    </h2>
+
+    <mat-dialog-content class="mat-typography">
+      <form [formGroup]="dataForm">
+        <div class="mt-2">
+          <div class="grid grid-cols-6 gap-2">
+            <mat-form-field class="col-span-4" [appearance]="formAparence">
+              <mat-label>Id</mat-label>
+              <input matInput readonly formControlName="id" />
+              <mat-icon matPrefix>123</mat-icon>
+              @if (dataForm.controls['id'].hasError('required')) {
+                <mat-error><strong>required</strong></mat-error>
+              }
+            </mat-form-field>
+
+            <div class="col-span-2">
+              <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+              @if (dataForm.controls['ativo'].hasError('required')) {
+                <mat-error>ativo is <strong>required</strong></mat-error>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-6 gap-2">
+            <mat-form-field class="col-span-6" [appearance]="formAparence">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="nome" />
+              @if (dataForm.controls['nome'].hasError('required')) {
+                <mat-error><strong>Campo requerido</strong></mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-dialog-content>
+    <div class="border-t">
+      <mat-dialog-actions align="center">
+        <button matButton="tonal" mat-dialog-close>Cancel</button>
+        <button matButton="filled" [disabled]="dataForm.invalid" (click)="onSubmit()">
+          Confirma
+        </button>
+      </mat-dialog-actions>
+    </div>
+  `,
+
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DepartamentoForm {
+  dialogRef = inject(MatDialogRef<DepartamentoForm>);
+  data = inject<any>(MAT_DIALOG_DATA);
+  formAparence: 'fill' | 'outline' = 'fill';
+  formOpcao = signal<string>('');
+
+  ngOnInit() {
+    const { data } = this.data;
+    this.dataForm.patchValue(data);
+    this.dataForm.markAllAsTouched();
+    this.dataForm.markAsDirty();
+    this.formOpcao.set(this.data.opcao);
+  }
+
+  private fb = inject(FormBuilder);
+
+  dataForm = this.fb.group({
+    id: [{ value: '', disabled: true }],
+    nome: ['', Validators.required],
+    ativo: [true],
+  });
+
+  onSubmit() {
+    this.dialogRef.close(this.dataForm.value);
+  }
+}

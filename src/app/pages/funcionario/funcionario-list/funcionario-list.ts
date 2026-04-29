@@ -2,12 +2,14 @@ import { CurrencyPipe, DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/table-filter";
+import { FuncionarioForm } from "../funcionario-form";
 import { FuncionarioModel } from "../shared/funcionario.model";
 import { FuncionarioStore } from "../shared/funcionario.store";
 
@@ -28,7 +30,7 @@ import { FuncionarioStore } from "../shared/funcionario.store";
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
       <section class="flex flex-col gap-2">
-        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
+        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate()" />
 
         <mat-card class="py-2" appearance="outlined">
           <div class="h-[60vh] overflow-auto">
@@ -103,7 +105,7 @@ import { FuncionarioStore } from "../shared/funcionario.store";
       </section>
 
       <section>
-        <mat-paginator #paginator [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </section>
     </div>
@@ -136,32 +138,71 @@ export class FuncionarioList {
       }, 100);
     });
   }
-  onCreate(opcao: string) {
-    if (confirm('Deseja realmente criar?')) {
-      const novoData = {
-        id: (this.funcionarioStore.list().length + 1).toString(),
-        nome: ('Novo' + this.funcionarioStore.list().length + 1).toString(),
+  onCreate() {
+    const ultimoFuncionario = this.funcionarioStore.list().length + 1;
+    const novo: Partial<FuncionarioModel> = {
+      nome: `Funcionario ultimo ${ultimoFuncionario}`,
+      dataNascimento: new Date().toISOString().split('T')[0],
+      nacionalidade: 'BR',
+      naturalidade: 'BR',
+      genero: 'Masculino',
+      racaCor: 'Branco',
+      estadoCivil: 'Solteiro',
+      endereco: 'Endereco',
+      bairro: 'Bairro',
+      cidade: 'Cidade',
+      cep: '00000-000',
+      telefone: '(00) 0000-0000',
+      celular: '(00) 00000-0000',
+      email: 'a@b.com',
+      dataAdmissao: new Date().toISOString().split('T')[0],
+      salarioBase: ultimoFuncionario * 100,
+      ativo: true,
+    };
+    this.openDialog('new', novo as FuncionarioModel);
+  }
+  onUpdateById(params: FuncionarioModel) {
+    this.openDialog('update', params);
+  }
+  readonly dialog = inject(MatDialog);
+  openDialog(opcao: string, data: Partial<FuncionarioModel>) {
+    const dialogRef = this.dialog.open(FuncionarioForm, {
+      width: 'auto',
+      height: '750px',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '300ms',
+      data: { opcao, data },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      const empresaLogada = {
+        empresa: {
+          id: '1',
+        },
       };
-      this.funcionarioStore.create({
-        data: novoData,
-      });
-    }
+      result.empresa = empresaLogada.empresa.id as string;
+      switch (opcao) {
+        case 'new':
+          this.funcionarioStore.create({
+            data: result as FuncionarioModel,
+          });
+          break;
+        case 'update':
+          this.funcionarioStore.updateById({
+            id: data.id as string,
+            data: result as FuncionarioModel,
+          });
+          break;
+      }
+    });
   }
 
-  onUpdateById(data: any) {
-    console.log('update', data);
-    if (confirm('Deseja realmente alterar?')) {
-      const dataUpdate = { ...data, nome: 'Alterado Para' + data, ativo: data.ativo ? false : true };
-      this.funcionarioStore.updateById({
-        id: data,
-        data: dataUpdate,
-      });
-    }
-  }
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       console.log('delete', id);
-      this.funcionarioStore.deleteById(id);
+      this.funcionarioStore.deleteById({ id });
     }
   }
 
