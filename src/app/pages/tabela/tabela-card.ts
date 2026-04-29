@@ -10,7 +10,7 @@ import { TabelaStore } from "./shared/tabela.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="tabelaStore.totalAtivos().length"
+        [valor]="tabelaStore.totalAtivos().length || -1"
       />
     </div>
   `,

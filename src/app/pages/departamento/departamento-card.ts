@@ -10,7 +10,7 @@ import { DepartamentoStore } from "./shared/departamento.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="departamentoStore.totalAtivos().length"
+        [valor]="departamentoStore.totalAtivos().length || -1"
       />
     </div>
   `,

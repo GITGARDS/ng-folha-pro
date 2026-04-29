@@ -10,12 +10,12 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="funcionarioStore.totalAtivos().length"
+        [valor]="funcionarioStore.totalAtivos().length || -1"
       />
       <app-mini-card
         icone="attach_money"
         title="total salario base"
-        [valor]="funcionarioStore.totalSalarioBase()"
+        [valor]="funcionarioStore.totalSalarioBase() || -1"
       />
     </div>
   `,
