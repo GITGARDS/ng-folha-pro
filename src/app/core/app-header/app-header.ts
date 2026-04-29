@@ -14,7 +14,7 @@ import { AppHeaderTitle } from "./app-header-title";
     <mat-toolbar class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
         @if (isHandset()) {
-          <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.emit()">
+          <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawerToggle.emit()">
             <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
           </button>
         }
@@ -40,5 +40,5 @@ import { AppHeaderTitle } from "./app-header-title";
 })
 export class AppHeader {
   isHandset = input.required<boolean>();
-  drawer = output();
+  drawerToggle = output<void>();
 }

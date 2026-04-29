@@ -10,15 +10,27 @@ import { RouterOutlet } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { AppHeader } from "../app-header/app-header";
-import { NavigationList } from "../navigation1/navigation-list";
+import { NavigationList } from "./navigation-list";
 
 @Component({
   selector: 'app-navigation',
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    AsyncPipe,
+    RouterOutlet,
+    AppHeader,
+    NavigationList,
+  ],
+
   template: `
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav
         #drawer
-        class="sidenav"        
+        class="sidenav !transition !translate !ease-in-out !duration-700"
         [style.width]="(isHandset$ | async) === true ? '60px' : 'auto'"
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -37,10 +49,16 @@ import { NavigationList } from "../navigation1/navigation-list";
           </div>
         }
 
-        <app-navigation-list [isHandset]="(isHandset$ | async) ? true : false" />
+        <app-navigation-list
+          [isHandset]="(isHandset$ | async) ? true : false"
+          (drawerToggle)="drawer.toggle()"
+        />
       </mat-sidenav>
       <mat-sidenav-content>
-        <app-header [isHandset]="(isHandset$ | async) ? true : false" (drawer)="drawer.toggle()" />
+        <app-header
+          [isHandset]="(isHandset$ | async) ? true : false"
+          (drawerToggle)="drawer.toggle()"
+        />
         <!-- Add Content Here -->
         <div class="p-4">
           <router-outlet />
@@ -67,17 +85,6 @@ import { NavigationList } from "../navigation1/navigation-list";
       z-index: 1;
     }
   `,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    AsyncPipe,
-    NavigationList,
-    RouterOutlet,
-    AppHeader,
-  ],
 })
 export class Navigation {
   private breakpointObserver = inject(BreakpointObserver);

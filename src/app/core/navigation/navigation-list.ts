@@ -1,4 +1,4 @@
-import { Component, input } from "@angular/core";
+import { Component, input, output } from "@angular/core";
 import { MatListModule } from "@angular/material/list";
 import { NavigationListItem } from "./navigation-list-item";
 import { NAVIGATION_LIST } from "./shared/navigation-model";
@@ -10,7 +10,7 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
   template: `
     <mat-nav-list>
       @for (item of navigationList; track $index) {
-        <app-navigation-list-item [isHandset]="isHandset()" [navigationListItem]="item" />
+        <app-navigation-list-item [isHandset]="isHandset()" [navigationListItem]="item" (drawerToggle)="drawerToggle.emit()" />
       }
     </mat-nav-list>
   `,
@@ -20,4 +20,5 @@ import { NAVIGATION_LIST } from "./shared/navigation-model";
 export class NavigationList {
   isHandset = input.required<boolean>();
   navigationList = NAVIGATION_LIST;
+  drawerToggle = output<void>();
 }

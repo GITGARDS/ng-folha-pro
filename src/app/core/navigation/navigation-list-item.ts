@@ -1,4 +1,4 @@
-import { Component, inject, input } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { MatListItem, MatListModule } from "@angular/material/list";
 import { MatMenuModule } from "@angular/material/menu";
@@ -16,6 +16,7 @@ import { NavigationModel } from "./shared/navigation-model";
       [routerLink]="navigationListItem().url"
       [matTooltip]="isHandset() ? navigationListItem().label : ''"
       matTooltipPosition="right"
+      (click)="isHandset() && drawerToggle.emit()"
     >
       <mat-icon matListItemIcon>{{ navigationListItem().icon }}</mat-icon>
       <span matListItemTitle>
@@ -24,13 +25,12 @@ import { NavigationModel } from "./shared/navigation-model";
     </mat-list-item>
   `,
   styles: `
-    :host * {
-      transition: all 1s ease-in-out;
-    }
   `,
 })
 export class NavigationListItem {
   isHandset = input.required<boolean>();
   navigationListItem = input.required<NavigationModel>();
   router = inject(Router);
+
+  drawerToggle = output<void>();
 }
