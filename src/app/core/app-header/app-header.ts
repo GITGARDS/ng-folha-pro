@@ -1,19 +1,32 @@
-import { Component, input } from "@angular/core";
+import { Component, input, output } from "@angular/core";
+import { MatIconButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
 import { MatToolbar } from "@angular/material/toolbar";
+import { AppHeaderLogo } from "./app-header-logo";
 import { AppHeaderTheme } from "./app-header-theme";
 import { AppHeaderTitle } from "./app-header-title";
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbar, AppHeaderTitle, AppHeaderTheme],
+  imports: [MatToolbar, AppHeaderTitle, AppHeaderTheme, AppHeaderLogo, MatIconButton, MatIcon],
 
   template: `
-    <mat-toolbar class="flex justify-between">
-      @if (isHandset()) {
-        <span></span>
-      } @else {
-        <app-header-title />
-      }
+    <mat-toolbar class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        @if (isHandset()) {
+          <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.emit()">
+            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+          </button>
+        }
+        <div class="flex items-center gap-2">
+          <app-header-logo />
+          @if (isHandset()) {
+            <span></span>
+          } @else {
+            <app-header-title />
+          }
+        </div>
+      </div>
       <app-header-theme />
     </mat-toolbar>
   `,
@@ -27,4 +40,5 @@ import { AppHeaderTitle } from "./app-header-title";
 })
 export class AppHeader {
   isHandset = input.required<boolean>();
+  drawer = output();
 }

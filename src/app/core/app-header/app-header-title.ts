@@ -6,8 +6,10 @@ import { Title } from "@angular/platform-browser";
   imports: [],
 
   template: `
-    <!-- <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.toggle()"> -->
-    <span>{{ title() }}</span>
+    <span
+      class="text-2xl font-extrabold leading-none tracking-tight"
+      >{{ title() }}</span
+    >
   `,
   styles: `
     .flex {

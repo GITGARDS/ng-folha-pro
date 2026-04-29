@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
@@ -10,40 +10,51 @@ import { RouterOutlet } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { AppHeader } from "../app-header/app-header";
-import { NavigationList } from "../navigation1/navigation-list";
+import { AppHeaderLogo } from "../app-header/app-header-logo";
+import { NavigationList } from "./navigation-list";
 
 @Component({
   selector: 'app-navigation',
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    AsyncPipe,
+    RouterOutlet,
+    NavigationList,
+    AppHeader,
+    CommonModule,
+    AppHeaderLogo,
+  ],
+
   template: `
+    <!-- mode="over" -->
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav
         #drawer
-        class="sidenav"        
+        class="sidenav"
         [style.width]="(isHandset$ | async) === true ? '60px' : 'auto'"
+        fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-        [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false"
+        mode="side"
+        opened="true"
       >
-        @if (isHandset$ | async) {
-          <div class="flex items-center justify-center p-2">
-            <button
-              type="button"
-              aria-label="Toggle sidenav"
-              matIconButton
-              (click)="drawer.toggle()"
-            >
-              <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-            </button>
-          </div>
-        }
-
+        <app-header-logo />
         <app-navigation-list [isHandset]="(isHandset$ | async) ? true : false" />
       </mat-sidenav>
       <mat-sidenav-content>
-        <app-header [isHandset]="(isHandset$ | async) ? true : false" (drawer)="drawer.toggle()" />
+        <app-header
+          [isHandset]="(isHandset$ | async) ? true : false"
+          (onToggle)="drawer.toggle()"
+        />
         <!-- Add Content Here -->
-        <div class="p-4">
-          <router-outlet />
+        <!-- <div class="p-2 border border-gray-200 rounded-lg h-full"> -->
+        <div class="p-2">
+          <div class="p-2 rounded-lg h-full">
+            <router-outlet />
+          </div>
         </div>
       </mat-sidenav-content>
     </mat-sidenav-container>
@@ -51,10 +62,6 @@ import { NavigationList } from "../navigation1/navigation-list";
   styles: `
     .sidenav-container {
       height: 100%;
-    }
-
-    .sidenav {
-      width: 200px;
     }
 
     .sidenav .mat-toolbar {
@@ -67,23 +74,16 @@ import { NavigationList } from "../navigation1/navigation-list";
       z-index: 1;
     }
   `,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    AsyncPipe,
-    NavigationList,
-    RouterOutlet,
-    AppHeader,
-  ],
 })
 export class Navigation {
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map((result) => result.matches),
+    map((result) => {
+      console.log(' isHandset', result.matches);
+      // this.navigationService.navigationToogle.set(result.matches);
+      return result.matches;
+    }),
     shareReplay(),
   );
 }
