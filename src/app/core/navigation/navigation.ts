@@ -50,8 +50,9 @@ import { NavigationList } from "./navigation-list";
           (onToggle)="drawer.toggle()"
         />
         <!-- Add Content Here -->
+        <!-- <div class="p-2 border border-gray-200 rounded-lg h-full"> -->
         <div class="p-2">
-          <div class="p-2 border border-gray-200 rounded-lg h-full">
+          <div class="p-2rounded-lg h-full">
             <router-outlet />
           </div>
         </div>

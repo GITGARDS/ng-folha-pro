@@ -28,7 +28,9 @@ import { FuncionarioStore } from "../shared/funcionario.store";
       <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
     </section>
 
-    <section>
+    <section
+    >
+
       <table mat-table [dataSource]="dataSource" matSort>
         <!-- Id Column -->
         <ng-container matColumnDef="id">
@@ -95,6 +97,7 @@ import { FuncionarioStore } from "../shared/funcionario.store";
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+
     </section>
     <section>
       <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">

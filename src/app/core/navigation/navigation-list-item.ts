@@ -15,6 +15,7 @@ import { NavigationModel } from "./shared/navigation-model";
       [activated]="router.url === navigationListItem().url"
       [routerLink]="navigationListItem().url"
       [matTooltip]="isHandset() ? navigationListItem().label : ''"
+      matTooltipPosition="right"
     >
       <mat-icon matListItemIcon>{{ navigationListItem().icon }}</mat-icon>
       <span matListItemTitle>

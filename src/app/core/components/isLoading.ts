@@ -8,7 +8,7 @@ import { Component, input } from "@angular/core";
     @if (isLoading()) {
       @let eltexto = 'bg-[var(--mat-sys-surface-variant)]';
       @let animate = 'animate-pulse';
-      <div class="absolute w-full h-full rounded-lg inset-0 z-300 bg-[var(--mat-sys-surface)]">
+      <div class="absolute w-full h-[calc(100vh-200px)] rounded-lg inset-0 z-300 bg-[var(--mat-sys-surface)] overflow-hidden">
         <div [class]="animate">
           <div class="flex flex-col gap-8">
             @for (item of [1, 2]; track $index) {
@@ -17,7 +17,7 @@ import { Component, input } from "@angular/core";
                 <div class="h-25 rounded-lg mb-8" [class]="eltexto"></div>
 
                 <div class="flex flex-col gap-2">
-                  @for (item of [1, 2]; track $index) {
+                  @for (item of [1, 2, 3]; track $index) {
                     <div class="flex space-x-2">
                       <div class="size-8 rounded-full" [class]="eltexto"></div>
                       <div class="flex-1 space-y-6 py-1">
