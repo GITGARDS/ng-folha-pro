@@ -23,7 +23,7 @@ import { DepartamentoStore } from "../shared/departamento.store";
     MatCard,
   ],
   template: `
-    <div class="h-full flex flex-col justify-between">
+    <div class="h-full flex flex-col justify-between gap-2">
       <section>
         <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
 
