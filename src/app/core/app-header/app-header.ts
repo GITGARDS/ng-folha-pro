@@ -1,17 +1,20 @@
 import { Component, input } from "@angular/core";
 import { MatToolbar } from "@angular/material/toolbar";
+import { AppHeaderTheme } from "./app-header-theme";
 import { AppHeaderTitle } from "./app-header-title";
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbar, AppHeaderTitle],
+  imports: [MatToolbar, AppHeaderTitle, AppHeaderTheme],
 
   template: `
-    <mat-toolbar color="primary">
+    <mat-toolbar class="flex justify-between">
       @if (isHandset()) {
+        <span></span>
       } @else {
         <app-header-title />
       }
+      <app-header-theme />
     </mat-toolbar>
   `,
   styles: `
