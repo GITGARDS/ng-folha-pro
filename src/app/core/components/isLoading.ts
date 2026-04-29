@@ -1,40 +1,16 @@
 import { Component, input } from "@angular/core";
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-is-loading',
-  imports: [],
+  imports: [MatIcon],
 
   template: `
     @if (isLoading()) {
-      @let eltexto = 'bg-[var(--mat-sys-surface-variant)]';
-      @let animate = 'animate-pulse';
-      <div class="absolute w-full h-[calc(100vh-200px)] rounded-lg inset-0 z-300 bg-[var(--mat-sys-surface)] overflow-hidden">
-        <div [class]="animate">
-          <div class="flex flex-col gap-8">
-            @for (item of [1, 2]; track $index) {
-              <div>
-                <div class="h-10 w-1/2 rounded-lg mb-2" [class]="eltexto"></div>
-                <div class="h-25 rounded-lg mb-8" [class]="eltexto"></div>
-
-                <div class="flex flex-col gap-2">
-                  @for (item of [1, 2, 3]; track $index) {
-                    <div class="flex space-x-2">
-                      <div class="size-8 rounded-full" [class]="eltexto"></div>
-                      <div class="flex-1 space-y-6 py-1">
-                        <div class="h-2 rounded" [class]="eltexto"></div>
-                        <div class="space-y-3">
-                          <div class="grid grid-cols-3 gap-4">
-                            <div class="col-span-2 h-2 rounded" [class]="eltexto"></div>
-                            <div class="col-span-1 h-2 rounded" [class]="eltexto"></div>
-                          </div>
-                          <div class="h-2 rounded" [class]="eltexto"></div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              </div>
-            }
+      <div class="absolute border border-gray-300 w-full h-full bg-white z-10 rounded-lg overflow-hidden">
+        <div class="h-full w-full flex items-center justify-center">
+          <div class="h-full w-full flex items-center justify-center">
+            <mat-icon class="!w-full !h-full !text-[400px] !flex !items-center !justify-center animate-spin !text-gray-200">refresh</mat-icon>
           </div>
         </div>
       </div>
