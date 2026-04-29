@@ -25,8 +25,8 @@ import { EmpresaStore } from "../shared/empresa.store";
     MatCard,
   ],
   template: `
-    <div class="h-full flex flex-col justify-between">
-      <section>
+    <div class="h-full flex flex-col justify-between gap-2">
+      <section class="flex flex-col gap-2">
         <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
 
         <mat-card class="py-2" appearance="outlined">

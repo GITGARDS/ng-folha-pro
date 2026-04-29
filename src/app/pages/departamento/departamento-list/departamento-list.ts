@@ -24,7 +24,7 @@ import { DepartamentoStore } from "../shared/departamento.store";
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
-      <section>
+      <section class="flex flex-col gap-2">
         <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate($event)" />
 
         <mat-card class="py-2" appearance="outlined">
