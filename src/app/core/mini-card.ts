@@ -7,7 +7,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
   selector: 'app-mini-card',
   imports: [MatIcon, MatBadgeModule, MatTooltipModule],
   template: `
-    @if (valor() !== -1) {
+    @if (valor() !== null) {
       <mat-icon
         [matBadge]="valor()"
         matBadgeSize="large"
@@ -17,7 +17,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
       >
     } @else {
       <div
-        class="size-4 animate-spin border-6  border-r-transparent border-pink-600 rounded-full"
+        class="size-3.5 animate-spin border-3 border-r-transparent border-blue-600 rounded-full"
       ></div>
     }
   `,
@@ -30,5 +30,5 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 export class MiniCard {
   icone = input.required<string>();
   title = input.required<string>();
-  valor = input<string | number>(-1);
+  valor = input<string | number | null>(null);
 }
