@@ -13,15 +13,17 @@ html {
       //   primary: mat.$azure-palette,
       //   tertiary: mat.$blue-palette,
       // ),
-      color: (
-        primary: mat.$cyan-palette,
-        tertiary: mat.$blue-palette,
-      ),
+      color: (primary: mat.$cyan-palette, tertiary: mat.$blue-palette),
       typography: Roboto,
-      density: 0,
+      density: 0
     )
   );
 }
+@include mat.progress-spinner-overrides(
+  (
+    active-indicator-color: rgb(223, 223, 223),
+  )
+);
 
 body {
   // Default the application to a light color theme. This can be changed to

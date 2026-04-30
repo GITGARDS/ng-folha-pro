@@ -1,15 +1,27 @@
 import { Component, input } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-is-loading',
-  imports: [MatIconModule],
+  imports: [MatIconModule, MatProgressSpinnerModule],
 
   template: `
     @let bgFundo = 'bg-white';
-    @let textFundo = 'bg-gray-200';
+    @let textFundo = 'text-gray-200';
 
-    @if (isLoading()) {
+    @if (!isLoading()) {
+      <div class="absolute w-full h-[calc(100vh-200px)] z-299 rounded-lg p-2" [class]="bgFundo">
+        <div class="w-full h-full flex justify-center pt-20">
+          <mat-progress-spinner
+            class="w-10 h-10"
+            mode="indeterminate"
+            strokeWidth="8"            
+          ></mat-progress-spinner>
+        </div>
+      </div>
+    }
+    <!-- @if (isLoading()) {
       <div
         class="absolute w-full h-[calc(100vh-200px)] z-299 rounded-lg p-2 border-4 border-dashed border-gray-200"
         [class]="bgFundo"
@@ -46,7 +58,7 @@ import { MatIconModule } from "@angular/material/icon";
           </div>
         </div>
       </div>
-    }
+    } -->
     <!-- @let bgFundo = 'bg-white';
     @let textFundo = 'bg-gray-200';
     @if (!isLoading()) {
