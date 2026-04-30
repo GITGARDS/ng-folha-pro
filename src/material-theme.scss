@@ -9,11 +9,11 @@ html {
   height: 100%;
   @include mat.theme(
     (
-      // color: (
-      //   primary: mat.$azure-palette,
-      //   tertiary: mat.$blue-palette,
-      // ),
-      color: (primary: mat.$cyan-palette, tertiary: mat.$blue-palette),
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      // color: (primary: mat.$cyan-palette, tertiary: mat.$blue-palette),
       typography: Roboto,
       density: 0
     )

@@ -7,15 +7,12 @@ import { MatIcon } from "@angular/material/icon";
 
   template: `
     @let bgFundo = 'bg-white';
-    @let textFundo = 'text-gray-200';
 
     @if (isLoading()) {
       <div class="absolute w-full h-[calc(100vh)] z-299 rounded-lg p-2" [class]="bgFundo">
         <div class="w-full h-full flex justify-center pt-20">
           <div class="size-30 flex items-center justify-center animate-spin">
-            <mat-icon class="!w-auto !h-auto !text-6xl" [class]="textFundo">
-              refresh
-            </mat-icon>
+            <mat-icon class="!w-auto !h-auto !text-6xl">autorenew</mat-icon>
           </div>
         </div>
       </div>
