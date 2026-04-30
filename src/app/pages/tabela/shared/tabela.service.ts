@@ -33,8 +33,7 @@ export class TabelaService {
   }
 
   async create(param: TabelaModel) {
-    const docRef = await addDoc(this.collectionName, { ...param });
-    return docRef.id;
+    return await addDoc(this.collectionName, param).then((docRef) => docRef.id);
   }
 
   async updateById(id: string, data: TabelaModel) {

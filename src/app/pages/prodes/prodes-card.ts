@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { MiniCard } from "../../core/mini-card";
+import { MiniCard } from "../../core/components/mini-card";
 import { ProdesStore } from "./shared/prodes.store";
 
 @Component({

@@ -7,7 +7,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { TableFilter } from "../../../core/table-filter";
+import { TableFilter } from "../../../core/components/table-filter";
 import { ProdesForm } from "../prodes-form";
 import { ProdesModel } from "../shared/prodes.model";
 import { ProdesStore } from "../shared/prodes.store";

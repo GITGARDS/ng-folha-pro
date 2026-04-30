@@ -1,6 +1,6 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
-import { MiniCard } from "../../core/mini-card";
+import { MiniCard } from "../../core/components/mini-card";
 import { FuncionarioStore } from "./shared/funcionario.store";
 
 @Component({

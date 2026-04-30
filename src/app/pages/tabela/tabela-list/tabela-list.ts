@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -9,12 +8,12 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/components/table-filter";
-import { EmpresaForm } from "../empresa-form";
-import { EmpresaModel } from "../shared/empresa.model";
-import { EmpresaStore } from "../shared/empresa.store";
+import { MOCK_TABELAS, TabelaModel } from "../shared/tabela.model";
+import { TabelaStore } from "../shared/tabela.store";
+import { TabelaForm } from "../tabela-form";
 
 @Component({
-  selector: 'app-empresa-list',
+  selector: 'app-tabela-list',
   imports: [
     MatTableModule,
     MatSortModule,
@@ -23,7 +22,6 @@ import { EmpresaStore } from "../shared/empresa.store";
     MatMenuModule,
     MatIcon,
     MatIconButton,
-    DatePipe,
     MatCard,
   ],
   template: `
@@ -39,31 +37,12 @@ import { EmpresaStore } from "../shared/empresa.store";
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
                 <td mat-cell *matCellDef="let row">{{ row.id }}</td>
               </ng-container>
-              <!-- tipoInscricao Column -->
-              <ng-container matColumnDef="tipoInscricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
+              <!-- Nome Column -->
+              <ng-container matColumnDef="nome">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
                 <td mat-cell *matCellDef="let row">
-                  {{ row.tipoInscricao }}
+                  {{ row.nome }}
                 </td>
-              </ng-container>
-              <!-- Inscricao Column -->
-              <ng-container matColumnDef="inscricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Inscricao</th>
-                <td mat-cell *matCellDef="let row">{{ row.inscricao }}</td>
-              </ng-container>
-              <!-- nomeEmpresaRazaoSocial Column -->
-              <ng-container matColumnDef="nomeEmpresaRazaoSocial">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  Nome da Empresa/Razao Social
-                </th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.nomeEmpresaRazaoSocial }}
-                </td>
-              </ng-container>
-              <!-- dataAbertura Column -->
-              <ng-container matColumnDef="dataAbertura">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Data da Abertura</th>
-                <td mat-cell *matCellDef="let row">{{ row.dataAbertura | date: 'dd/MM/yyyy' }}</td>
               </ng-container>
 
               <!-- Actions Column -->
@@ -107,50 +86,40 @@ import { EmpresaStore } from "../shared/empresa.store";
   `,
   styles: ``,
 })
-export class EmpresaList {
-  empresaStore = inject(EmpresaStore);
+export class TabelaList {
+  tabelaStore = inject(TabelaStore);
 
-  dataSource = new MatTableDataSource<EmpresaModel>([]);
+  dataSource = new MatTableDataSource<TabelaModel>([]);
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
   displayedColumns: string[] = [
-    'id',
-    'tipoInscricao',
-    'inscricao',
-    'nomeEmpresaRazaoSocial',
-    'dataAbertura',
+    // 'id',
+    // 'empresa',
+    'nome',
     'actions',
   ];
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.empresaStore.list();
+      this.dataSource.data = this.tabelaStore.list();
       setTimeout(() => {
         this.dataSource.paginator = this.paginator();
         this.dataSource.sort = this.sort();
       }, 100);
     });
   }
-
-  readonly dialog = inject(MatDialog);
   onCreate() {
-    const ultimoEmpresa = this.empresaStore.list().length + 1;
-    const novo: Partial<EmpresaModel> = {
-      nomeEmpresaRazaoSocial: `Empresa ultima ${ultimoEmpresa}`,
-      nomeFantasia: `Empresa ${ultimoEmpresa}`,
-      email: 'a@b.com',
-      dataAbertura: new Date().toISOString().split('T')[0],
-    };
-    this.openDialog('new', novo as EmpresaModel);
+    const ultimoTabela = this.tabelaStore.list().length + 1;
+    const novo: Partial<TabelaModel> = MOCK_TABELAS[0];
+    this.openDialog('new', novo as TabelaModel);
   }
-
-  onUpdateById(params: EmpresaModel) {
+  onUpdateById(params: TabelaModel) {
     this.openDialog('update', params);
   }
-
-  openDialog(opcao: string, data: EmpresaModel) {
-    const dialogRef = this.dialog.open(EmpresaForm, {
+  readonly dialog = inject(MatDialog);
+  openDialog(opcao: string, data: Partial<TabelaModel>) {
+    const dialogRef = this.dialog.open(TabelaForm, {
       width: 'auto',
       height: '750px',
       enterAnimationDuration: '300ms',
@@ -163,24 +132,24 @@ export class EmpresaList {
       }
       switch (opcao) {
         case 'new':
-          this.empresaStore.create({
-            data: result as EmpresaModel,
+          this.tabelaStore.create({
+            data: result as TabelaModel,
           });
-
           break;
         case 'update':
-          this.empresaStore.updateById({
+          this.tabelaStore.updateById({
             id: data.id as string,
-            data: result as EmpresaModel,
+            data: result as TabelaModel,
           });
           break;
       }
     });
   }
+
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       console.log('delete', id);
-      this.empresaStore.deleteById({ id });
+      this.tabelaStore.deleteById({ id });
     }
   }
 

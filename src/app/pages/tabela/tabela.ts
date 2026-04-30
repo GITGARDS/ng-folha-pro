@@ -3,20 +3,22 @@ import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { TABELA } from "../../core/navigation/shared/navigation-model";
 import { TabelaStore } from "./shared/tabela.store";
-import { TabelaForm } from "./tabela-form";
+import TabelaCard from "./tabela-card";
+import { TabelaList } from "./tabela-list/tabela-list";
 
 @Component({
   selector: 'app-tabela',
-  imports: [NavigationTitle, IsLoading, TabelaForm],
+  imports: [NavigationTitle, IsLoading, TabelaList, TabelaCard],
   template: `
     <section>
       <div class="flex flex-wrap items-center">
         <app-navigation-title [title]="title" />
+        <app-tabela-card />
       </div>
     </section>
     <section class="h-[calc(100vh-200px)] relative">
       <app-is-loading [isLoading]="tabelaStore.isLoading()" />
-      <app-tabela-form />
+      <app-tabela-list />
     </section>
   `,
   styles: `

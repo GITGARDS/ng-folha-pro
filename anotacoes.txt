@@ -15,18 +15,3 @@ type ModelTabelaDed = {
   aliquotaProgressiva: number;
   deducao: number;
 };
-
-
-export const MOCK_TABELAS: TabelaModel[] = [
-  {
-    id: '1',
-    nome: 'Tabela 1',
-    fgts: {
-      clt_geral: 0,
-      jovem_aperndiz: 0,
-      domestico: 0,
-    },
-    inss: [],
-    irrf: [],
-  },
-];

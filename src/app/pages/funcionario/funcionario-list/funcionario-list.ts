@@ -8,7 +8,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { TableFilter } from "../../../core/table-filter";
+import { TableFilter } from "../../../core/components/table-filter";
 import { FuncionarioForm } from "../funcionario-form";
 import { FuncionarioModel } from "../shared/funcionario.model";
 import { FuncionarioStore } from "../shared/funcionario.store";

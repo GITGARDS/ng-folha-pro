@@ -2,7 +2,6 @@ import { Component, input, signal } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatIcon } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { interval } from "rxjs";
 
 @Component({
   selector: 'app-mini-card',
@@ -29,8 +28,8 @@ export class MiniCard {
   valor2 = signal<any>(false);
 
   constructor() {
-    interval(500).subscribe(() => {
+    setTimeout(() => {
       this.valor2.set(this.valor());
-    });
+    }, 100);
   }
 }

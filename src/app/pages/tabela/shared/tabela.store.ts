@@ -19,7 +19,7 @@ export const TabelaStore = signalStore(
   },
   withState(initialState),
 
-  withComputed((store) => ({
+  withComputed(({ list }) => ({
   })),
 
   withMethods((store, tabelaService = inject(TabelaService)) => ({

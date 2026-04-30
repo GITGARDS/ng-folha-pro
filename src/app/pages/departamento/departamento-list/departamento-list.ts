@@ -7,7 +7,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { TableFilter } from "../../../core/table-filter";
+import { TableFilter } from "../../../core/components/table-filter";
 import { DepartamentoForm } from "../departamento-form";
 import { DepartamentoModel } from "../shared/departamento.model";
 import { DepartamentoStore } from "../shared/departamento.store";
