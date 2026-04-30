@@ -11,9 +11,9 @@ import { interval } from "rxjs";
     @if (valor2() !== false) {
       <mat-icon [matBadge]="valor()" [matTooltip]="title()">{{ icone() }}</mat-icon>
     } @else {
-      <div
-        class="size-3.5 animate-spin border-3 border-r-transparent border-blue-600 rounded-full"
-      ></div>
+      <div class="animate-spin size-6 flex items-center justify-center">
+        <mat-icon>refresh</mat-icon>
+      </div>
     }
   `,
   styles: `
@@ -27,7 +27,6 @@ export class MiniCard {
   title = input.required<string>();
   valor = input.required<any>();
   valor2 = signal<any>(false);
-
 
   constructor() {
     interval(500).subscribe(() => {
