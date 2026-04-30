@@ -9,12 +9,12 @@ import { MatIconModule } from "@angular/material/icon";
     @let bgFundo = 'bg-white';
     @let textFundo = 'bg-gray-200';
 
-    @if (!isLoading()) {
+    @if (isLoading()) {
       <div
-        class="absolute w-full h-[calc(100vh-160px)] z-299 rounded-lg p-2 border-4 border-dashed border-gray-200"
+        class="absolute w-full h-[calc(100vh-200px)] z-299 rounded-lg p-2 border-4 border-dashed border-gray-200"
         [class]="bgFundo"
       >
-        <div class="animate-pulse min-w-[300px] max-w-[700px] h-full overflow-hidden">
+        <div class="animate-pulse w-[300px] h-full overflow-hidden">
           <div class="flex flex-col gap-3">
             @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track $index) {
               <div class="grid grid-cols-7 gap-6 p-2 w-full">
