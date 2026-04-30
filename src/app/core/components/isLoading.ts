@@ -10,8 +10,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
     @let bgFundo = 'bg-white';
     @let textFundo = 'text-gray-200';
 
-    @if (!isLoading()) {
-      <div class="absolute w-full h-[calc(100vh-200px)] z-299 rounded-lg p-2" [class]="bgFundo">
+    @if (isLoading()) {
+      <div class="absolute w-full h-[calc(100vh)] z-299 rounded-lg p-2" [class]="bgFundo">
         <div class="w-full h-full flex justify-center pt-20">
           <mat-progress-spinner
             class="w-10 h-10"
