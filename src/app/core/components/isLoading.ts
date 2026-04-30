@@ -8,7 +8,48 @@ import { MatIconModule } from "@angular/material/icon";
   template: `
     @let bgFundo = 'bg-white';
     @let textFundo = 'bg-gray-200';
-    @if (isLoading()) {
+
+    @if (!isLoading()) {
+      <div
+        class="absolute w-full h-[calc(100vh-160px)] z-299 rounded-lg p-2 border-4 border-dashed border-gray-200 flex items-center justify-center"
+        [class]="bgFundo"
+      >
+        <div class="animate-pulse min-w-[400px] max-w-[700px] h-full overflow-hidden">
+          <div class="flex flex-col gap-3">
+            @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track $index) {
+              <div class="grid grid-cols-7 gap-6 p-2 w-full">
+                <div class="col-span-2 w-full h-full">
+                  <div class="flex justify-center h-full w-full">
+                    <div class="h-12 w-12 rounded-full" [class]="textFundo"></div>
+                  </div>
+                </div>
+
+                <div class="col-span-5 h-full w-full">
+                  <div class="flex flex-col gap-2">
+                    <div class="grid grid-cols-8 gap-2">
+                      <div class="col-span-5 h-4 w-full rounded-2xl" [class]="textFundo"></div>
+                    </div>
+                    <div class="grid grid-cols-8 gap-2">
+                      <div class="col-span-8 h-4 w-full  rounded-2xl" [class]="textFundo"></div>
+                    </div>
+                    <div class="grid grid-cols-8 gap-2">
+                      <div class="col-span-8 h-4 w-full  rounded-2xl" [class]="textFundo"></div>
+                    </div>
+                    <div class="grid grid-cols-8 gap-2">
+                      <div class="col-span-2 h-4 w-full  rounded-2xl" [class]="textFundo"></div>
+                      <div class="col-span-2 h-4 w-full  rounded-2xl" [class]="textFundo"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <!-- @let bgFundo = 'bg-white';
+    @let textFundo = 'bg-gray-200';
+    @if (!isLoading()) {
       <div
         class="absolute w-full h-[calc(100vh-160px)] z-299 rounded-lg overflow-hidden"
         [class]="bgFundo"
@@ -57,7 +98,7 @@ import { MatIconModule } from "@angular/material/icon";
           </div>
         </div>
       </div>
-    }
+    } -->
     <!-- @if (isLoading()) {
       <div class="absolute border border-gray-300 w-full h-full bg-white z-10 rounded-lg overflow-hidden">
         <div class="h-full w-full flex items-center justify-center">
