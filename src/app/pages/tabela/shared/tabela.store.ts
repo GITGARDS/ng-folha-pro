@@ -19,18 +19,17 @@ export const TabelaStore = signalStore(
   },
   withState(initialState),
 
-  withComputed(({ list }) => ({
-  })),
+  withComputed(({ list }) => ({})),
 
   withMethods((store, tabelaService = inject(TabelaService)) => ({
-    carregaLista: signalMethod((params: { empresa: string }) => {
+    carregaLista: signalMethod(() => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      tabelaService.findAll({ empresa: params.empresa }).subscribe({
+      tabelaService.findAll().subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,
-            list,
+            list: list,
             isLoading: false,
           }));
         },
@@ -81,7 +80,7 @@ export const TabelaStore = signalStore(
   })),
   withHooks((store) => ({
     onInit() {
-      store.carregaLista({ empresa: '1' });
+      store.carregaLista(null);      
     },
   })),
 );

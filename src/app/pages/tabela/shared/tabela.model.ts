@@ -1,5 +1,6 @@
 export type TabelaModel = {
   id: string;
+  referencia: number;
   nome: string;
   fgts: {
     clt_geral: number;
@@ -16,10 +17,9 @@ type ModelTabelaDed = {
   deducao: number;
 };
 
-
-export const MOCK_TABELAS: TabelaModel[] = [
+export const MOCK_TABELAS: Partial<TabelaModel>[] = [
   {
-    id: '1',
+    referencia: 1,
     nome: 'Tabela 1',
     fgts: {
       clt_geral: 0,

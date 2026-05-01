@@ -44,6 +44,13 @@ import { TabelaForm } from "../tabela-form";
                   {{ row.nome }}
                 </td>
               </ng-container>
+              <!-- Nome Column -->
+              <ng-container matColumnDef="codigo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Codigo</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.codigo }}
+                </td>
+              </ng-container>
 
               <!-- Actions Column -->
               <ng-container matColumnDef="actions" stickyEnd>
@@ -94,8 +101,8 @@ export class TabelaList {
   readonly sort = viewChild.required(MatSort);
 
   displayedColumns: string[] = [
-    // 'id',
-    // 'empresa',
+    'id',
+    'codigo',
     'nome',
     'actions',
   ];

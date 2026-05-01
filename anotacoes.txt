@@ -1,17 +1,60 @@
-export type TabelaModel = {
-  id: string;
-  nome: string;
-  fgts: {
-    clt_geral: number;
-    jovem_aperndiz: number;
-    domestico: number;
-  };
-  inss: ModelTabelaDed[];
-  irrf: ModelTabelaDed[];
-};
+import { JsonPipe } from "@angular/common";
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatInputModule } from "@angular/material/input";
+import { MatStepperModule } from "@angular/material/stepper";
+import { TabelaModel } from "./shared/tabela.model";
+import { TabelaStore } from "./shared/tabela.store";
 
-type ModelTabelaDed = {
-  salarioContribuicao: number;
-  aliquotaProgressiva: number;
-  deducao: number;
-};
+/**
+ * @title Dialog with header, scrollable content and actions
+ */
+@Component({
+  selector: 'app-tabela-form',
+  imports: [
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatStepperModule,
+    MatCardModule,
+    JsonPipe,
+  ],
+  template: `
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Consulta</mat-card-title>
+        <mat-card-subtitle>{{ opcaoForm() === 'new' ? 'new' : opcaoForm() === 'edit' ? 'edit' : 'null' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content> content </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="onFindById('RO0V3rGxkz0azv117w4o')">
+          Consultar por id [RO0V3rGxkz0azv117w4o]
+        </button>
+        <button mat-button>actionTwo</button>
+      </mat-card-actions>
+    </mat-card>
+    <div>
+      <pre>{{ data() | json }}</pre>
+    </div>
+  `,
+
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class TabelaForm {
+  tabelaStore = inject(TabelaStore);
+  data = signal<TabelaModel | null | undefined>(null);
+  opcaoForm = signal<string | null>(null);
+  constructor() {
+    effect(() => {
+      this.data.set(this.tabelaStore.obj());
+    });
+  }
+
+  onFindById(id: string) {
+    this.tabelaStore.findById({ id });
+  }
+}

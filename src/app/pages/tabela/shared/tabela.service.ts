@@ -13,20 +13,15 @@ export class TabelaService {
 
   private isDelay = 500;
 
-  findAll(param: { empresa: string }) {
-    const q = query(this.collectionName, orderBy('nome'));
+  findAll() {
+    const q = query(this.collectionName, orderBy('referencia', 'desc'));
     return new Observable<TabelaModel[]>((observer) => {
       onSnapshot(q, (snapshot) => {
-        const items: TabelaModel[] = snapshot.docs
+        const items: TabelaModel[] = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as TabelaModel[];
+
           // .filter((f: any) => f.data().empresa === param.empresa)
-          .map(
-            (d) =>
-              ({
-                id: d.id,
-                ...d.data(),
-              }) as TabelaModel,
-          );
-        // const items: TabelaModel[] = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as TabelaModel);
+          // const items: TabelaModel[] = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as TabelaModel);
+          // .map((d) => ({ id: d.id, ...d.data() }) as TabelaModel);
         observer.next(items);
       });
     }).pipe(delay(this.isDelay));
