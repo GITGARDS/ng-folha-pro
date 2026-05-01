@@ -54,25 +54,25 @@ export const EmpresaStore = signalStore(
           });
       }),
 
-      create: signalMethod(async (params: {data: Partial<EmpresaModel>}) => {
+      create: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        const id = await empresaService.create(params.data as EmpresaModel);
+        const id = await empresaService.create({ data: data as EmpresaModel });
         patchState(store, (state) => ({
           ...state,
-          list: [...state.list, { ...(params.data as EmpresaModel), id }],
+          list: [...state.list, { ...(data as EmpresaModel), id }],
           isLoading: false,
         }));
       }),
 
-      login: signalMethod(async (params: { data: Partial<EmpresaModel> }) => {
+      login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        await empresaService.login(params.data.id as string).then(() => {
+        await empresaService.login({ id: data.id as string }).then(() => {
           patchState(store, (state) => ({
             ...state,
             empresaLogada: {
-              empresa: params.data as EmpresaModel,
+              empresa: data as EmpresaModel,
               isLogada: true,
             },
             isLoading: false,
@@ -99,24 +99,24 @@ export const EmpresaStore = signalStore(
         }
       },
 
-      updateById: signalMethod(async (params: { id: string; data: Partial<EmpresaModel> }) => {
+      updateById: signalMethod(async ({id, data}: { id: string; data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        await empresaService.updateById(params.id, params.data as EmpresaModel);
+        await empresaService.updateById({ id, data: data as EmpresaModel });
         patchState(store, (state) => ({
           ...state,
-          list: state.list.map((f) => (f.id === params.id ? { ...f, ...params.data } : f)),
+          list: state.list.map((f) => (f.id === id ? { ...f, ...data } : f)),
           isLoading: false,
         }));
       }),
 
-      deleteById: signalMethod(async (params: { id: string }) => {
+      deleteById: signalMethod(async ({id}: { id: string }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        await empresaService.deleteById(params.id.toString());
+        await empresaService.deleteById({ id: id.toString() });
         patchState(store, (state) => ({
           ...state,
-          list: state.list.filter((f) => f.id !== params.id.toString()),
+          list: state.list.filter((f) => f.id !== id.toString()),
           isLoading: false,
         }));
       }),

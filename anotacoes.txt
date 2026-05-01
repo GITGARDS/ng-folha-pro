@@ -1,11 +1,14 @@
 import { JsonPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatInputModule } from "@angular/material/input";
 import { MatStepperModule } from "@angular/material/stepper";
+import { Observable, delay } from "rxjs";
+import { db } from "../../../firebase";
 import { TabelaModel } from "./shared/tabela.model";
 import { TabelaStore } from "./shared/tabela.store";
 
@@ -56,5 +59,82 @@ export class TabelaForm {
 
   onFindById(id: string) {
     this.tabelaStore.findById({ id });
+  }
+}
+
+
+
+
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
+
+interface iGenericsServiceI<T> {
+  
+  findAll(): Observable<T[]>;
+
+  create({ data }: { data: T }): Promise<string>;
+
+  updateById({ id, data }: { id: string; data: Partial<T> }): Promise<void>;
+
+  deleteById({ id }: { id: string }): Promise<void>;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class GenericsService<T> {
+  path = '';
+  firestore = collection(db, 'tabela');
+  isDelay = 0;
+  orderBy = 'referencia';
+  order = 'desc';
+
+  constructor(
+    @Inject(String) path: string,
+    @Inject(Number) isDelay: number,
+    @Inject(String) orderBy: string,
+    @Inject(String) order: string,
+    @Inject(collection) firestore,
+  ) {
+    this.path = path;
+    this.isDelay = isDelay;
+    this.orderBy = orderBy;
+    this.order = order;
+  }
+
+  findAll() {
+    const q = query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
+    return new Observable<T[]>((observer) => {
+      onSnapshot(q, (snapshot) => {
+        const items: T[] = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        })) as T[];
+        observer.next(items);
+      });
+    }).pipe(delay(this.isDelay as number));
+  }
+
+  async create({ data }: { data: any }) {
+    return await addDoc(this.firestore, data).then((docRef) => docRef.id);
+  }
+
+  async updateById({ id, data }: { id: string; data: Partial<T> }) {
+    const docRef = doc(db, this.path, id);
+    await updateDoc(docRef, { ...data });
+  }
+
+  async deleteById({ id }: { id: string }) {
+    console.log('delete', id);
+    const docRef = doc(db, this.path, this.path, id);
+    await deleteDoc(docRef);
   }
 }

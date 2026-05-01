@@ -54,35 +54,37 @@ export const DepartamentoStore = signalStore(
           });
       }),
 
-      create: signalMethod(async (params: { data: Partial<DepartamentoModel> }) => {
+      create: signalMethod(async ({ data }: { data: Partial<DepartamentoModel> }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        const id = await departamentoService.create(params.data as DepartamentoModel);
+        const id = await departamentoService.create({ data: data as DepartamentoModel });
         patchState(store, (state) => ({
           ...state,
-          list: [...state.list, { ...(params.data as DepartamentoModel), id }],
+          list: [...state.list, { ...(data as DepartamentoModel), id }],
           isLoading: false,
         }));
       }),
 
-      updateById: signalMethod(async (params: { id: string; data: Partial<DepartamentoModel> }) => {
-        patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        await departamentoService.updateById(params.id, params.data as DepartamentoModel);
-        patchState(store, (state) => ({
-          ...state,
-          list: state.list.map((f) => (f.id === params.id ? { ...f, ...params.data } : f)),
-          isLoading: false,
-        }));
-      }),
+      updateById: signalMethod(
+        async ({ id, data }: { id: string; data: Partial<DepartamentoModel> }) => {
+          patchState(store, { isLoading: true });
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          await departamentoService.updateById({ id, data: data as DepartamentoModel });
+          patchState(store, (state) => ({
+            ...state,
+            list: state.list.map((f) => (f.id === id ? { ...f, ...data } : f)),
+            isLoading: false,
+          }));
+        },
+      ),
 
-      deleteById: signalMethod(async (params: { id: string }) => {
+      deleteById: signalMethod(async ({ id }: { id: string }) => {
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        await departamentoService.deleteById(params.id.toString());
+        await departamentoService.deleteById({ id: id.toString() });
         patchState(store, (state) => ({
           ...state,
-          list: state.list.filter((f) => f.id !== params.id.toString()),
+          list: state.list.filter((f) => f.id !== id.toString()),
           isLoading: false,
         }));
       }),

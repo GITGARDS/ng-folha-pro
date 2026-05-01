@@ -30,10 +30,10 @@ export const FuncionarioStore = signalStore(
   })),
 
   withMethods((store, funcionarioService = inject(FuncionarioService)) => ({
-    carregaLista: signalMethod((params: { empresa: string }) => {
+    carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      funcionarioService.findAll({ empresa: params.empresa }).subscribe({
+      funcionarioService.findAllByEmpresa({ empresa: empresa }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,
@@ -51,37 +51,37 @@ export const FuncionarioStore = signalStore(
       }));
     }),
 
-    create: signalMethod(async (params: { data: Partial<FuncionarioModel> }) => {
+    create: signalMethod(async ({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
       await new Promise((resolve) => setTimeout(resolve, 100));
-      const id = await funcionarioService.create(params.data as FuncionarioModel);
+      const id = await funcionarioService.create({ data: data as FuncionarioModel });
       patchState(store, (state) => ({
         ...state,
-        list: [...state.list, { ...(params.data as FuncionarioModel), id }],
+        list: [...state.list, { ...(data as FuncionarioModel), id }],
         isLoading: false,
       }));
     }),
 
-    updateById: signalMethod(async (params: { id: string; data: Partial<FuncionarioModel> }) => {
-      patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      await funcionarioService.updateById(params.id, params.data as FuncionarioModel);
-      patchState(store, (state) => ({
-        ...state,
-        list: state.list.map((f) =>
-          f.id === params.id ? { ...f, ...(params.data as FuncionarioModel) } : f,
-        ),
-        isLoading: false,
-      }));
-    }),
+    updateById: signalMethod(
+      async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
+        patchState(store, { isLoading: true });
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await funcionarioService.updateById({ id, data: data as FuncionarioModel });
+        patchState(store, (state) => ({
+          ...state,
+          list: state.list.map((f) => (f.id === id ? { ...f, ...(data as FuncionarioModel) } : f)),
+          isLoading: false,
+        }));
+      },
+    ),
 
-    deleteById: signalMethod(async (params: { id: string }) => {
+    deleteById: signalMethod(async ({ id }: { id: string }) => {
       patchState(store, { isLoading: true });
       await new Promise((resolve) => setTimeout(resolve, 100));
-      await funcionarioService.deleteById(params.id.toString());
+      await funcionarioService.deleteById({ id: id.toString() });
       patchState(store, (state) => ({
         ...state,
-        list: state.list.filter((f) => f.id !== params.id.toString()),
+        list: state.list.filter((f) => f.id !== id.toString()),
         isLoading: false,
       }));
     }),

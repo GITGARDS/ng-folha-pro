@@ -1,48 +1,18 @@
 import { Injectable, signal } from "@angular/core";
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
-import { Observable, delay } from "rxjs";
+import { collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { EmpresaModel } from "./empresa.model";
+import { GenericsService } from "../../../shared/generics/generics.service";
 
 @Injectable({
   providedIn: 'root',
 })
-export class EmpresaService {
-  colectionLabel = 'empresa';
-  collectionName = collection(db, this.colectionLabel);
+export class EmpresaService<T> extends GenericsService<T> {
   idEmpresaLogada = signal<string | number | null>(null);
-  private isDelay = 500;
-
-  findAll() {
-    const q = query(this.collectionName, orderBy('nomeEmpresaRazaoSocial'));
-    return new Observable<EmpresaModel[]>((observer) => {
-      onSnapshot(q, (snapshot) => {
-        const items: EmpresaModel[] = snapshot.docs.map(
-          (d) => ({ id: d.id, ...d.data() }) as EmpresaModel,
-        );
-        observer.next(items);
-      });
-    }).pipe(delay(this.isDelay));
+  constructor() {
+    super('empresa', collection(db, 'empresa'), 500, 'nomeEmpresaRazaoSocial', 'asc');
   }
 
-  async findById(id: number) {}
-
-  async create(param: EmpresaModel) {
-    const docRef = await addDoc(this.collectionName, { ...param });
-    return docRef.id;
-  }
-
-  async updateById(id: string, param: EmpresaModel) {
-    const docRef = doc(db, this.colectionLabel, id);
-    await updateDoc(docRef, { ...param });
-  }
-
-  async deleteById(id: string) {
-    const docRef = doc(db, this.colectionLabel, id);
-    await deleteDoc(docRef);
-  }
-
-  async login(id: string) {
+  async login({ id }: { id: string }) {
     this.idEmpresaLogada.set(id);
   }
 

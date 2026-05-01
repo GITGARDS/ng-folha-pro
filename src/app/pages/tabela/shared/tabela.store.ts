@@ -43,26 +43,24 @@ export const TabelaStore = signalStore(
       }));
     }),
 
-    create: signalMethod(async (params: { data: Partial<TabelaModel> }) => {
+    create: signalMethod(async ({ data }: { data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
       await new Promise((resolve) => setTimeout(resolve, 100));
-      const id = await tabelaService.create(params.data as TabelaModel);
+      const id = await tabelaService.create({ data: data as TabelaModel });
       patchState(store, (state) => ({
         ...state,
-        list: [...state.list, { ...(params.data as TabelaModel), id }],
+        list: [...state.list, { ...(data as TabelaModel), id }],
         isLoading: false,
       }));
     }),
 
-    updateById: signalMethod(async (params: { id: string; data: Partial<TabelaModel> }) => {
+    updateById: signalMethod(async ({ id, data }: { id: string; data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
       await new Promise((resolve) => setTimeout(resolve, 100));
-      await tabelaService.updateById(params.id, params.data as TabelaModel);
+      await tabelaService.updateById({ id, data: data as TabelaModel });
       patchState(store, (state) => ({
         ...state,
-        list: state.list.map((f) =>
-          f.id === params.id ? { ...f, ...(params.data as TabelaModel) } : f,
-        ),
+        list: state.list.map((f) => (f.id === id ? { ...f, ...(data as TabelaModel) } : f)),
         isLoading: false,
       }));
     }),
@@ -70,7 +68,7 @@ export const TabelaStore = signalStore(
     deleteById: signalMethod(async (params: { id: string }) => {
       patchState(store, { isLoading: true });
       await new Promise((resolve) => setTimeout(resolve, 100));
-      await tabelaService.deleteById(params.id.toString());
+      await tabelaService.deleteById({ id: params.id.toString() });
       patchState(store, (state) => ({
         ...state,
         list: state.list.filter((f) => f.id !== params.id.toString()),
@@ -80,7 +78,7 @@ export const TabelaStore = signalStore(
   })),
   withHooks((store) => ({
     onInit() {
-      store.carregaLista(null);      
+      store.carregaLista(null);
     },
   })),
 );
