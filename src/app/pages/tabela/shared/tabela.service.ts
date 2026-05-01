@@ -37,6 +37,7 @@ export class TabelaService {
   }
 
   async deleteById(id: string) {
+    console.log('delete', id);
     const docRef = doc(db, this.colectionLabel, this.colectionLabel, id);
     await deleteDoc(docRef);
   }

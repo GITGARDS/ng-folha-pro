@@ -1,8 +1,7 @@
 import { UpperCasePipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
@@ -28,7 +27,6 @@ import { TabelaStore } from "./shared/tabela.store";
     MatIcon,
     UpperCasePipe,
     MatStepperModule,
-    MatCardModule,
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
@@ -37,8 +35,24 @@ import { TabelaStore } from "./shared/tabela.store";
       {{ dataForm.value.nome }}
     </h2>
 
-    <mat-card>
+    <mat-dialog-content class="mat-typography">
       <form [formGroup]="dataForm">
+        <div class="grid grid-cols-6 gap-2">
+          <mat-form-field class="col-span-2" [appearance]="formAparence">
+            <mat-label>Id</mat-label>
+            <input readonly matInput formControlName="id" />
+            @if (dataForm.controls['id'].hasError('required')) {
+              <mat-error><strong>required</strong></mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field class="col-span-2" [appearance]="formAparence">
+            <mat-label>Referencia</mat-label>
+            <input type="number" matInput formControlName="referencia" />
+            @if (dataForm.controls['referencia'].hasError('required')) {
+              <mat-error><strong>required</strong></mat-error>
+            }
+          </mat-form-field>
+        </div>
         <div class="grid grid-cols-6 gap-2">
           <mat-form-field class="col-span-6" [appearance]="formAparence">
             <mat-label>Nome</mat-label>
@@ -59,7 +73,7 @@ import { TabelaStore } from "./shared/tabela.store";
                   <div class="grid grid-cols-3 gap-2">
                     <mat-form-field class="col-span-1" [appearance]="formAparence">
                       <mat-label>CLT GERA</mat-label>
-                      <input readonly matInput formControlName="clt_geral" />
+                      <input matInput formControlName="clt_geral" />
                     </mat-form-field>
                     <mat-form-field class="col-span-1" [appearance]="formAparence">
                       <mat-label>JOVEM APRENDIZ</mat-label>
@@ -146,67 +160,46 @@ import { TabelaStore } from "./shared/tabela.store";
           </mat-step>
         </mat-stepper>
       </form>
-    </mat-card>
+    </mat-dialog-content>
     <!-- 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal' -->
-    <div class="border-t">
-      <div align="left">
-        <button matButton="tonal" mat-dialog-close>Cancel</button>
-        <button matButton="filled" [disabled]="dataForm.invalid" (click)="onSubmit()">
+    <div class="mt-2">
+      <mat-dialog-actions align="center">
+        <button matButton="filled" [disabled]="dataForm.invalid" (click)="onSubmit()" class="ml-2">
           Confirma
         </button>
-      </div>
+      </mat-dialog-actions>
     </div>
+
+    <!-- <pre class="invisible">{{ dataForm.value | json }}</pre> -->
   `,
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabelaForm {
-  tabelaStore = inject(TabelaStore);
-
   formAparence: 'fill' | 'outline' = 'fill';
-
-  formOpcao = signal<string>('');
-
-  data = signal<any>({});
+  formOpcao = signal<string | null>(null);
+  tabelaStore = inject(TabelaStore);
+  id = signal<string>('');
 
   constructor() {
-    if (this.tabelaStore.obj === undefined) {
-      this.formOpcao.set('new');
-    } else {
-      this.formOpcao.set('update');
-    }
+    effect(() => {
+      const data = this.tabelaStore.list()[0];
+      this.dataForm.patchValue(data);
+      this.formOpcao.set(data ? 'update' : 'new');
+      this.id.set(data ? data.id : '');
+    });
   }
 
   ngOnInit() {
-    switch (this.formOpcao()) {
-      case 'new': {
-        this.dataForm.patchValue({
-          id: '1',
-        } as TabelaModel);
-        break;
-      }
-      case 'update': {
-        this.dataForm.patchValue(this.tabelaStore.obj as Partial<TabelaModel>);
-        break;
-      }
-    }
-
-    // if (this.data) {
-    //   this.dataForm.patchValue(this.data() as TabelaModel);
-    //   this.dataForm.markAllAsTouched();
-    //   this.dataForm.markAsDirty();
-    //   if (this.data()) {
-    //     this.formOpcao.set('new');
-    //   } else {
-    //     this.formOpcao.set('update');
-    //   }
-    // }
+    this.dataForm.markAllAsTouched();
+    this.dataForm.markAsDirty();
   }
 
   private fb = inject(FormBuilder);
 
   dataForm = this.fb.group({
-    id: [{ value: '1', disabled: true }],
+    id: [''],
+    referencia: [0],
     nome: ['', Validators.required],
     fgts: this.fb.group({
       clt_geral: [0],
@@ -271,10 +264,13 @@ export class TabelaForm {
 
   onSubmit() {
     if (this.formOpcao() === 'new') {
+      console.log('create', this.dataForm.value);
+
       this.tabelaStore.create({
         data: this.dataForm.value as TabelaModel,
       });
     } else if (this.formOpcao() == 'update') {
+      console.log('update', this.dataForm.value);
       this.tabelaStore.updateById({
         id: this.dataForm.value.id as string,
         data: this.dataForm.value as TabelaModel,

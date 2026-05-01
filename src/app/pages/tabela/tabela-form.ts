@@ -1,14 +1,12 @@
 import { UpperCasePipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatIcon } from "@angular/material/icon";
 import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
 import { MatStepperModule } from "@angular/material/stepper";
-import { TabelaModel } from "./shared/tabela.model";
-import { TabelaStore } from "./shared/tabela.store";
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -162,43 +160,36 @@ import { TabelaStore } from "./shared/tabela.store";
       </form>
     </mat-dialog-content>
     <!-- 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal' -->
-    <div class="mt-2">
+    <div class="border-t">
       <mat-dialog-actions align="center">
-        <button matButton="filled" [disabled]="dataForm.invalid" (click)="onSubmit()" class="ml-2">
+        <button matButton="tonal" mat-dialog-close>Cancel</button>
+        <button matButton="filled" [disabled]="dataForm.invalid" (click)="onSubmit()">
           Confirma
         </button>
       </mat-dialog-actions>
     </div>
-
-    <!-- <pre class="invisible">{{ dataForm.value | json }}</pre> -->
   `,
 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabelaForm {
+  dialogRef = inject(MatDialogRef<TabelaForm>);
+  data = inject<any>(MAT_DIALOG_DATA);
   formAparence: 'fill' | 'outline' = 'fill';
-  formOpcao = signal<string | null>(null);
-  tabelaStore = inject(TabelaStore);
-  id = signal<string>('');
-
-  constructor() {
-    effect(() => {
-      const data = this.tabelaStore.list()[0];
-      this.dataForm.patchValue(data);
-      this.formOpcao.set(data ? 'update' : 'new');
-      this.id.set(data ? data.id : '');
-    });
-  }
+  formOpcao = signal<string>('');
 
   ngOnInit() {
+    const { data } = this.data;
+    this.dataForm.patchValue(data);
     this.dataForm.markAllAsTouched();
     this.dataForm.markAsDirty();
+    this.formOpcao.set(this.data.opcao);
   }
 
   private fb = inject(FormBuilder);
 
   dataForm = this.fb.group({
-    id: [''],
+    id: [{ value: '', disabled: true }],
     referencia: [0],
     nome: ['', Validators.required],
     fgts: this.fb.group({
@@ -263,18 +254,6 @@ export class TabelaForm {
   });
 
   onSubmit() {
-    if (this.formOpcao() === 'new') {
-      console.log('create', this.dataForm.value);
-
-      this.tabelaStore.create({
-        data: this.dataForm.value as TabelaModel,
-      });
-    } else if (this.formOpcao() == 'update') {
-      console.log('update', this.dataForm.value);
-      this.tabelaStore.updateById({
-        id: this.dataForm.value.id as string,
-        data: this.dataForm.value as TabelaModel,
-      });
-    }
+    this.dialogRef.close(this.dataForm.value);
   }
 }

@@ -4,11 +4,11 @@ import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { TABELA } from "../../core/navigation/shared/navigation-model";
 import { TabelaStore } from "./shared/tabela.store";
 import TabelaCard from "./tabela-card";
-import { TabelaForm } from "./tabela-form";
+import { TabelaList } from "./tabela-list/tabela-list";
 
 @Component({
   selector: 'app-tabela',
-  imports: [NavigationTitle, IsLoading, TabelaCard, TabelaForm],
+  imports: [NavigationTitle, IsLoading, TabelaCard, TabelaList],
   template: `
     <section>
       <div class="flex flex-wrap items-center">
@@ -18,8 +18,7 @@ import { TabelaForm } from "./tabela-form";
     </section>
     <section class="h-[calc(100vh-200px)] relative">
       <app-is-loading [isLoading]="tabelaStore.isLoading()" />
-      <app-tabela-form />
-      <!-- <app-tabela-list /> -->
+      <app-tabela-list />
     </section>
   `,
   styles: `

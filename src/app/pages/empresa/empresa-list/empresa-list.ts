@@ -115,7 +115,7 @@ export class EmpresaList {
   readonly sort = viewChild.required(MatSort);
 
   displayedColumns: string[] = [
-    'id',
+    // 'id',
     'tipoInscricao',
     'inscricao',
     'nomeEmpresaRazaoSocial',

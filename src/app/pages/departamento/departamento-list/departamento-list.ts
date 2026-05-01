@@ -23,7 +23,6 @@ import { DepartamentoStore } from "../shared/departamento.store";
     MatIcon,
     MatIconButton,
     MatCard,
-
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -99,7 +98,9 @@ export class DepartamentoList {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns: string[] = ['id', 'nome', 'ativo', 'actions'];
+  displayedColumns: string[] = [
+    // 'id', 
+    'nome', 'ativo', 'actions'];
 
   constructor() {
     effect(() => {

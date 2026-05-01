@@ -8,7 +8,7 @@ export type TabelaModel = {
     domestico: number;
   };
   inss: ModelTabelaDed[];
-  irrf: ModelTabelaDed[];
+  irrf: ModelTabelaDed[];  
 };
 
 type ModelTabelaDed = {

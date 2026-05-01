@@ -35,20 +35,33 @@ import { TabelaForm } from "../tabela-form";
               <!-- Id Column -->
               <ng-container matColumnDef="id">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+                <td mat-cell *matCellDef="let row">
+                  {{ row.id }}
+                </td>
               </ng-container>
               <!-- Nome Column -->
               <ng-container matColumnDef="nome">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
-                <td mat-cell *matCellDef="let row">
+                <td mat-cell *matCellDef="let row; let i = index">
                   {{ row.nome }}
                 </td>
               </ng-container>
               <!-- Nome Column -->
-              <ng-container matColumnDef="codigo">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Codigo</th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.codigo }}
+              <ng-container matColumnDef="referencia">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Referencia</th>
+                <td mat-cell *matCellDef="let row; let i = index">
+                  <div class="flex items-center gap-2">
+                    @if (i === 0) {
+                      <div class="size-3 animate-pulse">
+                        <p class="w-full h-full bg-blue-900 rounded-full"></p>
+                      </div>
+                    } @else {
+                      <div class="size-3"></div>
+                    }
+                    <span>
+                      {{ row.referencia }}
+                    </span>
+                  </div>
                 </td>
               </ng-container>
 
@@ -101,8 +114,8 @@ export class TabelaList {
   readonly sort = viewChild.required(MatSort);
 
   displayedColumns: string[] = [
-    'id',
-    'codigo',
+    // 'id',
+    'referencia',
     'nome',
     'actions',
   ];
