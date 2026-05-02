@@ -101,9 +101,9 @@ import { TableColumnsModel } from "../models/tablecolumns.model";
 })
 export class GenericsList implements AfterViewInit {
   iStore = input<any>();
-  iFormDialog = input<any>();
+  iForm = input<any>();
   iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]) );  
-  iDisplayedColumns = input<TableColumnsModel[]>();
+  iColunas = input<TableColumnsModel[]>();
 
   colunas: TableColumnsModel[] = [];  
   displayedColumns: string[] = []; 
@@ -123,8 +123,8 @@ export class GenericsList implements AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    this.displayedColumns = this.iDisplayedColumns()?.filter(f => f.display)?.map((col) => col.field) as string[];    
-    this.colunas = this.iDisplayedColumns() as TableColumnsModel[];    
+    this.displayedColumns = this.iColunas()?.filter(f => f.display)?.map((col) => col.field) as string[];    
+    this.colunas = this.iColunas() as TableColumnsModel[];    
     
   }
   onCreate() {
@@ -137,7 +137,7 @@ export class GenericsList implements AfterViewInit {
   }
   readonly dialog = inject(MatDialog);
   openDialog(opcao: string, data: any) {
-    const dialogRef = this.dialog.open(this.iFormDialog(), {
+    const dialogRef = this.dialog.open(this.iForm(), {
       width: 'auto',
       height: '750px',
       enterAnimationDuration: '300ms',
