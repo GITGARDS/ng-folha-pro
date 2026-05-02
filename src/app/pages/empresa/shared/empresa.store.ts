@@ -40,7 +40,7 @@ export const EmpresaStore = signalStore(
         if (store.list.length > 0) return;
         patchState(store, { isLoading: true });
         empresaService
-          .findAll()
+          .findAll({})
           .pipe(delay(200))
           .subscribe({
             next: (list) => {

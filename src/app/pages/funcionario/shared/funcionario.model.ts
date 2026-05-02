@@ -1,3 +1,75 @@
+import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+
+export const DISPLAYED_COLUMNS_FUNCIONARIO: TableColumnsModel[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'Empresa',
+    field: 'empresa',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Nome',
+    field: 'nome',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Salario Base',
+    field: 'salarioBase',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Data Adimissao',
+    field: 'dataAdmissao',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Matricula',
+    field: 'matricula',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'ctps',
+    field: 'ctps',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'serieCtps',
+    field: 'serieCtps',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'cbo',
+    field: 'cbo',
+    type: 'string',
+    display: true,
+  },
+
+  {
+    label: 'Ativo',
+    field: 'ativo',
+    type: 'boolean',
+    display: true,
+  },
+  {
+    label: 'Actions',
+    field: 'actions',
+    type: 'any',
+    display: true,
+  },
+];
+
 export type FuncionarioModel = {
   id: string;
   empresa: string;

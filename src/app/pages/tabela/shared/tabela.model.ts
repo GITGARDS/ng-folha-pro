@@ -1,3 +1,57 @@
+import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+
+export const DISPLAYED_COLUMNS_TABELA: TableColumnsModel[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'Referencia',
+    field: 'referencia',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Nome',
+    field: 'nome',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'fgts',
+    field: 'fgts',
+    type: 'json',
+    display: true,
+  },
+  {
+    label: 'inss',
+    field: 'inss',
+    type: 'json',
+    display: true,
+  },
+  {
+    label: 'irrf',
+    field: 'irrf',
+    type: 'json',
+    display: true,
+  },
+
+  {
+    label: 'Ativo',
+    field: 'ativo',
+    type: 'boolean',
+    display: true,
+  },
+  {
+    label: 'Actions',
+    field: 'actions',
+    type: 'any',
+    display: true,
+  },
+];
+
 export type TabelaModel = {
   id: string;
   referencia: number;
@@ -8,7 +62,7 @@ export type TabelaModel = {
     domestico: number;
   };
   inss: ModelTabelaDed[];
-  irrf: ModelTabelaDed[];  
+  irrf: ModelTabelaDed[];
 };
 
 type ModelTabelaDed = {

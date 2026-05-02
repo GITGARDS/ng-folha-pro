@@ -4,7 +4,7 @@ import { Observable, delay } from "rxjs";
 import { db } from "../../../firebase";
 
 interface iGenericsService<T> {
-  findAll(): Observable<T[]>;
+  findAll({ empresa }: { empresa?: string }): Observable<T[]>;
 
   create({ data }: { data: T }): Promise<string>;
 
@@ -37,14 +37,16 @@ export class GenericsService<T> implements iGenericsService<T> {
     this.order = order;
   }
 
-  findAll(): Observable<T[]> {
+  findAll({ empresa }: { empresa?: string }): Observable<T[]> {
     const q = query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
     return new Observable<T[]>((observer) => {
       onSnapshot(q, (snapshot) => {
-        const items: T[] = snapshot.docs.map((d) => ({
-          id: d.id,
-          ...(d.data() as T),
-        })) as T[];
+        const items: T[] = snapshot.docs
+          .filter((f: any) => (empresa ? f.data().empresa === empresa : true))
+          .map((d) => ({
+            id: d.id,
+            ...(d.data() as T),
+          })) as T[];
         observer.next(items);
       });
     }).pipe(delay(this.isDelay as number));

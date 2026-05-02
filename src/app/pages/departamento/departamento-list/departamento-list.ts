@@ -1,3 +1,4 @@
+import { CurrencyPipe, DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -9,7 +10,7 @@ import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/components/table-filter";
 import { DepartamentoForm } from "../departamento-form";
-import { DepartamentoModel } from "../shared/departamento.model";
+import { DISPLAYED_COLUMNS_DEPARTAMENTO, DepartamentoModel } from "../shared/departamento.model";
 import { DepartamentoStore } from "../shared/departamento.store";
 
 @Component({
@@ -23,6 +24,8 @@ import { DepartamentoStore } from "../shared/departamento.store";
     MatIcon,
     MatIconButton,
     MatCard,
+    CurrencyPipe,
+    DatePipe,
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -33,22 +36,25 @@ import { DepartamentoStore } from "../shared/departamento.store";
           <div class="h-[60vh] overflow-auto">
             <table mat-table [dataSource]="dataSource" matSort>
               <!-- Id Column -->
-              <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-              </ng-container>
-              <!-- nomeDepartamentoRazaoSocial Column -->
-              <ng-container matColumnDef="nome">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.nome }}
-                </td>
-              </ng-container>
-              <!-- dataAbertura Column -->
-              <ng-container matColumnDef="ativo">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ativo</th>
-                <td mat-cell *matCellDef="let row">{{ row.ativo }}</td>
-              </ng-container>
+              @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
+                <ng-container [matColumnDef]="item.field">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
+
+                  <td mat-cell *matCellDef="let row">
+                    @switch (item.type) {
+                      @case ('date') {
+                        {{ row[item.field] | date: 'dd/MM/yyyy' }}
+                      }
+                      @case ('number') {
+                        {{ row[item.field] | currency: 'BRL' }}
+                      }
+                      @default {
+                        {{ row[item.field] }}
+                      }
+                    }
+                  </td>
+                </ng-container>
+              }
 
               <!-- Actions Column -->
               <ng-container matColumnDef="actions" stickyEnd>
@@ -98,9 +104,14 @@ export class DepartamentoList {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns: string[] = [
-    // 'id', 
-    'nome', 'ativo', 'actions'];
+  // displayedColumns: string[] = [
+  //   // 'id',
+  //   'nome', 'ativo', 'actions'];
+
+  displayedColumns = DISPLAYED_COLUMNS_DEPARTAMENTO.filter((f) => f.display).map(
+    (col) => col.field,
+  );
+  colunas = DISPLAYED_COLUMNS_DEPARTAMENTO;
 
   constructor() {
     effect(() => {

@@ -1,3 +1,156 @@
+import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+
+export const DISPLAYED_COLUMNS_EMPRESA: TableColumnsModel[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'tipoInscricao',
+    field: 'tipoInscricao',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'inscricao',
+    field: 'inscricao',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'inscricaoMunicipal',
+    field: 'inscricaoMunicipal',
+    type: 'string',
+    display: false,
+  },
+
+  {
+    label: 'inscricaoEstadual',
+    field: 'inscricaoEstadual',
+    type: 'string',
+    display: false,
+  },
+
+  {
+    label: 'nomeEmpresaRazaoSocial',
+    field: 'nomeEmpresaRazaoSocial',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'nomeFantasia',
+    field: 'nomeFantasia',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'dataAbertura',
+    field: 'dataAbertura',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'email',
+    field: 'email',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'logradouro',
+    field: 'logradouro',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'bairro',
+    field: 'bairro',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'cep',
+    field: 'cep',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'cidade',
+    field: 'cidade',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'uf',
+    field: 'uf',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'telefone',
+    field: 'telefone',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'celular',
+    field: 'celular',
+    type: 'string',
+    display: true,
+  },
+
+  {
+    label: 'cnae',
+    field: 'cnae',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'aliquotaRat',
+    field: 'aliquotaRat',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'codigoDeCentralizacao',
+    field: 'codigoDeCentralizacao',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'simples',
+    field: 'simples',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'fpas',
+    field: 'fpas',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'codigoDeOutrasEntidades',
+    field: 'codigoDeOutrasEntidades',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'codigoDePagamentoGps',
+    field: 'codigoDePagamentoGps',
+    type: 'string',
+    display: false,
+  },
+
+  {
+    label: 'Actions',
+    field: 'actions',
+    type: 'any',
+    display: true,
+  },
+];
+
 export type EmpresaModel = {
   id: string;
   tipoInscricao: string;

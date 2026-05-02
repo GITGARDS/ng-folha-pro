@@ -33,7 +33,7 @@ export const FuncionarioStore = signalStore(
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      funcionarioService.findAllByEmpresa({ empresa: empresa }).subscribe({
+      funcionarioService.findAll({ empresa }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,

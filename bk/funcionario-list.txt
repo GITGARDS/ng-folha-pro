@@ -9,12 +9,12 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/components/table-filter";
-import { ProdesForm } from "../prodes-form";
-import { DISPLAYED_COLUMNS_PRODES, ProdesModel } from "../shared/prodes.model";
-import { ProdesStore } from "../shared/prodes.store";
+import { FuncionarioForm } from "../funcionario-form";
+import { DISPLAYED_COLUMNS_FUNCIONARIO, FuncionarioModel } from "../shared/funcionario.model";
+import { FuncionarioStore } from "../shared/funcionario.store";
 
 @Component({
-  selector: 'app-prodes-list',
+  selector: 'app-funcionario-list',
   imports: [
     MatTableModule,
     MatSortModule,
@@ -36,7 +36,7 @@ import { ProdesStore } from "../shared/prodes.store";
           <div class="h-[60vh] overflow-auto">
             <table mat-table [dataSource]="dataSource" matSort>
               <!-- Id Column -->
-              @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
+              @for (item of colunas.filter(f => f.field !== 'actions'); track $index) {
                 <ng-container [matColumnDef]="item.field">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
 
@@ -97,44 +97,56 @@ import { ProdesStore } from "../shared/prodes.store";
   `,
   styles: ``,
 })
-export class ProdesList {
-  prodesStore = inject(ProdesStore);
+export class FuncionarioList {
+  funcionarioStore = inject(FuncionarioStore);
 
-  dataSource = new MatTableDataSource<ProdesModel>([]);
+  dataSource = new MatTableDataSource<FuncionarioModel>([]);
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns = DISPLAYED_COLUMNS_PRODES.filter((f) => f.display).map((col) => col.field);
-  colunas = DISPLAYED_COLUMNS_PRODES;
+  displayedColumns = DISPLAYED_COLUMNS_FUNCIONARIO.filter(f => f.display).map((col) => col.field);
+  colunas = DISPLAYED_COLUMNS_FUNCIONARIO;
+  
   constructor() {
     effect(() => {
-      this.dataSource.data = this.prodesStore.list();
+      this.dataSource.data = this.funcionarioStore.list();
       setTimeout(() => {
         this.dataSource.paginator = this.paginator();
         this.dataSource.sort = this.sort();
       }, 100);
     });
   }
-  readonly dialog = inject(MatDialog);
   onCreate() {
-    const ultimoProdes = this.prodesStore.list().length + 1;
-
-    const novo: Partial<ProdesModel> = {
-      codigo: `P${ultimoProdes}`,
-      descricao: `prodes ultimo ${ultimoProdes}`,
-      tipo: 'provento',
-      incidencias: ['INSS', 'FGTS', 'IRRF'],
-      automatico: true,
+    const ultimoFuncionario = this.funcionarioStore.list().length + 1;
+    const novo: Partial<FuncionarioModel> = {
+      nome: `Funcionario ultimo ${ultimoFuncionario}`,
+      dataNascimento: new Date().toISOString().split('T')[0],
+      nacionalidade: 'BR',
+      naturalidade: 'BR',
+      genero: 'Masculino',
+      racaCor: 'Branco',
+      estadoCivil: 'Solteiro',
+      endereco: 'Endereco',
+      bairro: 'Bairro',
+      cidade: 'Cidade',
+      cep: '00000-000',
+      telefone: '(00) 0000-0000',
+      celular: '(00) 00000-0000',
+      email: 'a@b.com',
+      dataAdmissao: new Date().toISOString().split('T')[0],
+      salarioBase: ultimoFuncionario * 100,
       ativo: true,
     };
-    this.openDialog('new', novo as ProdesModel);
+    this.openDialog('new', novo as FuncionarioModel);
   }
-  onUpdateById(params: ProdesModel) {
+  onUpdateById(params: FuncionarioModel) {
     this.openDialog('update', params);
   }
-
-  openDialog(opcao: string, data: ProdesModel) {
-    const dialogRef = this.dialog.open(ProdesForm, {
+  readonly dialog = inject(MatDialog);
+  openDialog(opcao: string, data: Partial<FuncionarioModel>) {
+    const dialogRef = this.dialog.open(FuncionarioForm, {
+      width: 'auto',
+      height: '750px',
       enterAnimationDuration: '300ms',
       exitAnimationDuration: '300ms',
       data: { opcao, data },
@@ -143,24 +155,32 @@ export class ProdesList {
       if (!result) {
         return;
       }
+      const empresaLogada = {
+        empresa: {
+          id: '1',
+        },
+      };
+      result.empresa = empresaLogada.empresa.id as string;
       switch (opcao) {
         case 'new':
-          this.prodesStore.create({
-            data: result as ProdesModel,
+          this.funcionarioStore.create({
+            data: result as FuncionarioModel,
           });
           break;
         case 'update':
-          this.prodesStore.updateById({
+          this.funcionarioStore.updateById({
             id: data.id as string,
-            data: result as ProdesModel,
+            data: result as FuncionarioModel,
           });
           break;
       }
     });
   }
+
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
-      this.prodesStore.deleteById({ id });
+      console.log('delete', id);
+      this.funcionarioStore.deleteById({ id });
     }
   }
 

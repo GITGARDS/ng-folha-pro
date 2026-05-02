@@ -1,4 +1,4 @@
-import { DatePipe } from "@angular/common";
+import { CurrencyPipe, DatePipe } from "@angular/common";
 import { Component, effect, inject, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -10,7 +10,7 @@ import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../../core/components/table-filter";
 import { EmpresaForm } from "../empresa-form";
-import { EmpresaModel } from "../shared/empresa.model";
+import { DISPLAYED_COLUMNS_EMPRESA, EmpresaModel } from "../shared/empresa.model";
 import { EmpresaStore } from "../shared/empresa.store";
 
 @Component({
@@ -25,6 +25,8 @@ import { EmpresaStore } from "../shared/empresa.store";
     MatIconButton,
     DatePipe,
     MatCard,
+    DatePipe,
+    CurrencyPipe,
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -35,36 +37,25 @@ import { EmpresaStore } from "../shared/empresa.store";
           <div class="h-[60vh] overflow-auto">
             <table mat-table [dataSource]="dataSource" matSort>
               <!-- Id Column -->
-              <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-              </ng-container>
-              <!-- tipoInscricao Column -->
-              <ng-container matColumnDef="tipoInscricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.tipoInscricao }}
-                </td>
-              </ng-container>
-              <!-- Inscricao Column -->
-              <ng-container matColumnDef="inscricao">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Inscricao</th>
-                <td mat-cell *matCellDef="let row">{{ row.inscricao }}</td>
-              </ng-container>
-              <!-- nomeEmpresaRazaoSocial Column -->
-              <ng-container matColumnDef="nomeEmpresaRazaoSocial">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                  Nome da Empresa/Razao Social
-                </th>
-                <td mat-cell *matCellDef="let row">
-                  {{ row.nomeEmpresaRazaoSocial }}
-                </td>
-              </ng-container>
-              <!-- dataAbertura Column -->
-              <ng-container matColumnDef="dataAbertura">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Data da Abertura</th>
-                <td mat-cell *matCellDef="let row">{{ row.dataAbertura | date: 'dd/MM/yyyy' }}</td>
-              </ng-container>
+              @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
+                <ng-container [matColumnDef]="item.field">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
+
+                  <td mat-cell *matCellDef="let row">
+                    @switch (item.type) {
+                      @case ('date') {
+                        {{ row[item.field] | date: 'dd/MM/yyyy' }}
+                      }
+                      @case ('number') {
+                        {{ row[item.field] | currency: 'BRL' }}
+                      }
+                      @default {
+                        {{ row[item.field] }}
+                      }
+                    }
+                  </td>
+                </ng-container>
+              }
 
               <!-- Actions Column -->
               <ng-container matColumnDef="actions" stickyEnd>
@@ -114,14 +105,10 @@ export class EmpresaList {
   readonly paginator = viewChild.required(MatPaginator);
   readonly sort = viewChild.required(MatSort);
 
-  displayedColumns: string[] = [
-    // 'id',
-    'tipoInscricao',
-    'inscricao',
-    'nomeEmpresaRazaoSocial',
-    'dataAbertura',
-    'actions',
-  ];
+  displayedColumns = DISPLAYED_COLUMNS_EMPRESA.filter((f) => f.display).map(
+    (col) => col.field,
+  );
+  colunas = DISPLAYED_COLUMNS_EMPRESA;
 
   constructor() {
     effect(() => {

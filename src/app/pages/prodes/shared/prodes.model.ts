@@ -1,3 +1,58 @@
+import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+
+export const DISPLAYED_COLUMNS_PRODES: TableColumnsModel[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    type: 'string',
+    display: false,
+  },
+  {
+    label: 'codigo',
+    field: 'codigo',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Descricao',
+    field: 'descricao',
+    type: 'string',
+    display: true,
+  },
+
+  {
+    label: 'Tipo',
+    field: 'tipo',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Incidencias',
+    field: 'incidencias',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Automatico',
+    field: 'automatico',
+    type: 'boolean',
+    display: true,
+  },
+
+  {
+    label: 'Ativo',
+    field: 'ativo',
+    type: 'boolean',
+    display: true,
+  },
+  {
+    label: 'Actions',
+    field: 'actions',
+    type: 'any',
+    display: true,
+  },
+];
+
 export type ProdesModel = {
   id: number | string;
   codigo: string;

@@ -1,3 +1,33 @@
+import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+
+export const DISPLAYED_COLUMNS_DEPARTAMENTO: TableColumnsModel[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    type: 'string',
+    display: true
+  },
+  {
+    label: 'Nome',
+    field: 'nome',
+    type: 'string',
+    display: true
+  },
+  {
+    label: 'Ativo',
+    field: 'ativo',
+    type: 'boolean',
+    display: true
+  },
+  {
+    label: 'Actions',
+    field: 'actions',
+    type: 'any',
+    display: true
+  },
+
+];
+
 export type DepartamentoModel = {
   id: string;
   nome: string;

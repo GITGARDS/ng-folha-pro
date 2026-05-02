@@ -40,7 +40,7 @@ export const DepartamentoStore = signalStore(
         if (store.list.length > 0) return;
         patchState(store, { isLoading: true });
         departamentoService
-          .findAll()
+          .findAll({})
           .pipe(delay(200))
           .subscribe({
             next: (list) => {
