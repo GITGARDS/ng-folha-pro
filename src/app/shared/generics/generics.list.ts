@@ -103,7 +103,7 @@ export class GenericsList implements AfterViewInit {
   iStore = input<any>();
   iForm = input<any>();
   iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]) );  
-  iColunas = input<TableColumnsModel[]>();
+  iColumns = input<TableColumnsModel[]>();
 
   colunas: TableColumnsModel[] = [];  
   displayedColumns: string[] = []; 
@@ -123,8 +123,8 @@ export class GenericsList implements AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    this.displayedColumns = this.iColunas()?.filter(f => f.display)?.map((col) => col.field) as string[];    
-    this.colunas = this.iColunas() as TableColumnsModel[];    
+    this.displayedColumns = this.iColumns()?.filter(f => f.display)?.map((col) => col.field) as string[];    
+    this.colunas = this.iColumns() as TableColumnsModel[];    
     
   }
   onCreate() {

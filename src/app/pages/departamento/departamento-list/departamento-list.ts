@@ -7,13 +7,11 @@ import { DepartamentoStore } from "../shared/departamento.store";
 @Component({
   selector: 'app-departamento-list',
   imports: [GenericsList],
-  template: `
-    <app-generics-list [iStore]="store" [iFormDialog]="form" [iDisplayedColumns]="colunas" />
-  `,
+  template: ` <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" /> `,
   styles: ``,
 })
 export class DepartamentoList {
   store = inject(DepartamentoStore);
   form = DepartamentoForm;
-  colunas = DISPLAYED_COLUMNS_DEPARTAMENTO;  
+  columns = DISPLAYED_COLUMNS_DEPARTAMENTO;
 }

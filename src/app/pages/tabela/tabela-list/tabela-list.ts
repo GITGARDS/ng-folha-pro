@@ -8,12 +8,13 @@ import { TabelaForm } from "../tabela-form";
   selector: 'app-tabela-list',
   imports: [GenericsList],
   template: `
-    <app-generics-list [iStore]="store" [iFormDialog]="form" [iDisplayedColumns]="colunas" />
+    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" />
+
   `,
   styles: ``,
 })
 export class TabelaList {
   store = inject(TabelaStore);
   form = TabelaForm;
-  colunas = DISPLAYED_COLUMNS_TABELA;  
+  columns = DISPLAYED_COLUMNS_TABELA;  
 }

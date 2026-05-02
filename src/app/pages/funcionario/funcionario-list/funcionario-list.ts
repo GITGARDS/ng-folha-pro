@@ -8,12 +8,12 @@ import { FuncionarioStore } from "../shared/funcionario.store";
   selector: 'app-funcionario-list',
   imports: [GenericsList],
   template: `
-    <app-generics-list [iStore]="store" [iFormDialog]="form" [iDisplayedColumns]="colunas" />
+    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" />
   `,
   styles: ``,
 })
 export class FuncionarioList {
   store = inject(FuncionarioStore);
   form = FuncionarioForm;
-  colunas = DISPLAYED_COLUMNS_FUNCIONARIO;  
+  columns = DISPLAYED_COLUMNS_FUNCIONARIO;  
 }

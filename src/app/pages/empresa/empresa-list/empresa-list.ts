@@ -8,12 +8,12 @@ import { EmpresaStore } from "../shared/empresa.store";
   selector: 'app-empresa-list',
   imports: [GenericsList],
   template: `
-    <app-generics-list [iStore]="store" [iFormDialog]="form" [iDisplayedColumns]="colunas" />
+    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" />
   `,
   styles: ``,
 })
 export class EmpresaList {
   store = inject(EmpresaStore);
   form = EmpresaForm;
-  colunas = DISPLAYED_COLUMNS_EMPRESA;  
+  columns = DISPLAYED_COLUMNS_EMPRESA;  
 }
