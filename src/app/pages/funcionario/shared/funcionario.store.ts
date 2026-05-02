@@ -1,5 +1,6 @@
 import { computed, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
 
@@ -86,9 +87,9 @@ export const FuncionarioStore = signalStore(
       }));
     }),
   })),
-  withHooks((store) => ({
+  withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
-      store.carregaLista({ empresa: '1' });
+      store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
     },
   })),
 );

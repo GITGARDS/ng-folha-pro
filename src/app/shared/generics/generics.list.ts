@@ -9,7 +9,8 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../core/components/table-filter";
-import { TableColumnsModel } from "../models/tablecolumns.model";
+import { EmpresaService } from "../../pages/empresa/shared/empresa.service";
+import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.model";
 
 @Component({
   selector: 'app-generics-list',
@@ -35,7 +36,8 @@ import { TableColumnsModel } from "../models/tablecolumns.model";
           <div class="h-[60vh] overflow-auto">
             <table mat-table [dataSource]="iDataSource()" matSort>
               <!-- Id Column -->
-              @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
+
+              @for (item of colunas.filter((f) => f.field !== ('actions') && f.field !== ('logada')); track $index) {
                 <ng-container [matColumnDef]="item.field">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
 
@@ -59,6 +61,23 @@ import { TableColumnsModel } from "../models/tablecolumns.model";
               }
 
               <!-- Actions Column -->
+              <ng-container matColumnDef="logada">
+                <th mat-header-cell *matHeaderCellDef>
+                  <mat-icon>login</mat-icon>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  @if (empresaService.idEmpresaLogada()) {
+                    @if (empresaService.idEmpresaLogada() === row.id) {
+                      <span class="size-4 animate-ping">
+                        <div class="h-5 w-5">
+                          <mat-icon class="animate-pulse">check</mat-icon>
+                        </div>
+                      </span>
+                    }
+                  }
+                </td>
+              </ng-container>
+
               <ng-container matColumnDef="actions" stickyEnd>
                 <th mat-header-cell *matHeaderCellDef>
                   <mat-icon>menu</mat-icon>
@@ -72,14 +91,35 @@ import { TableColumnsModel } from "../models/tablecolumns.model";
                     <mat-icon>more_vert</mat-icon>
                   </button>
                   <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="onUpdateById(row)">
-                      <mat-icon>edit</mat-icon>
-                      <span>Editar</span>
-                    </button>
-                    <button mat-menu-item (click)="onDeleteById(row.id)">
-                      <mat-icon>delete</mat-icon>
-                      <span>Excluir</span>
-                    </button>
+                    @for (item of iActions(); track $index) {
+                      @if (item.label === 'Editar') {
+                        <button mat-menu-item (click)="onUpdateById(row.id)">
+                          <mat-icon>{{ item.icon }}</mat-icon>
+                          <span>{{ item.label }}</span>
+                        </button>
+                      }
+                      @if (item.label === 'Excluir') {
+                        <button mat-menu-item (click)="onDeleteById(row.id)">
+                          <mat-icon>{{ item.icon }}</mat-icon>
+                          <span>{{ item.label }}</span>
+                        </button>
+                      }
+                      @if (item.label === 'Login') {
+                        @if (empresaService.idEmpresaLogada()) {
+                          @if (empresaService.idEmpresaLogada() === row.id) {
+                            <button mat-menu-item (click)="onLogout()">
+                              <mat-icon>logout</mat-icon>
+                              <span>Logout</span>
+                            </button>
+                          }
+                        } @else {
+                          <button mat-menu-item (click)="onLogin(row)">
+                            <mat-icon>{{ item.icon }}</mat-icon>
+                            <span>{{ item.label }}</span>
+                          </button>
+                        }
+                      }
+                    }
                   </mat-menu>
                 </td>
               </ng-container>
@@ -102,20 +142,22 @@ import { TableColumnsModel } from "../models/tablecolumns.model";
 export class GenericsList implements AfterViewInit {
   iStore = input<any>();
   iForm = input<any>();
-  iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]) );  
+  iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]));
   iColumns = input<TableColumnsModel[]>();
+  iActions = input<TableActionsModel[]>();
 
-  colunas: TableColumnsModel[] = [];  
-  displayedColumns: string[] = []; 
+  colunas: TableColumnsModel[] = [];
+  displayedColumns: string[] = [];
 
   paginator = viewChild(MatPaginator);
   sort = viewChild(MatSort);
 
-  constructor(
-  ) {
+  empresaService = inject(EmpresaService);
+
+  constructor() {
     effect(() => {
       this.iDataSource().data = this.iStore().list();
-      console.log('lista',this.iStore().list());
+      console.log('lista', this.iStore().list());
       setTimeout(() => {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
@@ -123,9 +165,10 @@ export class GenericsList implements AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    this.displayedColumns = this.iColumns()?.filter(f => f.display)?.map((col) => col.field) as string[];    
-    this.colunas = this.iColumns() as TableColumnsModel[];    
-    
+    this.displayedColumns = this.iColumns()
+      ?.filter((f) => f.display)
+      ?.map((col) => col.field) as string[];
+    this.colunas = this.iColumns() as TableColumnsModel[];
   }
   onCreate() {
     const ultimoTabela = this.iStore().list().length + 1;
@@ -169,6 +212,14 @@ export class GenericsList implements AfterViewInit {
       console.log('delete', id);
       this.iStore().deleteById({ id });
     }
+  }
+
+  onLogin(data: any) {
+    this.iStore().login({ data });
+  }
+
+  onLogout() {
+    this.iStore().logout();
   }
 
   applyFilter($event: Event) {

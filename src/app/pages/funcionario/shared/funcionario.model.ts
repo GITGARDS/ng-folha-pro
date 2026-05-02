@@ -1,6 +1,17 @@
-import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
-export const DISPLAYED_COLUMNS_FUNCIONARIO: TableColumnsModel[] = [
+export const FUNCIONARIO_COLUMNS_ACTIONS: TableActionsModel[] = [
+  {
+    label: 'Editar',
+    icon: 'edit',
+  },
+  {
+    label: 'Excluir',
+    icon: 'delete',
+  },
+];
+
+export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
   {
     label: 'Id',
     field: 'id',
@@ -175,3 +186,4 @@ export const MOCK_FUNCIONARIOS: FuncionarioModel[] = [
     ocorrencia: 'ocorrencia 1',
   },
 ];
+

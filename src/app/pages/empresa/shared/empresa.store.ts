@@ -4,18 +4,18 @@ import { patchState, signalMethod, signalStore, withComputed, withHooks, withMet
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
 import { FuncionarioStore } from "../../funcionario/shared/funcionario.store";
-import { EmpresaLogadaModel, EmpresaModel } from "./empresa.model";
+import { EmpresaModel } from "./empresa.model";
 import { EmpresaService } from "./empresa.service";
 
 type EmpresaState = {
   list: EmpresaModel[];
-  empresaLogada: EmpresaLogadaModel;
+  empresaLogada: EmpresaModel | null;
   isLoading: boolean;
 };
 
 const initialState: EmpresaState = {
   list: [],
-  empresaLogada: {} as EmpresaLogadaModel,
+  empresaLogada: {} as EmpresaModel | null,
   isLoading: false,
 };
 
@@ -66,15 +66,13 @@ export const EmpresaStore = signalStore(
       }),
 
       login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
+        console.log('login', data);
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
-        await empresaService.login({ id: data.id as string }).then(() => {
+        await empresaService.login({ empresa: data as EmpresaModel }).then(() => {
           patchState(store, (state) => ({
             ...state,
-            empresaLogada: {
-              empresa: data as EmpresaModel,
-              isLogada: true,
-            },
+            empresaLogada: data as EmpresaModel,
             isLoading: false,
           }));
         });
@@ -86,7 +84,7 @@ export const EmpresaStore = signalStore(
         await empresaService.logout().then(() => {
           patchState(store, (state) => ({
             ...state,
-            empresaLogada: {} as EmpresaLogadaModel,
+            empresaLogada: {} as EmpresaModel | null,
             isLoading: false,
           }));
         });

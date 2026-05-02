@@ -4,3 +4,8 @@ export type TableColumnsModel = {
   type: string;
   display: boolean;
 };
+
+export type TableActionsModel = {
+  label: string;
+  icon: string;
+};

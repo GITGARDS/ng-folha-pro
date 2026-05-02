@@ -1,4 +1,5 @@
 import { Routes } from "@angular/router";
+import { empresaGuard } from "./pages/empresa/shared/empresa-guard";
 
 export const routes: Routes = [
   {
@@ -20,6 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'funcionario',
+    canActivate: [empresaGuard],
     loadComponent: () => import('./pages/funcionario/funcionario'),
   },
   {

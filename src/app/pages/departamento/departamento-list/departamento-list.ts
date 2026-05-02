@@ -1,17 +1,20 @@
 import { Component, inject } from "@angular/core";
 import { GenericsList } from "../../../shared/generics/generics.list";
 import { DepartamentoForm } from "../departamento-form";
-import { DISPLAYED_COLUMNS_DEPARTAMENTO } from "../shared/departamento.model";
+import { DEPARTAMENTO_COLUMNS_ACTIONS, DEPARTAMENTO_DISPLAYED_COLUMNS } from "../shared/departamento.model";
 import { DepartamentoStore } from "../shared/departamento.store";
 
 @Component({
   selector: 'app-departamento-list',
   imports: [GenericsList],
-  template: ` <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" /> `,
+  template: `
+    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" [iActions]="actions" />
+  `,
   styles: ``,
 })
 export class DepartamentoList {
   store = inject(DepartamentoStore);
   form = DepartamentoForm;
-  columns = DISPLAYED_COLUMNS_DEPARTAMENTO;
+  columns = DEPARTAMENTO_DISPLAYED_COLUMNS;
+  actions = DEPARTAMENTO_COLUMNS_ACTIONS;
 }

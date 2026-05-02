@@ -1,6 +1,17 @@
-import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
-export const DISPLAYED_COLUMNS_PRODES: TableColumnsModel[] = [
+export const PRODES_COLUMNS_ACTIONS: TableActionsModel[] = [
+  {
+    label: 'Editar',
+    icon: 'edit',
+  },
+  {
+    label: 'Excluir',
+    icon: 'delete',
+  },
+];
+
+export const PRODES_DISPLAYED_COLUMNS: TableColumnsModel[] = [
   {
     label: 'Id',
     field: 'id',

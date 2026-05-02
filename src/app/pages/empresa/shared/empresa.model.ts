@@ -1,6 +1,27 @@
-import { TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
-export const DISPLAYED_COLUMNS_EMPRESA: TableColumnsModel[] = [
+export const EMPRESA_COLUMNS_ACTIONS: TableActionsModel[] = [
+  {
+    label: 'Editar',
+    icon: 'edit',
+  },
+  {
+    label: 'Excluir',
+    icon: 'delete',
+  },
+  {
+    label: 'Login',
+    icon: 'login',
+  },
+];
+
+export const EMPRESA_DISPLAYED_COLUMNS: TableColumnsModel[] = [
+  {
+    label: 'Logada',
+    field: 'logada',
+    type: 'string',
+    display: true,
+  },
   {
     label: 'Id',
     field: 'id',
@@ -177,10 +198,6 @@ export type EmpresaModel = {
   codigoDePagamentoGps: string;
 };
 
-export type EmpresaLogadaModel = {
-  empresa: EmpresaModel;
-  isLogada: boolean;
-};
 
 export const MOCK_EMPRESAS: EmpresaModel[] = [
   {
