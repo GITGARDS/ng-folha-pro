@@ -8,7 +8,7 @@ import { MatIcon } from "@angular/material/icon";
   template: `
     @let bgFundo = 'bg-white';
 
-    @if (!isLoading()) {
+    @if (isLoading()) {
       <div class="absolute w-full h-[calc(100vh)] z-299 rounded-lg p-2" [class]="bgFundo">
         <div class="w-full h-full flex justify-center pt-20">
           <div class="size-30 flex items-center justify-center animate-spin">
