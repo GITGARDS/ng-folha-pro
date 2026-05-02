@@ -1,5 +1,5 @@
-import { CommonModule, CurrencyPipe, DatePipe } from "@angular/common";
-import { AfterViewInit, Component, Inject, effect, inject, viewChild } from "@angular/core";
+import { CurrencyPipe, DatePipe, JsonPipe } from "@angular/common";
+import { AfterViewInit, Component, Inject, Type, ViewChild, effect, inject } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
 import { MatDialog } from "@angular/material/dialog";
@@ -11,16 +11,16 @@ import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../core/components/table-filter";
 import { TableColumnsModel } from "../models/tablecolumns.model";
 
-interface ITablesGenerics<T> {
+interface iGenericsTablesModel<T> {
   onCreate(): void;
   onUpdateById(params: T): void;
-  openDialog(opcao: string, data: any): void;
+  openDialog(opcao: string, data: Partial<T>): void;
   onDeleteById(id: string): void;
   applyFilter($event: Event): void;
 }
 
 @Component({
-  selector: 'app-tables-generics',
+  selector: 'app-generics-tables',
   imports: [
     MatTableModule,
     MatSortModule,
@@ -30,9 +30,9 @@ interface ITablesGenerics<T> {
     MatIcon,
     MatIconButton,
     MatCard,
-    DatePipe,
     CurrencyPipe,
-    CommonModule,
+    DatePipe,
+    JsonPipe,
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -43,7 +43,7 @@ interface ITablesGenerics<T> {
           <div class="h-[60vh] overflow-auto">
             <table mat-table [dataSource]="dataSource" matSort>
               <!-- Id Column -->
-              @for (item of displayedColumns.filter((f) => f.field !== 'actions'); track $index) {
+              @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
                 <ng-container [matColumnDef]="item.field">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
 
@@ -54,6 +54,9 @@ interface ITablesGenerics<T> {
                       }
                       @case ('number') {
                         {{ row[item.field] | currency: 'BRL' }}
+                      }
+                      @case ('json') {
+                        {{ row[item.field] | json }}
                       }
                       @default {
                         {{ row[item.field] }}
@@ -104,45 +107,47 @@ interface ITablesGenerics<T> {
   `,
   styles: ``,
 })
-export class TablesGenerics<T> implements ITablesGenerics<T>, AfterViewInit {
+export class GenericsTables<T extends { id: string | number }>
+  implements iGenericsTablesModel<T>, AfterViewInit
+{
   store: any;
-  dataSource: MatTableDataSource<T, MatPaginator>;
-  displayedColumns: TableColumnsModel[];
-  colunas: string[] = [];
   formDialog: any;
-  readonly paginator = viewChild.required(MatPaginator);
-  readonly sort = viewChild.required(MatSort);
+  dataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
+  @ViewChild(MatSort) sort: MatSort | undefined;
 
+  displayedColumns: string[] = [];
+  colunas: TableColumnsModel[] = [];
   constructor(
-    @Inject(Object) store: any,
-    @Inject(Array) displayedColumns: TableColumnsModel[],
-    @Inject(Object) formDialog: any,
+    @Inject(Object) sstore: any,
+    @Inject(Array) sdisplayedColumns: Array<TableColumnsModel>,
+    @Inject(Object) fformDialog: Object,
   ) {
-    this.store = inject(store);
-    this.formDialog = formDialog;
-    this.displayedColumns = displayedColumns.filter((f) => f.display === true);
-    this.colunas = displayedColumns.map((f) => f.field);
-    this.dataSource = new MatTableDataSource<T>([] as T[]);
-
+    this.store = sstore;
+    this.displayedColumns = sdisplayedColumns.map((col) => col.field) as string[];
+    this.formDialog = fformDialog as Type<any>;
+    this.colunas = sdisplayedColumns as TableColumnsModel[];
     effect(() => {
+      this.dataSource = new MatTableDataSource<T>(this.store.list());
       setTimeout(() => {
         this.dataSource.data = this.store.list();
-        console.log(this.dataSource.data);
-        this.dataSource.paginator = this.paginator();
-        this.dataSource.sort = this.sort();
-      }, 2000);
+        this.dataSource.sort = this.sort as MatSort;
+        this.dataSource.paginator = this.paginator as MatPaginator;
+      }, 700);
     });
   }
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+  }
   onCreate() {
-    const novo: Partial<T> = {};
+    const ultimoTabela = this.store.list().length + 1;
+    const novo: Partial<T> = {} as T;
     this.openDialog('new', novo as T);
   }
   onUpdateById(params: T) {
     this.openDialog('update', params);
   }
   readonly dialog = inject(MatDialog);
-  openDialog(opcao: string, data: any) {
+  openDialog(opcao: string, data: Partial<T>) {
     const dialogRef = this.dialog.open(this.formDialog, {
       width: 'auto',
       height: '750px',
@@ -154,12 +159,6 @@ export class TablesGenerics<T> implements ITablesGenerics<T>, AfterViewInit {
       if (!result) {
         return;
       }
-      const empresaLogada = {
-        empresa: {
-          id: '1',
-        },
-      };
-      result.empresa = empresaLogada.empresa.id as string;
       switch (opcao) {
         case 'new':
           this.store.create({

@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { TablesGenerics } from "../../../shared/forms/tables.generics";
+import { Component, inject } from "@angular/core";
+import { GenericsTables } from "../../../shared/generics/generics.tables";
 import { FuncionarioForm } from "../funcionario-form";
 import { DISPLAYED_COLUMNS_FUNCIONARIO, FuncionarioModel } from "../shared/funcionario.model";
 import { FuncionarioStore } from "../shared/funcionario.store";
@@ -10,8 +10,8 @@ import { FuncionarioStore } from "../shared/funcionario.store";
   template: ``,
   styles: ``,
 })
-export class FuncionarioList extends TablesGenerics<FuncionarioModel> {
+export class FuncionarioList extends GenericsTables<FuncionarioModel> {
   constructor() {
-    super(FuncionarioStore, DISPLAYED_COLUMNS_FUNCIONARIO, FuncionarioForm);
+    super(inject(FuncionarioStore), DISPLAYED_COLUMNS_FUNCIONARIO, FuncionarioForm);
   }
 }

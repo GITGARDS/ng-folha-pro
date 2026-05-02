@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { Observable, delay } from "rxjs";
 import { db } from "../../../firebase";
@@ -24,17 +24,17 @@ export class GenericsService<T> implements iGenericsService<T> {
   order = '';
 
   constructor(
-    @Inject(String) path: string,
-    @Inject(Object) firestone: any,
-    @Inject(Number) isDelay: number,
-    @Inject(String) orderBy: string,
-    @Inject(String) order: string,
+    private spath: String,
+    private sfirestone: Object,
+    private sisDelay: Number,
+    private sorderBy: String,
+    private sorder: String,
   ) {
-    this.path = path;
-    this.firestore = firestone;
-    this.isDelay = isDelay;
-    this.orderBy = orderBy;
-    this.order = order;
+    this.path = spath as string;
+    this.firestore = sfirestone;
+    this.isDelay = sisDelay as number;
+    this.orderBy = sorderBy as string;
+    this.order = sorder as string;
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
