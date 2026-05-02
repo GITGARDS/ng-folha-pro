@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, JsonPipe } from "@angular/common";
-import { AfterViewInit, Component, Inject, Type, ViewChild, effect, inject } from "@angular/core";
+import { AfterViewInit, Component, effect, inject, input, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
 import { MatDialog } from "@angular/material/dialog";
@@ -9,19 +9,10 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { TableFilter } from "../../core/components/table-filter";
-import { DISPLAYED_COLUMNS_TABELA } from "../../pages/tabela/shared/tabela.model";
 import { TableColumnsModel } from "../models/tablecolumns.model";
 
-interface iGenericsTablesModel<T> {
-  onCreate(): void;
-  onUpdateById(params: T): void;
-  openDialog(opcao: string, data: Partial<T>): void;
-  onDeleteById(id: string): void;
-  applyFilter($event: Event): void;
-}
-
 @Component({
-  selector: 'app-generics-tables',
+  selector: 'app-generics-list',
   imports: [
     MatTableModule,
     MatSortModule,
@@ -42,7 +33,7 @@ interface iGenericsTablesModel<T> {
 
         <mat-card class="py-2" appearance="outlined">
           <div class="h-[60vh] overflow-auto">
-            <table mat-table [dataSource]="dataSource" matSort>
+            <table mat-table [dataSource]="iDataSource()" matSort>
               <!-- Id Column -->
               @for (item of colunas.filter((f) => f.field !== 'actions'); track $index) {
                 <ng-container [matColumnDef]="item.field">
@@ -108,49 +99,45 @@ interface iGenericsTablesModel<T> {
   `,
   styles: ``,
 })
-export class GenericsTables<T extends { id: string | number }>
-  implements iGenericsTablesModel<T>, AfterViewInit
-{
-  store: any;
-  formDialog: any;
-  dataSource: MatTableDataSource<T> = new MatTableDataSource<T>([]);
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-  @ViewChild(MatSort) sort: MatSort | undefined;
+export class GenericsList implements AfterViewInit {
+  iStore = input<any>();
+  iFormDialog = input<any>();
+  iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]) );  
+  iDisplayedColumns = input<TableColumnsModel[]>();
 
-  displayedColumns: string[] = [];
-  colunas: TableColumnsModel[] = [];
+  colunas: TableColumnsModel[] = [];  
+  displayedColumns: string[] = []; 
+
+  paginator = viewChild(MatPaginator);
+  sort = viewChild(MatSort);
+
   constructor(
-    @Inject(Object) sstore: any,
-    @Inject(Array) sdisplayedColumns: Array<TableColumnsModel>,
-    @Inject(Object) fformDialog: Object,
   ) {
-    this.store = sstore;
-    this.displayedColumns = sdisplayedColumns.map((col) => col.field) as string[];
-    this.formDialog = fformDialog as Type<any>;
-    this.colunas = sdisplayedColumns as TableColumnsModel[];
     effect(() => {
-      this.dataSource = new MatTableDataSource<T>(this.store.list());
+      this.iDataSource().data = this.iStore().list();
+      console.log('lista',this.iStore().list());
       setTimeout(() => {
-        this.dataSource.data = this.store.list();
-        this.dataSource.sort = this.sort as MatSort;
-        this.dataSource.paginator = this.paginator as MatPaginator;
+        this.iDataSource().sort = this.sort() as MatSort;
+        this.iDataSource().paginator = this.paginator() as MatPaginator;
       }, 700);
     });
   }
   ngAfterViewInit(): void {
-    this.colunas = DISPLAYED_COLUMNS_TABELA.filter((f) => f.display);
+    this.displayedColumns = this.iDisplayedColumns()?.filter(f => f.display)?.map((col) => col.field) as string[];    
+    this.colunas = this.iDisplayedColumns() as TableColumnsModel[];    
+    
   }
   onCreate() {
-    const ultimoTabela = this.store.list().length + 1;
-    const novo: Partial<T> = {} as T;
-    this.openDialog('new', novo as T);
+    const ultimoTabela = this.iStore().list().length + 1;
+    const novo: Partial<any> = {} as any;
+    this.openDialog('new', novo as any);
   }
-  onUpdateById(params: T) {
+  onUpdateById(params: any) {
     this.openDialog('update', params);
   }
   readonly dialog = inject(MatDialog);
-  openDialog(opcao: string, data: Partial<T>) {
-    const dialogRef = this.dialog.open(this.formDialog, {
+  openDialog(opcao: string, data: any) {
+    const dialogRef = this.dialog.open(this.iFormDialog(), {
       width: 'auto',
       height: '750px',
       enterAnimationDuration: '300ms',
@@ -163,14 +150,14 @@ export class GenericsTables<T extends { id: string | number }>
       }
       switch (opcao) {
         case 'new':
-          this.store.create({
-            data: result as T,
+          this.iStore().create({
+            data: result as any,
           });
           break;
         case 'update':
-          this.store.updateById({
+          this.iStore().updateById({
             id: data.id as string,
-            data: result as T,
+            data: result as any,
           });
           break;
       }
@@ -180,12 +167,12 @@ export class GenericsTables<T extends { id: string | number }>
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       console.log('delete', id);
-      this.store.deleteById({ id });
+      this.iStore().deleteById({ id });
     }
   }
 
   applyFilter($event: Event) {
     const filterValue = ($event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.iDataSource().filter = filterValue.trim().toLowerCase();
   }
 }

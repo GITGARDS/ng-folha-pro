@@ -1,17 +1,19 @@
 import { Component, inject } from "@angular/core";
-import { GenericsTables } from "../../../shared/generics/generics.tables";
+import { GenericsList } from "../../../shared/generics/generics.list";
 import { DepartamentoForm } from "../departamento-form";
-import { DISPLAYED_COLUMNS_DEPARTAMENTO, DepartamentoModel } from "../shared/departamento.model";
+import { DISPLAYED_COLUMNS_DEPARTAMENTO } from "../shared/departamento.model";
 import { DepartamentoStore } from "../shared/departamento.store";
 
 @Component({
   selector: 'app-departamento-list',
-  imports: [],
-  template: ``,
+  imports: [GenericsList],
+  template: `
+    <app-generics-list [iStore]="store" [iFormDialog]="form" [iDisplayedColumns]="colunas" />
+  `,
   styles: ``,
 })
-export class DepartamentoList extends GenericsTables<DepartamentoModel> {
-  constructor() {
-    super(inject(DepartamentoStore), DISPLAYED_COLUMNS_DEPARTAMENTO, DepartamentoForm);
-  }
+export class DepartamentoList {
+  store = inject(DepartamentoStore);
+  form = DepartamentoForm;
+  colunas = DISPLAYED_COLUMNS_DEPARTAMENTO;  
 }
