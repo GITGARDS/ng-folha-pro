@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatIconButton } from "@angular/material/button";
 import { MatDivider } from "@angular/material/divider";
@@ -19,9 +19,15 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
       [matMenuTriggerFor]="menu"
       aria-label="Example icon-button with a menu"
       [matTooltip]="empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial"
-      [matBadge]="funcionarioStore.totalAtivos().length"
+      [matBadge]="totalAtivos() === null ? '0' : totalAtivos()"
     >
-      <mat-icon>account_circle</mat-icon>
+      @if (totalAtivos() === null) {
+        <div class="animate-spin flex items-center justify-center">
+          <mat-icon>autorenew</mat-icon>
+        </div>
+      } @else {
+        <mat-icon>account_circle</mat-icon>
+      }
     </button>
 
     <mat-menu #menu="matMenu">
@@ -45,4 +51,11 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 export class AppHeaderAuthEmpre {
   funcionarioStore = inject(FuncionarioStore);
   empresaStore = inject(EmpresaStore);
+  totalAtivos = signal<number | null>(null);
+
+  constructor() {
+    setTimeout(() => {
+      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+    }, 500);
+  }
 }
