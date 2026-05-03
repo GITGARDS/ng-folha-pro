@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { Observable, delay } from "rxjs";
 import { db } from "../../../firebase";
 
@@ -38,20 +38,11 @@ export class GenericsService<T> implements iGenericsService<T> {
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
-    const q = empresa
-      ? query(
-          this.firestore,
-          where('empresa', '==', empresa),
-          orderBy(this.orderBy, this.order as 'asc' | 'desc'),
-        )
-      : query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
-
-    console.log('find all q', q);
-
+    const q = query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
     return new Observable<T[]>((observer) => {
       onSnapshot(q, (snapshot) => {
         const items: T[] = snapshot.docs
-          // .filter((f: any) => (empresa ? f.data().empresa === empresa : f))
+          .filter((f: any) => (empresa ? f.data().empresa === empresa : f))
           .map((d) => ({
             id: d.id,
             ...(d.data() as T),

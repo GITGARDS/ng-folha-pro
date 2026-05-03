@@ -1,9 +1,7 @@
 import { computed, inject } from "@angular/core";
-import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
-import { FuncionarioStore } from "../../funcionario/shared/funcionario.store";
 import { DepartamentoModel } from "./departamento.model";
 import { DepartamentoService } from "./departamento.service";
 
@@ -31,8 +29,6 @@ export const DepartamentoStore = signalStore(
     (
       store,
       departamentoService = inject(DepartamentoService),
-      router = inject(Router),
-      funcionarioStore = inject(FuncionarioStore),
     ) => ({
       teste: rxMethod<unknown>(pipe(delay(2000))),
 

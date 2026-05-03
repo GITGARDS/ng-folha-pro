@@ -14,6 +14,7 @@ export class EmpresaService<T> extends GenericsService<T> {
   }
 
   async login({ empresa }: { empresa: EmpresaModel }) {
+    console.log('login empresa', empresa.id);
     this.idEmpresaLogada.set(empresa.id);
   }
 

@@ -34,15 +34,13 @@ export const FuncionarioStore = signalStore(
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      funcionarioService.findAll({ empresa }).subscribe({
+      funcionarioService.findAll({ empresa: empresa }).subscribe({
         next: (list) => {
-          list
-            ? patchState(store, (state) => ({
-                ...state,
-                list,
-                isLoading: false,
-              }))
-            : patchState(store, { list: [], isLoading: false });
+          patchState(store, (state) => ({
+            ...state,
+            list,
+            isLoading: false,
+          }));
         },
       });
     }),
@@ -91,8 +89,9 @@ export const FuncionarioStore = signalStore(
   })),
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
-      effect(() => {
-        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
+      // if (!empresaService.idEmpresaLogada()) return;
+      effect(() => store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string }), {
+        allowSignalWrites: true,
       });
     },
   })),
