@@ -2,7 +2,6 @@ import { Component, inject, signal } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatIconButton } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -16,7 +15,6 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
     MatMenuModule,
     MatIcon,
     MatIconButton,
-    MatDivider,
     MatTooltipModule,
     MatBadgeModule,
     MatCardModule,
