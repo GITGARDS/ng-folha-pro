@@ -1,12 +1,14 @@
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { Component, inject, signal } from "@angular/core";
-import { MatBadgeModule } from "@angular/material/badge";
 import { MatIconButton } from "@angular/material/button";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatMenuModule } from "@angular/material/menu";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
+
 import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.store";
+import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
+
 
 @Component({
   selector: 'app-header-auth-empre',
@@ -56,6 +58,6 @@ export class AppHeaderAuthEmpre {
   constructor() {
     setTimeout(() => {
       this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
-    }, 500);
+    }, 700);
   }
 }
