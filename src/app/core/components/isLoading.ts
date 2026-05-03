@@ -12,7 +12,10 @@ import { MatIcon } from "@angular/material/icon";
       <div class="absolute w-full h-[calc(100vh)] z-299 rounded-lg p-2" [class]="bgFundo">
         <div class="w-full h-full flex justify-center pt-20">
           <div class="size-30 flex items-center justify-center animate-spin">
-            <mat-icon class="!w-auto !h-auto !text-6xl !text-indigo-300">autorenew</mat-icon>
+            <mat-icon
+              class="!w-auto !h-auto !text-6xl !text-black"
+              >autorenew</mat-icon
+            >
           </div>
         </div>
       </div>

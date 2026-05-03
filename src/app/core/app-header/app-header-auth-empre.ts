@@ -1,21 +1,40 @@
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { Component, inject, signal } from "@angular/core";
-import { MatIconButton } from "@angular/material/button";
 import { MatBadgeModule } from "@angular/material/badge";
-import { MatMenuModule } from "@angular/material/menu";
+import { MatIconButton } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
 import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
-
-import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.store";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
-
+import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.store";
 
 @Component({
   selector: 'app-header-auth-empre',
 
-  imports: [MatMenuModule, MatIcon, MatIconButton, MatDivider, MatTooltipModule, MatBadgeModule],
+  imports: [
+    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+    MatDivider,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatCardModule,
+  ],
 
   template: `
+    <!-- <div class="animate-spin flex items-center justify-center"> -->
+    <!-- <mat-icon>donut_large</mat-icon> -->
+    <!-- <mat-icon>donut_small</mat-icon> -->
+    <!-- <mat-icon>flip_camera_android</mat-icon> -->
+    <!-- <mat-icon>light_mode</mat-icon> -->
+    <!-- <mat-icon>public</mat-icon> -->
+    <!-- <mat-icon>radar</mat-icon> -->
+    <!-- <mat-icon>timelapse</mat-icon> -->
+    <!-- <mat-icon>update</mat-icon> -->
+
+    <!-- </div> -->
+
     <button
       matIconButton
       [matMenuTriggerFor]="menu"
@@ -25,7 +44,8 @@ import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
     >
       @if (totalAtivos() === null) {
         <div class="animate-spin flex items-center justify-center">
-          <mat-icon>autorenew</mat-icon>
+          <!-- <mat-icon>change_circle</mat-icon> -->
+          <mat-icon>flip_camera_android</mat-icon>
         </div>
       } @else {
         <mat-icon>account_circle</mat-icon>
@@ -34,14 +54,30 @@ import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
 
     <mat-menu #menu="matMenu">
       <div class="p-2">
-        <h1>{{ empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial }}</h1>
-        <p>{{ empresaStore.empresaLogada()?.email }}</p>
+        <mat-card class="overflow-hidden" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{ empresaStore.empresaLogada()?.id }}</mat-card-title>
+            <mat-card-subtitle>{{
+              empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial
+            }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="flex flex-col">
+              <span>Inscricao: {{ empresaStore.empresaLogada()?.inscricao }}</span>
+              <span>Email: {{ empresaStore.empresaLogada()?.email }}</span>
+              <span>Telefone:{{ empresaStore.empresaLogada()?.telefone }}</span>
+              <span>Cnae: {{ empresaStore.empresaLogada()?.cnae }}</span>
+              <span>Fpas: {{ empresaStore.empresaLogada()?.fpas }}</span>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-menu-item (click)="empresaStore.logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-card-actions>
+        </mat-card>
       </div>
-      <mat-divider />
-      <button mat-menu-item (click)="empresaStore.logout()">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-      </button>
     </mat-menu>
   `,
   styles: `
