@@ -89,9 +89,11 @@ export const FuncionarioStore = signalStore(
   })),
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
-      // if (!empresaService.idEmpresaLogada()) return;
-      effect(() => store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string }), {
-        allowSignalWrites: true,
+      effect(() => {
+        (store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string }),
+          {
+            allowSignalWrites: true,
+          });
       });
     },
   })),
