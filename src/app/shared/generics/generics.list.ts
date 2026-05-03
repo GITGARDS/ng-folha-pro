@@ -37,7 +37,10 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
             <table mat-table [dataSource]="iDataSource()" matSort>
               <!-- Id Column -->
 
-              @for (item of colunas.filter((f) => f.field !== ('actions') && f.field !== ('logada')); track $index) {
+              @for (
+                item of colunas.filter((f) => f.field !== 'actions' && f.field !== 'logada');
+                track $index
+              ) {
                 <ng-container [matColumnDef]="item.field">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ item.label }}</th>
 
@@ -68,10 +71,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                 <td mat-cell *matCellDef="let row">
                   @if (empresaService.idEmpresaLogada()) {
                     @if (empresaService.idEmpresaLogada() === row.id) {
-                      <span class="size-4 animate-ping">
-                        <div class="h-5 w-5">
-                          <mat-icon class="animate-pulse">check</mat-icon>
-                        </div>
+                      <span class="size-4 animate-pulse">
+                        <div class="h-5 w-5 !bg-green-700 rounded-full"></div>
                       </span>
                     }
                   }
@@ -91,24 +92,10 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                     <mat-icon>more_vert</mat-icon>
                   </button>
 
-                  
-
                   <mat-menu #menu="matMenu">
-
-
-
-
                     @for (item of iActions(); track $index) {
-                        <button mat-menu-item (click)="item.action">
-                          <span>action: {{item.action}}</span>
-                          <mat-icon>{{ item.icon }}</mat-icon>
-                          <span>{{ item.label }}</span>
-                        </button>
-
-
-
-                      <!-- @if (item.label === 'Editar') {
-                        <button mat-menu-item (click)="onUpdateById(row.id)">
+                      @if (item.label === 'Editar') {
+                        <button mat-menu-item (click)="onUpdateById(row)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
                         </button>
@@ -133,7 +120,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                             <span>{{ item.label }}</span>
                           </button>
                         }
-                      } -->
+                      }
                     }
                   </mat-menu>
                 </td>
@@ -175,8 +162,8 @@ export class GenericsList implements AfterViewInit {
       setTimeout(() => {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
-      }, 700);
-    });
+      }, 100);
+    })
   }
   ngAfterViewInit(): void {
     this.displayedColumns = this.iColumns()

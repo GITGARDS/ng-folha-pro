@@ -38,11 +38,6 @@ export class GenericsService<T> implements iGenericsService<T> {
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
-
-    const console2 = empresa ? 'empresa' : '----';
-
-    console.log('find all empresa',console2);
-
     const q = empresa
       ? query(
           this.firestore,
@@ -51,7 +46,7 @@ export class GenericsService<T> implements iGenericsService<T> {
         )
       : query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
 
-      console.log('find all q',q);
+    console.log('find all q', q);
 
     return new Observable<T[]>((observer) => {
       onSnapshot(q, (snapshot) => {

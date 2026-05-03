@@ -1,22 +1,20 @@
 import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
-type onDeleteById = (id: number) => void;
-type onUpdateById = (row: any) => void;
 export const EMPRESA_COLUMNS_ACTIONS: TableActionsModel[] = [
   {
     label: 'Editar',
     icon: 'edit',
-    action: typeof<onUpdateById>(row => {}),
+    action: 'editar',
   },
   {
     label: 'Excluir',
     icon: 'delete',
-    action: typeof<onDeleteById>(id => {})
+    action: 'excluir',
   },
   {
     label: 'Login',
     icon: 'login',
-    action: typeof<onUpdateById>(row => {})
+    action: 'login',
   },
 ];
 
@@ -202,7 +200,6 @@ export type EmpresaModel = {
   codigoDeOutrasEntidades: string;
   codigoDePagamentoGps: string;
 };
-
 
 export const MOCK_EMPRESAS: EmpresaModel[] = [
   {

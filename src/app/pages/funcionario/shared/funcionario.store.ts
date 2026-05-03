@@ -42,7 +42,7 @@ export const FuncionarioStore = signalStore(
                 list,
                 isLoading: false,
               }))
-            : patchState(store, { list: [],  isLoading: false });
+            : patchState(store, { list: [], isLoading: false });
         },
       });
     }),
@@ -91,19 +91,9 @@ export const FuncionarioStore = signalStore(
   })),
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
-      // if (empresaService.idEmpresaLogada() === null) return;
-
-      effect(
-        () =>
-          store.carregaLista(
-            empresaService.idEmpresaLogada()
-              ? { empresa: empresaService.idEmpresaLogada() as string }
-              : { empresa: '' },
-          ),
-        {
-          allowSignalWrites: true,
-        },
-      );
+      effect(() => {
+        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
+      });
     },
   })),
 );
