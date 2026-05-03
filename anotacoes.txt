@@ -133,7 +133,6 @@ export class GenericsService<T> {
   }
 
   async deleteById({ id }: { id: string }) {
-    console.log('delete', id);
     const docRef = doc(db, this.path, this.path, id);
     await deleteDoc(docRef);
   }

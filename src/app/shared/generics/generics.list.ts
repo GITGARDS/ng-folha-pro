@@ -90,9 +90,24 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                   >
                     <mat-icon>more_vert</mat-icon>
                   </button>
+
+                  
+
                   <mat-menu #menu="matMenu">
+
+
+
+
                     @for (item of iActions(); track $index) {
-                      @if (item.label === 'Editar') {
+                        <button mat-menu-item (click)="item.action">
+                          <span>action: {{item.action}}</span>
+                          <mat-icon>{{ item.icon }}</mat-icon>
+                          <span>{{ item.label }}</span>
+                        </button>
+
+
+
+                      <!-- @if (item.label === 'Editar') {
                         <button mat-menu-item (click)="onUpdateById(row.id)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
@@ -118,7 +133,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                             <span>{{ item.label }}</span>
                           </button>
                         }
-                      }
+                      } -->
                     }
                   </mat-menu>
                 </td>
@@ -157,7 +172,6 @@ export class GenericsList implements AfterViewInit {
   constructor() {
     effect(() => {
       this.iDataSource().data = this.iStore().list();
-      console.log('lista', this.iStore().list());
       setTimeout(() => {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
@@ -209,7 +223,6 @@ export class GenericsList implements AfterViewInit {
 
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
-      console.log('delete', id);
       this.iStore().deleteById({ id });
     }
   }

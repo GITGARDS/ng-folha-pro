@@ -1,13 +1,18 @@
 import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
+const onUpdateById = (row: any) => {};
+const onDeleteById = (id: any) => {};
+
 export const DEPARTAMENTO_COLUMNS_ACTIONS: TableActionsModel[] = [
   {
     label: 'Editar',
     icon: 'edit',
+    action: onUpdateById,
   },
   {
     label: 'Excluir',
     icon: 'delete',
+    action: onDeleteById,
   },
 ];
 
@@ -16,27 +21,26 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Id',
     field: 'id',
     type: 'string',
-    display: true
+    display: true,
   },
   {
     label: 'Nome',
     field: 'nome',
     type: 'string',
-    display: true
+    display: true,
   },
   {
     label: 'Ativo',
     field: 'ativo',
     type: 'boolean',
-    display: true
+    display: true,
   },
   {
     label: 'Actions',
     field: 'actions',
     type: 'any',
-    display: true
+    display: true,
   },
-
 ];
 
 export type DepartamentoModel = {

@@ -8,4 +8,5 @@ export type TableColumnsModel = {
 export type TableActionsModel = {
   label: string;
   icon: string;
+  action: any;
 };

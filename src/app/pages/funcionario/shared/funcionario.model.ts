@@ -1,15 +1,22 @@
 import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
+type onUpdateById = (row: any) => void;
+type onDeleteById = (id: string) => void;
+
 export const FUNCIONARIO_COLUMNS_ACTIONS: TableActionsModel[] = [
   {
     label: 'Editar',
     icon: 'edit',
+    action: typeof<onUpdateById>(row => {}), 
   },
+
   {
     label: 'Excluir',
     icon: 'delete',
+    action: typeof<onDeleteById>(id => {})
   },
 ];
+
 
 export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
   {
@@ -186,4 +193,3 @@ export const MOCK_FUNCIONARIOS: FuncionarioModel[] = [
     ocorrencia: 'ocorrencia 1',
   },
 ];
-

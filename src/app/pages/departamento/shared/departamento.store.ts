@@ -44,7 +44,6 @@ export const DepartamentoStore = signalStore(
           .pipe(delay(200))
           .subscribe({
             next: (list) => {
-              console.log('findall', list);
               patchState(store, (state) => ({
                 ...state,
                 list,

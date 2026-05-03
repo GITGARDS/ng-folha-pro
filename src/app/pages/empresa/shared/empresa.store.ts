@@ -44,7 +44,6 @@ export const EmpresaStore = signalStore(
           .pipe(delay(200))
           .subscribe({
             next: (list) => {
-              console.log('findall', list);
               patchState(store, (state) => ({
                 ...state,
                 list,
@@ -66,7 +65,6 @@ export const EmpresaStore = signalStore(
       }),
 
       login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
-        console.log('login', data);
         patchState(store, { isLoading: true });
         await new Promise((resolve) => setTimeout(resolve, 100));
         await empresaService.login({ empresa: data as EmpresaModel }).then(() => {

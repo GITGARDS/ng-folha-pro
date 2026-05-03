@@ -9,6 +9,7 @@ import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/mater
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatStepperModule } from "@angular/material/stepper";
 import { NgxMaskDirective } from "ngx-mask";
+import { EmpresaService } from "../empresa/shared/empresa.service";
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -619,6 +620,7 @@ export class FuncionarioForm {
   data = inject<any>(MAT_DIALOG_DATA);
   formAparence: 'fill' | 'outline' = 'fill';
   formOpcao = signal<string>('');
+  empresaService = inject(EmpresaService);
 
   ngOnInit() {
     const { data } = this.data;
@@ -682,7 +684,8 @@ export class FuncionarioForm {
   });
 
   onSubmit() {
-    this.dialogRef.close(this.dataForm.value);
+    const ret = {...this.dataForm.value, empresa: this.empresaService.idEmpresaLogada() as string};
+    this.dialogRef.close(ret);
   }
 
   racaCorSelect = signal([

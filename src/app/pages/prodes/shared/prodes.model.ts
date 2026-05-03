@@ -1,13 +1,17 @@
 import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
 
+type onUpdateById = (row: any) => void;
+type onDeleteById = (id: number) => void;
 export const PRODES_COLUMNS_ACTIONS: TableActionsModel[] = [
   {
     label: 'Editar',
     icon: 'edit',
+    action: typeof (<onUpdateById>((row) => {})),
   },
   {
     label: 'Excluir',
     icon: 'delete',
+    action: typeof (<onDeleteById>((id) => {})),
   },
 ];
 

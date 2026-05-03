@@ -30,7 +30,7 @@ import { NavigationList } from "./navigation-list";
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav
         #drawer
-        class="sidenav !transition !translate !ease-in-out !duration-700"
+        class="sidenav !transition-transform !ease-in-out !duration-700"
         [style.width]="(isHandset$ | async) === true ? '60px' : 'auto'"
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"

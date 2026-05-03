@@ -1,4 +1,4 @@
-import { computed, inject } from "@angular/core";
+import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
@@ -36,11 +36,13 @@ export const FuncionarioStore = signalStore(
       patchState(store, { isLoading: true });
       funcionarioService.findAll({ empresa }).subscribe({
         next: (list) => {
-          patchState(store, (state) => ({
-            ...state,
-            list,
-            isLoading: false,
-          }));
+          list
+            ? patchState(store, (state) => ({
+                ...state,
+                list,
+                isLoading: false,
+              }))
+            : patchState(store, { list: [],  isLoading: false });
         },
       });
     }),
@@ -89,7 +91,19 @@ export const FuncionarioStore = signalStore(
   })),
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
-      store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
+      // if (empresaService.idEmpresaLogada() === null) return;
+
+      effect(
+        () =>
+          store.carregaLista(
+            empresaService.idEmpresaLogada()
+              ? { empresa: empresaService.idEmpresaLogada() as string }
+              : { empresa: '' },
+          ),
+        {
+          allowSignalWrites: true,
+        },
+      );
     },
   })),
 );

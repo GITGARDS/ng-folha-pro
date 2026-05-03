@@ -179,7 +179,6 @@ export class GenericsTables<T extends { id: string | number }>
 
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
-      console.log('delete', id);
       this.store.deleteById({ id });
     }
   }
