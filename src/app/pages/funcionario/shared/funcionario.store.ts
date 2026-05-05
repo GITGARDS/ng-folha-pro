@@ -1,5 +1,6 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { delay } from "rxjs";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -34,15 +35,18 @@ export const FuncionarioStore = signalStore(
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      funcionarioService.findAll({ empresa: empresa }).subscribe({
-        next: (list) => {
-          patchState(store, (state) => ({
-            ...state,
-            list,
-            isLoading: false,
-          }));
-        },
-      });
+      funcionarioService
+        .findAll({ empresa: empresa })
+        .pipe(delay(10))
+        .subscribe({
+          next: (list) => {
+            patchState(store, (state) => ({
+              ...state,
+              list,
+              isLoading: false,
+            }));
+          },
+        });
     }),
     carregaListaVazia: signalMethod(async () => {
       await new Promise((resolve) => setTimeout(resolve, 100));

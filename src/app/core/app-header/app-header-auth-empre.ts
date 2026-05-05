@@ -1,4 +1,4 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, effect, inject, signal } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatIconButton } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -11,14 +11,7 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 @Component({
   selector: 'app-header-auth-empre',
 
-  imports: [
-    MatMenuModule,
-    MatIcon,
-    MatIconButton,
-    MatTooltipModule,
-    MatBadgeModule,
-    MatCardModule,
-  ],
+  imports: [MatMenuModule, MatIcon, MatIconButton, MatTooltipModule, MatBadgeModule, MatCardModule],
 
   template: `
     <!-- <div class="animate-spin flex items-center justify-center"> -->
@@ -90,8 +83,8 @@ export class AppHeaderAuthEmpre {
   totalAtivos = signal<number | null>(null);
 
   constructor() {
-    setTimeout(() => {
-      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
-    }, 700);
+    effect(() => {
+      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);      
+    })
   }
 }

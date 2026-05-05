@@ -16,7 +16,7 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <app-mini-card
         icone="attach_money"
         title="total salario base"
-        [valor]="(funcionarioStore.totalSalarioBase() | currency)"
+        [valor]="funcionarioStore.totalSalarioBase() | currency: 'BRL'"
       />
     </div>
   `,
