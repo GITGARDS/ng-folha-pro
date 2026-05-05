@@ -37,7 +37,7 @@ export const FuncionarioStore = signalStore(
       patchState(store, { isLoading: true });
       funcionarioService
         .findAll({ empresa: empresa })
-        .pipe(delay(10))
+        .pipe(delay(50))
         .subscribe({
           next: (list) => {
             patchState(store, (state) => ({

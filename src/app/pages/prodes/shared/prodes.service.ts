@@ -9,6 +9,6 @@ import { ProdesModel } from "./prodes.model";
 })
 export class ProdesService<T> extends GenericsService<ProdesModel> {
   constructor() {
-    super('prodes', collection(db, 'prodes'), 500, 'descricao', 'asc');
+    super('prodes', collection(db, 'prodes'), 50, 'descricao', 'asc');
   }
 }

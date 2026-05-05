@@ -9,6 +9,6 @@ import { TabelaModel } from "./tabela.model";
 })
 export class TabelaService extends GenericsService<TabelaModel> {
   constructor() {
-    super('tabela', collection(db, 'tabela'), 500, 'referencia', 'desc');
+    super('tabela', collection(db, 'tabela'), 50, 'referencia', 'desc');
   }
 }

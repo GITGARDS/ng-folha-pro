@@ -37,7 +37,7 @@ export const ProdesStore = signalStore(
         patchState(store, { isLoading: true });
         prodesService
           .findAll({})
-          .pipe(delay(200))
+          .pipe(delay(50))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({

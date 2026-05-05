@@ -9,6 +9,6 @@ import { DepartamentoModel } from "./departamento.model";
 })
 export class DepartamentoService<T> extends GenericsService<DepartamentoModel> {
   constructor() {
-    super('departamento', collection(db, 'departamento'), 500, 'nome', 'asc');
+    super('departamento', collection(db, 'departamento'), 50, 'nome', 'asc');
   }
 }

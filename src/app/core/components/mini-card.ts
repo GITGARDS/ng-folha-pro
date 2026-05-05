@@ -30,6 +30,6 @@ export class MiniCard {
   constructor() {
     setTimeout(() => {
       this.valor2.set(this.valor());
-    }, 200);
+    }, 50);
   }
 }

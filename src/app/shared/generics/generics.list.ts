@@ -162,7 +162,7 @@ export class GenericsList implements AfterViewInit {
       setTimeout(() => {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
-      }, 100);
+      }, 50);
     })
   }
   ngAfterViewInit(): void {

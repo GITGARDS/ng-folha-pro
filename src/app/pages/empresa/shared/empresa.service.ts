@@ -10,7 +10,7 @@ import { EmpresaModel } from "./empresa.model";
 export class EmpresaService<T> extends GenericsService<T> {
   idEmpresaLogada = signal<string | number | null>(null);
   constructor() {
-    super('empresa', collection(db, 'empresa'), 500, 'nomeEmpresaRazaoSocial', 'asc');
+    super('empresa', collection(db, 'empresa'), 50, 'nomeEmpresaRazaoSocial', 'asc');
   }
 
   async login({ empresa }: { empresa: EmpresaModel }) {

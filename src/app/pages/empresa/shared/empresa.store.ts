@@ -41,7 +41,7 @@ export const EmpresaStore = signalStore(
         patchState(store, { isLoading: true });
         empresaService
           .findAll({})
-          .pipe(delay(200))
+          .pipe(delay(50))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({

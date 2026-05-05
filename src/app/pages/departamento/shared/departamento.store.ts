@@ -30,14 +30,14 @@ export const DepartamentoStore = signalStore(
       store,
       departamentoService = inject(DepartamentoService),
     ) => ({
-      teste: rxMethod<unknown>(pipe(delay(2000))),
+      teste: rxMethod<unknown>(pipe(delay(50))),
 
       carregaLista: signalMethod(() => {
         if (store.list.length > 0) return;
         patchState(store, { isLoading: true });
         departamentoService
           .findAll({})
-          .pipe(delay(200))
+          .pipe(delay(50))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({
