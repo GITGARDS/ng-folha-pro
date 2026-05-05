@@ -8,8 +8,8 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { TableFilter } from "../../core/components/table-filter";
-import { EmpresaService } from "../../pages/empresa/shared/empresa.service";
+import { EmpresaService } from "../../../pages/empresa/shared/empresa.service";
+import { TableFilter } from "../../components/table-filter";
 import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.model";
 
 @Component({
@@ -94,21 +94,25 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
 
                   <mat-menu #menu="matMenu">
                     @for (item of iActions(); track $index) {
-                      @if (item.label === 'Editar') {
+                      @let idLogada = empresaService.idEmpresaLogada();
+                      @let idLogadaRow = empresaService.idEmpresaLogada() === row.id;
+                      @let logada = idLogada && idLogadaRow;
+
+                      @if (item.label === 'Editar' && !logada) {
                         <button mat-menu-item (click)="onUpdateById(row)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
                         </button>
                       }
-                      @if (item.label === 'Excluir') {
+                      @if (item.label === 'Excluir' && !logada) {
                         <button mat-menu-item (click)="onDeleteById(row.id)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
                         </button>
                       }
                       @if (item.label === 'Login') {
-                        @if (empresaService.idEmpresaLogada()) {
-                          @if (empresaService.idEmpresaLogada() === row.id) {
+                        @if (idLogada) {
+                          @if (idLogadaRow) {
                             <button mat-menu-item (click)="onLogout()">
                               <mat-icon>logout</mat-icon>
                               <span>Logout</span>
@@ -141,7 +145,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
   `,
   styles: ``,
 })
-export class GenericsList implements AfterViewInit {
+export class IList implements AfterViewInit {
   iStore = input<any>();
   iForm = input<any>();
   iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]));
@@ -163,7 +167,7 @@ export class GenericsList implements AfterViewInit {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
       }, 50);
-    })
+    });
   }
   ngAfterViewInit(): void {
     this.displayedColumns = this.iColumns()

@@ -1,4 +1,4 @@
-import { TableActionsModel, TableColumnsModel } from "../../../shared/models/tablecolumns.model";
+import { TableActionsModel, TableColumnsModel } from "../../../core/shared/models/tablecolumns.model";
 
 export const EMPRESA_COLUMNS_ACTIONS: TableActionsModel[] = [
   {

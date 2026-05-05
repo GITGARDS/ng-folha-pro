@@ -1,5 +1,7 @@
 import { inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { delay } from "rxjs";
+import { TIMES } from "../../../core/shared/consts/app.consts";
 import { TabelaModel } from "./tabela.model";
 import { TabelaService } from "./tabela.service";
 
@@ -25,18 +27,21 @@ export const TabelaStore = signalStore(
     carregaLista: signalMethod(() => {
       if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      tabelaService.findAll({}).subscribe({
-        next: (list) => {
-          patchState(store, (state) => ({
-            ...state,
-            list: list,
-            isLoading: false,
-          }));
-        },
-      });
+      tabelaService
+        .findAll({})
+        .pipe(delay(TIMES.timeStore))
+        .subscribe({
+          next: (list) => {
+            patchState(store, (state) => ({
+              ...state,
+              list: list,
+              isLoading: false,
+            }));
+          },
+        });
     }),
     carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       patchState(store, (state) => ({
         ...state,
         list: [],
@@ -45,7 +50,7 @@ export const TabelaStore = signalStore(
 
     create: signalMethod(async ({ data }: { data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       const id = await tabelaService.create({ data: data as TabelaModel });
       patchState(store, (state) => ({
         ...state,
@@ -56,7 +61,7 @@ export const TabelaStore = signalStore(
 
     updateById: signalMethod(async ({ id, data }: { id: string; data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       await tabelaService.updateById({ id, data: data as TabelaModel });
       patchState(store, (state) => ({
         ...state,
@@ -67,7 +72,7 @@ export const TabelaStore = signalStore(
 
     deleteById: signalMethod(async (params: { id: string }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       await tabelaService.deleteById({ id: params.id.toString() });
       patchState(store, (state) => ({
         ...state,

@@ -1,6 +1,7 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { delay } from "rxjs";
+import { TIMES } from "../../../core/shared/consts/app.consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -37,7 +38,7 @@ export const FuncionarioStore = signalStore(
       patchState(store, { isLoading: true });
       funcionarioService
         .findAll({ empresa: empresa })
-        .pipe(delay(50))
+        .pipe(delay(TIMES.timeStore))
         .subscribe({
           next: (list) => {
             patchState(store, (state) => ({
@@ -49,7 +50,7 @@ export const FuncionarioStore = signalStore(
         });
     }),
     carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       patchState(store, (state) => ({
         ...state,
         list: [],
@@ -58,7 +59,7 @@ export const FuncionarioStore = signalStore(
 
     create: signalMethod(async ({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       const id = await funcionarioService.create({ data: data as FuncionarioModel });
       patchState(store, (state) => ({
         ...state,
@@ -70,7 +71,7 @@ export const FuncionarioStore = signalStore(
     updateById: signalMethod(
       async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
         await funcionarioService.updateById({ id, data: data as FuncionarioModel });
         patchState(store, (state) => ({
           ...state,
@@ -82,7 +83,7 @@ export const FuncionarioStore = signalStore(
 
     deleteById: signalMethod(async ({ id }: { id: string }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
       await funcionarioService.deleteById({ id: id.toString() });
       patchState(store, (state) => ({
         ...state,

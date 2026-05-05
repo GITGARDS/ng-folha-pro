@@ -1,16 +1,17 @@
 import { Injectable, signal } from "@angular/core";
 import { collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { GenericsService } from "../../../shared/generics/generics.service";
+import { TIMES } from "../../../core/shared/consts/app.consts";
+import { IService } from "../../../core/shared/generics/i.service";
 import { EmpresaModel } from "./empresa.model";
 
 @Injectable({
   providedIn: 'root',
 })
-export class EmpresaService<T> extends GenericsService<T> {
+export class EmpresaService<T> extends IService<T> {
   idEmpresaLogada = signal<string | number | null>(null);
   constructor() {
-    super('empresa', collection(db, 'empresa'), 50, 'nomeEmpresaRazaoSocial', 'asc');
+    super('empresa', collection(db, 'empresa'), TIMES.timeServices, 'nomeEmpresaRazaoSocial', 'asc');
   }
 
   async login({ empresa }: { empresa: EmpresaModel }) {

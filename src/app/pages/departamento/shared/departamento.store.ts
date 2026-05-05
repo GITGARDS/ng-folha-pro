@@ -2,6 +2,7 @@ import { computed, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
+import { TIMES } from "../../../core/shared/consts/app.consts";
 import { DepartamentoModel } from "./departamento.model";
 import { DepartamentoService } from "./departamento.service";
 
@@ -37,7 +38,7 @@ export const DepartamentoStore = signalStore(
         patchState(store, { isLoading: true });
         departamentoService
           .findAll({})
-          .pipe(delay(50))
+          .pipe(delay(TIMES.timeStore))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({
@@ -51,7 +52,7 @@ export const DepartamentoStore = signalStore(
 
       create: signalMethod(async ({ data }: { data: Partial<DepartamentoModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
         const id = await departamentoService.create({ data: data as DepartamentoModel });
         patchState(store, (state) => ({
           ...state,
@@ -63,7 +64,7 @@ export const DepartamentoStore = signalStore(
       updateById: signalMethod(
         async ({ id, data }: { id: string; data: Partial<DepartamentoModel> }) => {
           patchState(store, { isLoading: true });
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
           await departamentoService.updateById({ id, data: data as DepartamentoModel });
           patchState(store, (state) => ({
             ...state,
@@ -75,7 +76,7 @@ export const DepartamentoStore = signalStore(
 
       deleteById: signalMethod(async ({ id }: { id: string }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
         await departamentoService.deleteById({ id: id.toString() });
         patchState(store, (state) => ({
           ...state,

@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { Observable, delay } from "rxjs";
-import { db } from "../../../firebase";
+import { db } from "../../../../firebase";
 
-interface iGenericsService<T> {
+interface iService<T> {
   findAll({ empresa }: { empresa?: string }): Observable<T[]>;
 
   create({ data }: { data: T }): Promise<string>;
@@ -16,7 +16,7 @@ interface iGenericsService<T> {
 @Injectable({
   providedIn: 'root',
 })
-export class GenericsService<T> implements iGenericsService<T> {
+export class IService<T> implements iService<T> {
   path = '';
   firestore: any;
   isDelay = 0;
