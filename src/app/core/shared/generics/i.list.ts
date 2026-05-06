@@ -138,7 +138,9 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
       </section>
 
       <section>
-        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator #paginator 
+        showFirstLastButtons="true"        
+        [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </section>
     </div>
