@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
 import { AppHeader } from "../app-header/app-header";
 import { NavigationList } from "./navigation-list";
+import { NavigationLoading } from "./navigation-loading";
 
 @Component({
   selector: 'app-navigation',
@@ -24,6 +25,7 @@ import { NavigationList } from "./navigation-list";
     RouterOutlet,
     AppHeader,
     NavigationList,
+    NavigationLoading
   ],
 
   template: `
@@ -61,7 +63,9 @@ import { NavigationList } from "./navigation-list";
         />
         <!-- Add Content Here -->
         <div class="p-4">
-          <router-outlet />
+          <router-outlet>
+            <app-navigation-loading />
+          </router-outlet>
         </div>
       </mat-sidenav-content>
     </mat-sidenav-container>

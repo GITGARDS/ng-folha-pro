@@ -1,7 +1,7 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { delay } from "rxjs";
-import { TIMES } from "../../../core/shared/consts/app.consts";
+import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -38,7 +38,7 @@ export const FuncionarioStore = signalStore(
       patchState(store, { isLoading: true });
       funcionarioService
         .findAll({ empresa: empresa })
-        .pipe(delay(TIMES.timeStore))
+        .pipe(delay(TIME_DELAY))
         .subscribe({
           next: (list) => {
             patchState(store, (state) => ({
@@ -50,7 +50,7 @@ export const FuncionarioStore = signalStore(
         });
     }),
     carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
       patchState(store, (state) => ({
         ...state,
         list: [],
@@ -59,7 +59,7 @@ export const FuncionarioStore = signalStore(
 
     create: signalMethod(async ({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
       const id = await funcionarioService.create({ data: data as FuncionarioModel });
       patchState(store, (state) => ({
         ...state,
@@ -71,7 +71,7 @@ export const FuncionarioStore = signalStore(
     updateById: signalMethod(
       async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         await funcionarioService.updateById({ id, data: data as FuncionarioModel });
         patchState(store, (state) => ({
           ...state,
@@ -83,7 +83,7 @@ export const FuncionarioStore = signalStore(
 
     deleteById: signalMethod(async ({ id }: { id: string }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
       await funcionarioService.deleteById({ id: id.toString() });
       patchState(store, (state) => ({
         ...state,

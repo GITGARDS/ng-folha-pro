@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
-import { TIMES } from "../../../core/shared/consts/app.consts";
+import { TIME_DELAY } from "../../../core/shared/consts";
 import { FuncionarioStore } from "../../funcionario/shared/funcionario.store";
 import { EmpresaModel } from "./empresa.model";
 import { EmpresaService } from "./empresa.service";
@@ -42,7 +42,7 @@ export const EmpresaStore = signalStore(
         patchState(store, { isLoading: true });
         empresaService
           .findAll({})
-          .pipe(delay(TIMES.timeStore))
+          .pipe(delay(TIME_DELAY))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({
@@ -56,7 +56,7 @@ export const EmpresaStore = signalStore(
 
       create: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         const id = await empresaService.create({ data: data as EmpresaModel });
         patchState(store, (state) => ({
           ...state,
@@ -67,7 +67,7 @@ export const EmpresaStore = signalStore(
 
       login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         await empresaService.login({ empresa: data as EmpresaModel }).then(() => {
           patchState(store, (state) => ({
             ...state,
@@ -98,7 +98,7 @@ export const EmpresaStore = signalStore(
 
       updateById: signalMethod(async ({id, data}: { id: string; data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         await empresaService.updateById({ id, data: data as EmpresaModel });
         patchState(store, (state) => ({
           ...state,
@@ -109,7 +109,7 @@ export const EmpresaStore = signalStore(
 
       deleteById: signalMethod(async ({id}: { id: string }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         await empresaService.deleteById({ id: id.toString() });
         patchState(store, (state) => ({
           ...state,

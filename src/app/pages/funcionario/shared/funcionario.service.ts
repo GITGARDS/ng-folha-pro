@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { TIMES } from "../../../core/shared/consts/app.consts";
+import { TIME_DELAY } from "../../../core/shared/consts";
 import { IService } from "../../../core/shared/generics/i.service";
 import { FuncionarioModel } from "./funcionario.model";
 
@@ -10,6 +10,6 @@ import { FuncionarioModel } from "./funcionario.model";
 })
 export class FuncionarioService<T> extends IService<FuncionarioModel> {
   constructor() {
-    super('funcionario', collection(db, 'funcionario'), TIMES.timeServices, 'nome', 'asc');
+    super('funcionario', collection(db, 'funcionario'), TIME_DELAY, 'nome', 'asc');
   }
 }

@@ -2,7 +2,7 @@ import { computed, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
-import { TIMES } from "../../../core/shared/consts/app.consts";
+import { TIME_DELAY } from "../../../core/shared/consts";
 import { ProdesModel } from "./prodes.model";
 import { ProdesService } from "./prodes.service";
 
@@ -38,7 +38,7 @@ export const ProdesStore = signalStore(
         patchState(store, { isLoading: true });
         prodesService
           .findAll({})
-          .pipe(delay(TIMES.timeStore))
+          .pipe(delay(TIME_DELAY))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({
@@ -52,7 +52,7 @@ export const ProdesStore = signalStore(
 
       create: signalMethod(async ({ data }: { data: Partial<ProdesModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         const id = await prodesService.create({ data: data as ProdesModel });
         patchState(store, (state) => ({
           ...state,
@@ -64,7 +64,7 @@ export const ProdesStore = signalStore(
       updateById: signalMethod(
         async ({ id, data }: { id: string; data: Partial<ProdesModel> }) => {
           patchState(store, { isLoading: true });
-          await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+          await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
           await prodesService.updateById({ id, data: data as ProdesModel });
           patchState(store, (state) => ({
             ...state,
@@ -76,7 +76,7 @@ export const ProdesStore = signalStore(
 
       deleteById: signalMethod(async ({ id }: { id: string }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIMES.timeStore));
+        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
         await prodesService.deleteById({ id: id.toString() });
         patchState(store, (state) => ({
           ...state,
