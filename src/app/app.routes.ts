@@ -13,6 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'departamento',
+    canActivate: [empresaGuard],
     loadComponent: () => import('./pages/departamento/departamento'),
   },
   {

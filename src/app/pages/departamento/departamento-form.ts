@@ -1,10 +1,13 @@
 import { UpperCasePipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
+import { DepartamentoModel } from "../departamento/shared/departamento.model";
+import { DepartamentoStore } from "../departamento/shared/departamento.store";
+import { EmpresaService } from "../empresa/shared/empresa.service";
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -12,7 +15,7 @@ import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/mater
 @Component({
   selector: 'app-departamento-form',
   imports: [
-    MatButton,
+    MatButton,  
     MatDialogModule,
     ReactiveFormsModule,
     MatFormField,
@@ -79,6 +82,15 @@ export class DepartamentoForm {
   data = inject<any>(MAT_DIALOG_DATA);
   formAparence: 'fill' | 'outline' = 'fill';
   formOpcao = signal<string>('');
+  empresaService = inject(EmpresaService);
+  departamentoStore = inject(DepartamentoStore);
+  departamentos = signal<DepartamentoModel[]>([]);
+
+  constructor() {
+    effect(() => {
+      this.departamentos.set(this.departamentoStore.list());
+    });
+  }
 
   ngOnInit() {
     const { data } = this.data;
@@ -86,6 +98,8 @@ export class DepartamentoForm {
     this.dataForm.markAllAsTouched();
     this.dataForm.markAsDirty();
     this.formOpcao.set(this.data.opcao);
+    this.departamentos.set(this.departamentoStore.list());
+    console.log('departamentos', this.departamentos());
   }
 
   private fb = inject(FormBuilder);
@@ -97,6 +111,10 @@ export class DepartamentoForm {
   });
 
   onSubmit() {
-    this.dialogRef.close(this.dataForm.value);
+    const ret = {
+      ...this.dataForm.value,
+      empresa: this.empresaService.idEmpresaLogada() as string,
+    };
+    this.dialogRef.close(ret);
   }
 }

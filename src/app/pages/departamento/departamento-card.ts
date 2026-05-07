@@ -1,17 +1,11 @@
 import { Component, inject } from "@angular/core";
-import { MiniCard } from "../../core/components/mini-card";
 import { DepartamentoStore } from "./shared/departamento.store";
 
 @Component({
   selector: 'app-departamento-card',
-  imports: [MiniCard],
+  imports: [],
   template: `
     <div class="flex flex-wrap gap-2">
-      <app-mini-card
-        icone="person_add"
-        title="ativos"
-        [valor]="departamentoStore.totalAtivos().length"
-      />
     </div>
   `,
   styles: `
@@ -21,5 +15,5 @@ import { DepartamentoStore } from "./shared/departamento.store";
   `,
 })
 export default class DepartamentoCard {
-  departamentoStore = inject(DepartamentoStore);  
+  departamentoStore = inject(DepartamentoStore);
 }

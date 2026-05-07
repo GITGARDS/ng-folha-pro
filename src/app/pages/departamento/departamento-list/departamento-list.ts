@@ -8,13 +8,13 @@ import { DepartamentoStore } from "../shared/departamento.store";
   selector: 'app-departamento-list',
   imports: [IList],
   template: `
-    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" [iActions]="actions" />
+    <app-generics-list [iStore]="store" [iForm]="form" [iColumns]="columns" [iActions]="menuActions" />
   `,
   styles: ``,
 })
 export class DepartamentoList {
   store = inject(DepartamentoStore);
   form = DepartamentoForm;
-  columns = DEPARTAMENTO_DISPLAYED_COLUMNS;
-  actions = DEPARTAMENTO_COLUMNS_ACTIONS;
+  columns = DEPARTAMENTO_DISPLAYED_COLUMNS;  
+  menuActions = DEPARTAMENTO_COLUMNS_ACTIONS;
 }
