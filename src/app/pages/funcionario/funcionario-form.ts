@@ -36,9 +36,9 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
-        {{ formOpcao() === 'new' ? 'Novo' : ('Editar' | uppercase) }}
-        /
-        {{ dataForm.value.nome }}
+      {{ formOpcao() === 'new' ? 'Novo' : ('Editar' | uppercase) }}
+      /
+      {{ dataForm.value.nome }}
     </h2>
 
     <mat-dialog-content class="mat-typography">
@@ -63,12 +63,10 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
                   </div>
                 </div>
 
-
-
                 <div class="grid grid-cols-6 gap-2">
                   <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                     <mat-label>Departamento</mat-label>
-                    <mat-select formControlName="departamento" >
+                    <mat-select formControlName="departamento">
                       @for (item of departamentos(); track item.id) {
                         <mat-option [value]="item.id">{{ item.nome }}</mat-option>
                       }
@@ -646,7 +644,7 @@ export class FuncionarioForm {
   constructor() {
     effect(() => {
       this.departamentos.set(this.departamentoStore.list());
-    })
+    });
   }
 
   ngOnInit() {
@@ -714,7 +712,10 @@ export class FuncionarioForm {
   });
 
   onSubmit() {
-    const ret = {...this.dataForm.value, empresa: this.empresaService.idEmpresaLogada() as string};
+    const ret = {
+      ...this.dataForm.value,
+      empresa: this.empresaService.idEmpresaLogada() as string,
+    };
     this.dialogRef.close(ret);
   }
 
