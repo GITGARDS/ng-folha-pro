@@ -1,5 +1,5 @@
 import { UpperCasePipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -9,6 +9,8 @@ import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/mater
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatStepperModule } from "@angular/material/stepper";
 import { NgxMaskDirective } from "ngx-mask";
+import { DepartamentoModel } from "../departamento/shared/departamento.model";
+import { DepartamentoStore } from "../departamento/shared/departamento.store";
 import { EmpresaService } from "../empresa/shared/empresa.service";
 
 /**
@@ -59,6 +61,23 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
                       <mat-error>ativo is <strong>required</strong></mat-error>
                     }
                   </div>
+                </div>
+
+
+
+                <div class="grid grid-cols-6 gap-2">
+                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                    <mat-label>Departamento</mat-label>
+                    <mat-select formControlName="departamento" >
+                      @for (item of departamentos(); track item.id) {
+                        <mat-option [value]="item.id">{{ item.nome }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (dataForm.controls['departamento'].hasError('required')) {
+                      <mat-error><strong>required</strong></mat-error>
+                    }
+                  </mat-form-field>
+                  {{ dataForm.value.departamento }}
                 </div>
 
                 <div class="grid grid-cols-6 gap-2">
@@ -621,6 +640,14 @@ export class FuncionarioForm {
   formAparence: 'fill' | 'outline' = 'fill';
   formOpcao = signal<string>('');
   empresaService = inject(EmpresaService);
+  departamentoStore = inject(DepartamentoStore);
+  departamentos = signal<DepartamentoModel[]>([]);
+
+  constructor() {
+    effect(() => {
+      this.departamentos.set(this.departamentoStore.list());
+    })
+  }
 
   ngOnInit() {
     const { data } = this.data;
@@ -628,6 +655,8 @@ export class FuncionarioForm {
     this.dataForm.markAllAsTouched();
     this.dataForm.markAsDirty();
     this.formOpcao.set(this.data.opcao);
+    this.departamentos.set(this.departamentoStore.list());
+    console.log('departamentos', this.departamentos());
   }
 
   private fb = inject(FormBuilder);
@@ -635,6 +664,7 @@ export class FuncionarioForm {
   dataForm = this.fb.group({
     id: [{ value: '', disabled: true }],
     nome: ['', Validators.required],
+    departamento: ['', Validators.required],
     cpf: [''],
     dataNascimento: ['', Validators.required],
     nomeMae: [''],

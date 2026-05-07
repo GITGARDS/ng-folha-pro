@@ -26,11 +26,17 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Empresa',
     field: 'empresa',
     type: 'string',
-    display: true,
+    display: false,
   },
   {
     label: 'Nome',
     field: 'nome',
+    type: 'string',
+    display: true,
+  },
+  {
+    label: 'Departamento',
+    field: 'departamento',
     type: 'string',
     display: true,
   },
@@ -88,6 +94,7 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
 export type FuncionarioModel = {
   id: string;
   empresa: string;
+  departamento: string;
   nome: string;
   cpf: string;
   dataNascimento: string;
@@ -140,6 +147,7 @@ export type FuncionarioModel = {
 export const MOCK_FUNCIONARIOS: FuncionarioModel[] = [
   {
     id: '1',
+    departamento: '',
     empresa: 'empresa 1',
     nome: 'funcionario 1',
     cpf: '000.000.000-00',
