@@ -17,8 +17,8 @@ interface iService<T> {
   providedIn: 'root',
 })
 export class IService<T> implements iService<T> {
-  path = '';
-  firestore: any;
+  vcollection;
+  vfirestore: any;
   isDelay = 0;
   orderBy = '';
   order = '';
@@ -30,7 +30,7 @@ export class IService<T> implements iService<T> {
     private sorderBy: String,
     private sorder: String,
   ) {
-    this.path = spath as string;
+    this.vcollection = spath as string;
     this.firestore = sfirestone;
     this.isDelay = sisDelay as number;
     this.orderBy = sorderBy as string;
@@ -55,11 +55,11 @@ export class IService<T> implements iService<T> {
     return await addDoc(this.firestore, data as any).then((docRef) => docRef.id);
   }
   async updateById({ id, data }: { id: string; data: Partial<T> }): Promise<void> {
-    const docRef = doc(db, this.path, id);
+    const docRef = doc(db, this.vcollection, id);
     await updateDoc(docRef, { ...data });
   }
   async deleteById({ id }: { id: string }): Promise<void> {
-    const docRef = doc(db, this.path, id);
+    const docRef = doc(db, this.vcollection, id);
     await deleteDoc(docRef);
   }
 }

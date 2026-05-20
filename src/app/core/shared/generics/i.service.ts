@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
-import { onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { Observable, delay } from "rxjs";
+import { db } from "../../../../firebase";
 
 interface iService<T> {
   findAll({ empresa }: { empresa?: string }): Observable<T[]>;
@@ -16,28 +17,28 @@ interface iService<T> {
   providedIn: 'root',
 })
 export class IService<T> implements iService<T> {
-  path = '';
-  firestore: any;
-  isDelay = 0;
-  orderBy = '';
-  order = '';
+  vCollection;
+  vFirestore: any;
+  vIsDelay = 0;
+  vOrderBy = '';
+  vOrder = '';
 
   constructor(
-    private spath: String,
-    private sfirestone: Object,
-    private sisDelay: Number,
-    private sorderBy: String,
-    private sorder: String,
+    private vcollection: String,
+    private vfirestore: Object,
+    private visDelay: Number,
+    private vorderBy: String,
+    private vorder: String,
   ) {
-    this.path = spath as string;
-    this.firestore = sfirestone;
-    this.isDelay = sisDelay as number;
-    this.orderBy = sorderBy as string;
-    this.order = sorder as string;
+    this.vCollection = vcollection as string;
+    this.vFirestore = vfirestore as any;
+    this.vIsDelay = visDelay as number;
+    this.vOrderBy = vorderBy as string;
+    this.vOrder = vorder as string;
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
-    const q = query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
+    const q = query(this.vFirestore, orderBy(this.vOrderBy, this.vOrder as 'asc' | 'desc'));
     return new Observable<T[]>((observer) => {
       onSnapshot(q, (snapshot) => {
         const items: T[] = snapshot.docs
@@ -45,47 +46,41 @@ export class IService<T> implements iService<T> {
           .map((d) => ({ id: d.id, ...(d.data() as T) }));
         observer.next(items);
       });
-    }).pipe(delay(this.isDelay as number));
+    }).pipe(delay(this.vIsDelay as number));
   }
   create({ data }: { data: T }): Observable<string> {
     return new Observable<string>((observer) => {
-      this.firestore
-        .collection(this.path)
-        .add(data)
+      addDoc(this.vFirestore, data as any)
         .then((docRef: any) => {
           observer.next(docRef.id);
         })
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.isDelay as number));
+    }).pipe(delay(this.vIsDelay as number));
   }
   updateById({ id, data }: { id: string; data: Partial<T> }): Observable<void> {
     return new Observable<void>((observer) => {
-      this.firestore
-        .collection(this.path)
-        .doc(id)
-        .update(data)
+      const docRef = doc(db, this.vCollection, id);
+      updateDoc(docRef, { ...data })
         .then(() => {
           observer.next();
         })
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.isDelay as number));
+    }).pipe(delay(this.vIsDelay as number));
   }
   deleteById({ id }: { id: string }): Observable<void> {
     return new Observable<void>((observer) => {
-      this.firestore
-        .collection(this.path)
-        .doc(id)
-        .delete()
+      const docRef = doc(db, this.vCollection, id);
+      deleteDoc(docRef)
         .then(() => {
           observer.next();
         })
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.isDelay as number));
+    }).pipe(delay(this.vIsDelay as number));
   }
 }
