@@ -1,5 +1,5 @@
 import { computed, effect, inject } from "@angular/core";
-import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { DepartamentoModel } from "./departamento.model";
@@ -21,11 +21,16 @@ export const DepartamentoStore = signalStore(
   },
   withState(initialState),
 
+  withProps(() => ({
+    empresaService: inject(EmpresaService),
+    departamentoService: inject(DepartamentoService),
+  })),
+
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods((store, departamentoService = inject(DepartamentoService)) => ({
+  withMethods(({ departamentoService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       departamentoService.findAll({ empresa: empresa }).subscribe({
@@ -98,7 +103,7 @@ export const DepartamentoStore = signalStore(
     }),
   })),
 
-  withHooks((store, empresaService = inject(EmpresaService)) => ({
+  withHooks(({ empresaService, ...store }) => ({
     onInit() {
       effect(() => {
         store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });

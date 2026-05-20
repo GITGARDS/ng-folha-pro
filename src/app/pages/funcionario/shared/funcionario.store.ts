@@ -1,5 +1,6 @@
 import { computed, effect, inject } from "@angular/core";
-import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
+import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
+import { addEntity, withEntities } from "@ngrx/signals/entities";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
@@ -19,8 +20,14 @@ export const FuncionarioStore = signalStore(
   {
     providedIn: 'root',
   },
+  withEntities<FuncionarioModel>(),
+
   withState(initialState),
 
+  withProps(() => ({
+    empresaService: inject(EmpresaService),
+    funcionarioService: inject(FuncionarioService),
+  })),
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
     totalSalarioBase: computed(() =>
@@ -31,7 +38,7 @@ export const FuncionarioStore = signalStore(
     ),
   })),
 
-  withMethods((store, funcionarioService = inject(FuncionarioService)) => ({
+  withMethods(({ funcionarioService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       funcionarioService.findAll({ empresa: empresa }).subscribe({
@@ -69,6 +76,20 @@ export const FuncionarioStore = signalStore(
       });
     }),
 
+    create2: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
+      patchState(store, { isLoading: true });
+
+      const newId = crypto.randomUUID();
+      data.id = newId;
+      addEntity(data as FuncionarioModel);
+
+      patchState(store, (state) => ({
+        ...state,
+        list: [...state.list, data as FuncionarioModel],
+        isLoading: false,
+      }));
+    }),
+
     updateById: signalMethod(
       async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
@@ -104,7 +125,7 @@ export const FuncionarioStore = signalStore(
     }),
   })),
 
-  withHooks((store, empresaService = inject(EmpresaService)) => ({
+  withHooks(({ empresaService, ...store }) => ({
     onInit() {
       effect(() => {
         store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
