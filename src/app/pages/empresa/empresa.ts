@@ -25,9 +25,9 @@ import { EmpresaStore } from "./shared/empresa.store";
       <app-navigation-title [title]="title" />
       <app-empresa-card />
       <app-button-novo (onCreate)="onCreate()" />      
-      <div class="h-[50vh] relative rounded-lg flex flex-col">
+      <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="empresaStore.isLoading()" />
-        <div class="h-[50vh] overflow-hidden">
+        <div class="h-[60vh] overflow-hidden">
           @if (empresaStore.list().length > 0) {
             <app-empresa-list />
           } @else {

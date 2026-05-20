@@ -1,6 +1,4 @@
 import { Injectable, signal } from "@angular/core";
-import { collection } from "firebase/firestore";
-import { db } from "../../../../firebase";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { IService } from "../../../core/shared/generics/i.service";
 import { EmpresaModel } from "./empresa.model";
@@ -12,7 +10,7 @@ export class EmpresaService<T> extends IService<T> {
   idEmpresaLogada = signal<string | number | null>(null);
   constructor() {
     // super('empresa', TIME_DELAY);
-    super('empresa', collection(db, 'empresa'), TIME_DELAY, 'nomeEmpresaRazaoSocial', 'asc');
+    super('empresa', 'nomeEmpresaRazaoSocial', 'asc', TIME_DELAY);
   }
 
   async login({ empresa }: { empresa: EmpresaModel }) {

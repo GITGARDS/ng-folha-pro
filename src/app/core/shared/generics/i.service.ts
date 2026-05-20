@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { Observable, delay } from "rxjs";
 import { db } from "../../../../firebase";
 
@@ -17,28 +17,22 @@ interface iService<T> {
   providedIn: 'root',
 })
 export class IService<T> implements iService<T> {
-  vCollection;
   vFirestore: any;
-  vIsDelay = 0;
-  vOrderBy = '';
-  vOrder = '';
 
   constructor(
     private vcollection: String,
-    private vfirestore: Object,
-    private visDelay: Number,
     private vorderBy: String,
     private vorder: String,
+    private visDelay: Number,
   ) {
-    this.vCollection = vcollection as string;
-    this.vFirestore = vfirestore as any;
-    this.vIsDelay = visDelay as number;
-    this.vOrderBy = vorderBy as string;
-    this.vOrder = vorder as string;
+    this.vFirestore = collection(db, vcollection as string);
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
-    const q = query(this.vFirestore, orderBy(this.vOrderBy, this.vOrder as 'asc' | 'desc'));
+    const q = query(
+      this.vFirestore as any,
+      orderBy(this.vorderBy as string, this.vorder as 'asc' | 'desc'),
+    );
     return new Observable<T[]>((observer) => {
       onSnapshot(q, (snapshot) => {
         const items: T[] = snapshot.docs
@@ -46,22 +40,22 @@ export class IService<T> implements iService<T> {
           .map((d) => ({ id: d.id, ...(d.data() as T) }));
         observer.next(items);
       });
-    }).pipe(delay(this.vIsDelay as number));
+    }).pipe(delay(this.visDelay as number));
   }
   create({ data }: { data: T }): Observable<string> {
     return new Observable<string>((observer) => {
-      addDoc(this.vFirestore, data as any)
+      addDoc(this.vFirestore as any, data as any)
         .then((docRef: any) => {
           observer.next(docRef.id);
         })
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.vIsDelay as number));
+    }).pipe(delay(this.visDelay as number));
   }
   updateById({ id, data }: { id: string; data: Partial<T> }): Observable<void> {
     return new Observable<void>((observer) => {
-      const docRef = doc(db, this.vCollection, id);
+      const docRef = doc(db, this.vcollection as string, id);
       updateDoc(docRef, { ...data })
         .then(() => {
           observer.next();
@@ -69,11 +63,11 @@ export class IService<T> implements iService<T> {
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.vIsDelay as number));
+    }).pipe(delay(this.visDelay as number));
   }
   deleteById({ id }: { id: string }): Observable<void> {
     return new Observable<void>((observer) => {
-      const docRef = doc(db, this.vCollection, id);
+      const docRef = doc(db, this.vcollection as string, id);
       deleteDoc(docRef)
         .then(() => {
           observer.next();
@@ -81,6 +75,6 @@ export class IService<T> implements iService<T> {
         .catch((error: any) => {
           observer.error(error);
         });
-    }).pipe(delay(this.vIsDelay as number));
+    }).pipe(delay(this.visDelay as number));
   }
 }

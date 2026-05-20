@@ -139,7 +139,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
         </mat-card>
       </section>
 
-      <section class="h-auto">
+      <section class="h-[10vh]">
         <mat-paginator
           #paginator
           showFirstLastButtons="true"
