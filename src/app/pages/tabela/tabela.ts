@@ -18,9 +18,9 @@ import { TabelaList } from "./tabela-list/tabela-list";
       <app-navigation-title [title]="title" />
       <app-tabela-card />
       <app-button-novo (onCreate)="onCreate()"/>
-      <div class="h-[50vh] relative rounded-lg flex flex-col">
+      <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="tabelaStore.isLoading()" />
-        <div class="h-[50vh] overflow-hidden">
+        <div class="h-[60vh] overflow-hidden">
           @if (tabelaStore.list().length > 0) {
             <app-tabela-list />
           } @else {

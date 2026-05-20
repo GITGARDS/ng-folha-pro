@@ -1,14 +1,16 @@
-import { Component, inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { ButtonNovo } from "../../core/components/button-novo";
-import { InfoCard } from "../../core/components/info-card";
-import { IsLoading } from "../../core/components/isLoading";
-import { NavigationTitle } from "../../core/navigation/navigation-title";
+import { Component, inject } from "@angular/core";
+
 import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
-import DepartamentoCard from "./departamento-card";
-import { DepartamentoForm } from "./departamento-form";
+import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { DepartamentoList } from "./departamento-list/departamento-list";
 import { DepartamentoStore } from "./shared/departamento.store";
+import { ButtonNovo } from "../../core/components/button-novo";
+import { IsLoading } from "../../core/components/isLoading";
+import { InfoCard } from "../../core/components/info-card";
+import { DepartamentoForm } from "./departamento-form";
+import DepartamentoCard from "./departamento-card";
+
 
 @Component({
   selector: 'app-departamento',
@@ -18,9 +20,9 @@ import { DepartamentoStore } from "./shared/departamento.store";
       <app-navigation-title [title]="title" />
       <app-departamento-card />
       <app-button-novo (onCreate)="onCreate()"/>
-      <div class="h-[50vh] relative rounded-lg flex flex-col">
+      <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="departamentoStore.isLoading()" />
-        <div class="h-[50vh] overflow-hidden">
+        <div class="h-[60vh] overflow-hidden">
           @if (departamentoStore.list().length > 0) {
             <app-departamento-list />
           } @else {

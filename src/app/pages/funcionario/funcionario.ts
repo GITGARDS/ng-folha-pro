@@ -1,6 +1,7 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+
 import { ButtonNovo } from "../../core/components/button-novo";
 import { InfoCard } from "../../core/components/info-card";
 import { IsLoading } from "../../core/components/isLoading";
@@ -10,6 +11,7 @@ import FuncionarioCard from "./funcionario-card";
 import { FuncionarioForm } from "./funcionario-form";
 import { FuncionarioList } from "./funcionario-list/funcionario-list";
 import { FuncionarioStore } from "./shared/funcionario.store";
+
 
 @Component({
   selector: 'app-funcionario',
@@ -26,9 +28,9 @@ import { FuncionarioStore } from "./shared/funcionario.store";
       <app-navigation-title [title]="title" />
       <app-funcionario-card />
       <app-button-novo (onCreate)="onCreate()"/>
-      <div class="h-[50vh] relative rounded-lg flex flex-col">
+      <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="funcionarioStore.isLoading()" />
-        <div class="h-[50vh] overflow-hidden">
+        <div class="h-[60vh] overflow-hidden">
           @if (funcionarioStore.list().length > 0) {
             <app-funcionario-list />
           } @else {
