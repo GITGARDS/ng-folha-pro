@@ -83,7 +83,9 @@ export class AppHeaderAuthEmpre {
 
   constructor() {
     effect(() => {
-      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+      setTimeout(() => {
+        this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+      }, 500);
     });
   }
 }
