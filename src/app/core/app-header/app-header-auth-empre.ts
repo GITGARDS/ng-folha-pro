@@ -35,8 +35,7 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
     >
       @if (totalAtivos() === null) {
         <div class="animate-spin flex items-center justify-center">
-          <!-- <mat-icon>change_circle</mat-icon> -->
-          <mat-icon>flip_camera_android</mat-icon>
+          <mat-icon>account_circle</mat-icon>
         </div>
       } @else {
         <mat-icon>account_circle</mat-icon>
