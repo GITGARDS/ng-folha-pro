@@ -34,19 +34,17 @@ export const FuncionarioStore = signalStore(
   withMethods((store, funcionarioService = inject(FuncionarioService)) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
-      funcionarioService
-        .findAll({ empresa: empresa })
-        .subscribe({
-          next: (list) => {
-            patchState(store, (state) => ({
-              ...state,
-              list,
-              isLoading: false,
-            }));
-          },
-          error: () => patchState(store, { isLoading: false }),
-          complete: () => patchState(store, { isLoading: false }),
-        });
+      funcionarioService.findAll({ empresa: empresa }).subscribe({
+        next: (list) => {
+          patchState(store, (state) => ({
+            ...state,
+            list,
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
     carregaListaVazia: signalMethod(async () => {
       await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
@@ -79,7 +77,7 @@ export const FuncionarioStore = signalStore(
             patchState(store, (state) => ({
               ...state,
               list: state.list.map((f) =>
-                f.id === id ? { ...f, ...data as FuncionarioModel } : f,
+                f.id === id ? { ...f, ...(data as FuncionarioModel) } : f,
               ),
               isLoading: false,
             }));
@@ -109,8 +107,8 @@ export const FuncionarioStore = signalStore(
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
       effect(() => {
-        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });          
-      });      
+        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
+      });
     },
   })),
 );

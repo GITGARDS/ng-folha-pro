@@ -1,4 +1,4 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, effect, inject, signal } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatIconButton } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -82,6 +82,8 @@ export class AppHeaderAuthEmpre {
   totalAtivos = signal<number | null>(null);
 
   constructor() {
-    this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+    effect(() => {
+      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+    });
   }
 }
