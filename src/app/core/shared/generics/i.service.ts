@@ -40,7 +40,8 @@ export class IService<T> implements iService<T> {
           .map((d) => ({ id: d.id, ...(d.data() as T) }));
         observer.next(items);
       });
-    }).pipe(delay(this.visDelay as number + 500));
+    // }).pipe(delay(this.visDelay as number + 500));
+    }).pipe(delay(this.visDelay as number * 3));
   }
   create({ data }: { data: T }): Observable<string> {
     return new Observable<string>((observer) => {
