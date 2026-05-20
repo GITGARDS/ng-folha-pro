@@ -1,6 +1,5 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { delay } from "rxjs";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
@@ -34,11 +33,9 @@ export const FuncionarioStore = signalStore(
 
   withMethods((store, funcionarioService = inject(FuncionarioService)) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
-      if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
       funcionarioService
         .findAll({ empresa: empresa })
-        .pipe(delay(TIME_DELAY))
         .subscribe({
           next: (list) => {
             patchState(store, (state) => ({
@@ -47,6 +44,8 @@ export const FuncionarioStore = signalStore(
               isLoading: false,
             }));
           },
+          error: () => patchState(store, { isLoading: false }),
+          complete: () => patchState(store, { isLoading: false }),
         });
     }),
     carregaListaVazia: signalMethod(async () => {
@@ -59,47 +58,59 @@ export const FuncionarioStore = signalStore(
 
     create: signalMethod(async ({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      const id = await funcionarioService.create({ data: data as FuncionarioModel });
-      patchState(store, (state) => ({
-        ...state,
-        list: [...state.list, { ...(data as FuncionarioModel), id }],
-        isLoading: false,
-      }));
+      funcionarioService.create({ data: data as FuncionarioModel }).subscribe({
+        next: (id) => {
+          patchState(store, (state) => ({
+            ...state,
+            list: [...state.list, { ...(data as FuncionarioModel), id }],
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
 
     updateById: signalMethod(
       async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-        await funcionarioService.updateById({ id, data: data as FuncionarioModel });
-        patchState(store, (state) => ({
-          ...state,
-          list: state.list.map((f) => (f.id === id ? { ...f, ...(data as FuncionarioModel) } : f)),
-          isLoading: false,
-        }));
+        funcionarioService.updateById({ id, data: data as FuncionarioModel }).subscribe({
+          next: () => {
+            patchState(store, (state) => ({
+              ...state,
+              list: state.list.map((f) =>
+                f.id === id ? { ...f, ...data as FuncionarioModel } : f,
+              ),
+              isLoading: false,
+            }));
+          },
+          error: () => patchState(store, { isLoading: false }),
+          complete: () => patchState(store, { isLoading: false }),
+        });
       },
     ),
 
-    deleteById: signalMethod(async ({ id }: { id: string }) => {
+    deleteById: signalMethod(async (params: { id: string }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      await funcionarioService.deleteById({ id: id.toString() });
-      patchState(store, (state) => ({
-        ...state,
-        list: state.list.filter((f) => f.id !== id.toString()),
-        isLoading: false,
-      }));
+      funcionarioService.deleteById({ id: params.id.toString() }).subscribe({
+        next: () => {
+          patchState(store, (state) => ({
+            ...state,
+            list: state.list.filter((f) => f.id !== params.id.toString()),
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
   })),
+
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
       effect(() => {
-        (store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string }),
-          {
-            allowSignalWrites: true,
-          });
-      });
+        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });          
+      });      
     },
   })),
 );

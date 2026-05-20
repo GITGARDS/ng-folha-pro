@@ -8,7 +8,7 @@ import { NavigationModel } from "./shared/navigation-model";
   imports: [MatIconModule, MatToolbar],
 
   template: `
-    <mat-toolbar>
+    <mat-toolbar class="!px-0">
       <div class="flex gap-2">
         <mat-icon mat-list-icon>{{ title().icon }}</mat-icon>
         <h3 mat-line>{{ title().label }}</h3>

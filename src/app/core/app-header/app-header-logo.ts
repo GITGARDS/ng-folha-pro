@@ -1,18 +1,16 @@
 import { Component, signal } from "@angular/core";
+import { MatButton } from "@angular/material/button";
 import { Title } from "@angular/platform-browser";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-header-logo',
-  imports: [],
+  imports: [MatButton, RouterLink],
 
   template: `
-    <div class="h-8 w-8">
-      <p
-        class="w-full h-full flex items-center justify-center text-lg p-1 rounded-full font-bold bg-gray-900 text-white"
-      >
-        FP
-      </p>
-    </div>
+    <a matButton="tonal" routerLink="/">
+      <span class="font-bold">FP</span>
+    </a>
   `,
   styles: `
     .flex {

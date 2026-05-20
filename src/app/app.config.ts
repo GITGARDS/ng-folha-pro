@@ -1,3 +1,4 @@
+import { provideHttpClient } from "@angular/common/http";
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from "@angular/core";
 import { provideRouter, withViewTransitions } from "@angular/router";
 import { provideEnvironmentNgxMask } from "ngx-mask";
@@ -8,5 +9,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withViewTransitions()),
     provideEnvironmentNgxMask(),
+    provideHttpClient(),
   ]
 };

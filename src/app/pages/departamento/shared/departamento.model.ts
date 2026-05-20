@@ -15,14 +15,14 @@ export const DEPARTAMENTO_COLUMNS_ACTIONS: TableActionsModel[] = [
 
 export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
   {
-    label: 'Id',
-    field: 'id',
+    label: 'Empresa',
+    field: 'empresa',
     type: 'string',
     display: true,
   },
   {
-    label: 'Empresa',
-    field: 'empresa',
+    label: 'Id',
+    field: 'id',
     type: 'string',
     display: true,
   },

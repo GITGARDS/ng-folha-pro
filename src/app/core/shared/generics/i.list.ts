@@ -10,6 +10,7 @@ import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { EmpresaService } from "../../../pages/empresa/shared/empresa.service";
 import { TableFilter } from "../../components/table-filter";
+import { TIME_DELAY } from "../consts";
 import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.model";
 
 @Component({
@@ -22,21 +23,22 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     MatMenuModule,
     MatIcon,
     MatIconButton,
-    MatCard,
     CurrencyPipe,
     DatePipe,
     JsonPipe,
+    MatCard,
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
-      <section class="flex flex-col gap-2">
-        <app-table-filter (applyFilter)="applyFilter($event)" (onCreate)="onCreate()" />
+      <section class="h-[10vh]">
+        <app-table-filter (applyFilter)="applyFilter($event)" />
+      </section>
 
+      <section class="flex flex-col gap-2">
         <mat-card class="py-2" appearance="outlined">
-          <div class="h-[60vh] overflow-auto">
+          <div class="h-[calc(34vh-2vh)] overflow-auto">
             <table mat-table [dataSource]="iDataSource()" matSort>
               <!-- Id Column -->
-
               @for (
                 item of colunas.filter((f) => f.field !== 'actions' && f.field !== 'logada');
                 track $index
@@ -137,10 +139,13 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
         </mat-card>
       </section>
 
-      <section>
-        <mat-paginator #paginator 
-        showFirstLastButtons="true"        
-        [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+      <section class="h-auto">
+        <mat-paginator
+          #paginator
+          showFirstLastButtons="true"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+        >
         </mat-paginator>
       </section>
     </div>
@@ -168,7 +173,7 @@ export class IList implements AfterViewInit {
       setTimeout(() => {
         this.iDataSource().sort = this.sort() as MatSort;
         this.iDataSource().paginator = this.paginator() as MatPaginator;
-      }, 50);
+      }, TIME_DELAY);
     });
   }
   ngAfterViewInit(): void {
@@ -177,15 +182,11 @@ export class IList implements AfterViewInit {
       ?.map((col) => col.field) as string[];
     this.colunas = this.iColumns() as TableColumnsModel[];
   }
-  onCreate() {
-    const ultimoTabela = this.iStore().list().length + 1;
-    const novo: Partial<any> = {} as any;
-    this.openDialog('new', novo as any);
-  }
+
+  readonly dialog = inject(MatDialog);
   onUpdateById(params: any) {
     this.openDialog('update', params);
   }
-  readonly dialog = inject(MatDialog);
   openDialog(opcao: string, data: any) {
     const dialogRef = this.dialog.open(this.iForm(), {
       width: 'auto',
@@ -198,22 +199,12 @@ export class IList implements AfterViewInit {
       if (!result) {
         return;
       }
-      switch (opcao) {
-        case 'new':
-          this.iStore().create({
-            data: result as any,
-          });
-          break;
-        case 'update':
-          this.iStore().updateById({
-            id: data.id as string,
-            data: result as any,
-          });
-          break;
-      }
+      this.iStore().updateById({
+        id: data.id as string,
+        data: result as any,
+      });
     });
   }
-
   onDeleteById(id: string) {
     if (confirm('Deseja realmente excluir?')) {
       this.iStore().deleteById({ id });

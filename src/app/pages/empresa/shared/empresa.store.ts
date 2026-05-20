@@ -38,11 +38,9 @@ export const EmpresaStore = signalStore(
       teste: rxMethod<unknown>(pipe(delay(2000))),
 
       carregaLista: signalMethod(() => {
-        if (store.list.length > 0) return;
         patchState(store, { isLoading: true });
         empresaService
           .findAll({})
-          .pipe(delay(TIME_DELAY))
           .subscribe({
             next: (list) => {
               patchState(store, (state) => ({
@@ -51,18 +49,24 @@ export const EmpresaStore = signalStore(
                 isLoading: false,
               }));
             },
+            error: () => patchState(store, { isLoading: false }),
+            complete: () => patchState(store, { isLoading: false }),
           });
       }),
 
       create: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-        const id = await empresaService.create({ data: data as EmpresaModel });
-        patchState(store, (state) => ({
-          ...state,
-          list: [...state.list, { ...(data as EmpresaModel), id }],
-          isLoading: false,
-        }));
+        empresaService.create({ data: data as EmpresaModel }).subscribe({
+          next: (id) => {
+            patchState(store, (state) => ({
+              ...state,
+              list: [...state.list, { ...(data as EmpresaModel), id }],
+              isLoading: false,
+            }));
+          },
+          error: () => patchState(store, { isLoading: false }),
+          complete: () => patchState(store, { isLoading: false }),
+        });
       }),
 
       login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
@@ -96,26 +100,38 @@ export const EmpresaStore = signalStore(
         }
       },
 
-      updateById: signalMethod(async ({id, data}: { id: string; data: Partial<EmpresaModel> }) => {
-        patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-        await empresaService.updateById({ id, data: data as EmpresaModel });
-        patchState(store, (state) => ({
-          ...state,
-          list: state.list.map((f) => (f.id === id ? { ...f, ...data } : f)),
-          isLoading: false,
-        }));
-      }),
+      updateById: signalMethod(
+        async ({ id, data }: { id: string; data: Partial<EmpresaModel> }) => {
+          patchState(store, { isLoading: true });
+          empresaService.updateById({ id, data: data as EmpresaModel }).subscribe({
+            next: () => {
+              patchState(store, (state) => ({
+                ...state,
+                list: state.list.map((f) =>
+                  f.id === id ? { ...f, ...(data as EmpresaModel) } : f,
+                ),
+                isLoading: false,
+              }));
+            },
+            error: () => patchState(store, { isLoading: false }),
+            complete: () => patchState(store, { isLoading: false }),
+          });
+        },
+      ),
 
-      deleteById: signalMethod(async ({id}: { id: string }) => {
+      deleteById: signalMethod(async (params: { id: string }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-        await empresaService.deleteById({ id: id.toString() });
-        patchState(store, (state) => ({
-          ...state,
-          list: state.list.filter((f) => f.id !== id.toString()),
-          isLoading: false,
-        }));
+        empresaService.deleteById({ id: params.id.toString() }).subscribe({
+          next: () => {
+            patchState(store, (state) => ({
+              ...state,
+              list: state.list.filter((f) => f.id !== params.id.toString()),
+              isLoading: false,
+            }));
+          },
+          error: () => patchState(store, { isLoading: false }),
+          complete: () => patchState(store, { isLoading: false }),
+        });
       }),
     }),
   ),

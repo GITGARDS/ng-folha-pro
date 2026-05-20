@@ -654,7 +654,6 @@ export class FuncionarioForm {
     this.dataForm.markAsDirty();
     this.formOpcao.set(this.data.opcao);
     this.departamentos.set(this.departamentoStore.list());
-    console.log('departamentos', this.departamentos());
   }
 
   private fb = inject(FormBuilder);

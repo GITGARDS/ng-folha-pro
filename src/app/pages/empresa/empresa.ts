@@ -1,35 +1,75 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { ButtonNovo } from "../../core/components/button-novo";
+import { InfoCard } from "../../core/components/info-card";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { EMPRESA } from "../../core/navigation/shared/navigation-model";
 import EmpresaCard from "./empresa-card";
+import { EmpresaForm } from "./empresa-form";
 import { EmpresaList } from "./empresa-list/empresa-list";
 import { EmpresaStore } from "./shared/empresa.store";
 
 @Component({
   selector: 'app-empresa',
-  imports: [NavigationTitle, IsLoading, EmpresaList, EmpresaCard],
+  imports: [
+    NavigationTitle,
+    IsLoading,
+    EmpresaList,
+    EmpresaCard,
+    InfoCard,
+    ButtonNovo,
+  ],
   template: `
-    <section>
-      <div class="flex flex-wrap items-center">
-        <app-navigation-title [title]="title" />
-        <app-empresa-card />
+    <div class="flex flex-col gap-2">
+      <app-navigation-title [title]="title" />
+      <app-empresa-card />
+      <app-button-novo (onCreate)="onCreate()" />      
+      <div class="h-[50vh] relative rounded-lg flex flex-col">
+        <app-is-loading [isLoading]="empresaStore.isLoading()" />
+        <div class="h-[50vh] overflow-hidden">
+          @if (empresaStore.list().length > 0) {
+            <app-empresa-list />
+          } @else {
+            <app-info-card />
+          }
+        </div>
       </div>
-    </section>
-    <section class="h-[calc(100vh-200px)] relative">
-      <app-is-loading [isLoading]="empresaStore.isLoading()" />
-      <app-empresa-list />
-    </section>
+    </div>
   `,
   styles: `
     :host {
-      display: block;
-      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
   `,
 })
 export default class Empresa {
   title = EMPRESA;
-  isLoading = signal<boolean>(false);
   empresaStore = inject(EmpresaStore);
+
+  readonly dialog = inject(MatDialog);
+  onCreate() {
+    const ultimoTabela = this.empresaStore.list().length + 1;
+    const novo: Partial<any> = {} as any;
+    this.openDialog('new', novo as any);
+  }
+  openDialog(opcao: string, data: any) {
+    const dialogRef = this.dialog.open(EmpresaForm, {
+      width: 'auto',
+      height: '750px',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '300ms',
+      data: { opcao, data },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      this.empresaStore.create({
+        data: result as any,
+      });
+    });
+  }
 }

@@ -10,7 +10,9 @@ import { ProdesStore } from "./shared/prodes.store";
       <app-mini-card
         icone="person_add"
         title="ativos"
-        [valor]="prodesStore.totalAtivos().length"
+        [valor]="this.prodesStore.totalAtivos().length"
+        bg="bg-linear-to-b from-blue-400 via-blue-600 to-blue-800"
+        text="text-white"
       />
     </div>
   `,

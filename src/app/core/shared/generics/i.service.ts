@@ -1,65 +1,54 @@
-import { Injectable } from "@angular/core";
-import { addDoc, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
-import { Observable, delay } from "rxjs";
-import { db } from "../../../../firebase";
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable, delay, map } from "rxjs";
 
 interface iService<T> {
   findAll({ empresa }: { empresa?: string }): Observable<T[]>;
 
-  create({ data }: { data: T }): Promise<string>;
+  create({ data }: { data: T }): Observable<string>;
 
-  updateById({ id, data }: { id: string; data: Partial<T> }): Promise<void>;
+  updateById({ id, data }: { id: string; data: Partial<T> }): Observable<void>;
 
-  deleteById({ id }: { id: string }): Promise<void>;
+  deleteById({ id }: { id: string }): Observable<void>;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class IService<T> implements iService<T> {
-  path = '';
-  firestore: any;
+  url = '';
   isDelay = 0;
-  orderBy = '';
-  order = '';
-
+  http = inject(HttpClient);
   constructor(
-    private spath: String,
-    private sfirestone: Object,
+    private tabela: String,
     private sisDelay: Number,
-    private sorderBy: String,
-    private sorder: String,
   ) {
-    this.path = spath as string;
-    this.firestore = sfirestone;
+    this.url = `http://localhost:3001/${this.tabela}`;
     this.isDelay = sisDelay as number;
-    this.orderBy = sorderBy as string;
-    this.order = sorder as string;
   }
 
   findAll({ empresa }: { empresa?: string }): Observable<T[]> {
-    const q = query(this.firestore, orderBy(this.orderBy, this.order as 'asc' | 'desc'));
-    return new Observable<T[]>((observer) => {
-      onSnapshot(q, (snapshot) => {
-        const items: T[] = snapshot.docs
-          .filter((f: any) => (empresa ? f.data().empresa === empresa : f))
-          .map((d) => ({
-            id: d.id,
-            ...(d.data() as T),
-          }));
-        observer.next(items);
-      });
-    }).pipe(delay(this.isDelay as number));
+    return this.http.get<T[]>(this.url).pipe(
+      delay(this.isDelay as number),
+      map((res: any) => (empresa ? res.filter((f: any) => f.empresa === empresa) : res)),
+    );
   }
-  async create({ data }: { data: T }): Promise<string> {
-    return await addDoc(this.firestore, data as any).then((docRef) => docRef.id);
+  create({ data }: { data: T }): Observable<string> {
+    return this.http.post<T>(this.url, data).pipe(
+      delay(this.isDelay as number),
+      map((res: any) => res.id),
+    );
   }
-  async updateById({ id, data }: { id: string; data: Partial<T> }): Promise<void> {
-    const docRef = doc(db, this.path, id);
-    await updateDoc(docRef, { ...data });
+  updateById({ id, data }: { id: string; data: Partial<T> }): Observable<void> {
+    return this.http.put<T>(`${this.url}/${id}`, data).pipe(
+      delay(this.isDelay as number),
+      map(() => {}),
+    );
   }
-  async deleteById({ id }: { id: string }): Promise<void> {
-    const docRef = doc(db, this.path, id);
-    await deleteDoc(docRef);
+  deleteById({ id }: { id: string }): Observable<void> {
+    return this.http.delete(`${this.url}/${id}`).pipe(
+      delay(this.isDelay as number),
+      map(() => {}),
+    );
   }
 }

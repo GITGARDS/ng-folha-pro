@@ -26,7 +26,7 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Empresa',
     field: 'empresa',
     type: 'string',
-    display: false,
+    display: true,
   },
   {
     label: 'Nome',

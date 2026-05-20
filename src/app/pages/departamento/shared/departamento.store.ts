@@ -1,6 +1,5 @@
-import { effect, inject } from "@angular/core";
+import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { delay } from "rxjs";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { DepartamentoModel } from "./departamento.model";
@@ -23,24 +22,23 @@ export const DepartamentoStore = signalStore(
   withState(initialState),
 
   withComputed(({ list }) => ({
+    totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
   withMethods((store, departamentoService = inject(DepartamentoService)) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
-      if (store.list.length > 0) return;
       patchState(store, { isLoading: true });
-      departamentoService
-        .findAll({ empresa: empresa })
-        .pipe(delay(TIME_DELAY))
-        .subscribe({
-          next: (list) => {
-            patchState(store, (state) => ({
-              ...state,
-              list,
-              isLoading: false,
-            }));
-          },
-        });
+      departamentoService.findAll({ empresa: empresa }).subscribe({
+        next: (list) => {
+          patchState(store, (state) => ({
+            ...state,
+            list,
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
     carregaListaVazia: signalMethod(async () => {
       await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
@@ -52,46 +50,58 @@ export const DepartamentoStore = signalStore(
 
     create: signalMethod(async ({ data }: { data: Partial<DepartamentoModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      const id = await departamentoService.create({ data: data as DepartamentoModel });
-      patchState(store, (state) => ({
-        ...state,
-        list: [...state.list, { ...(data as DepartamentoModel), id }],
-        isLoading: false,
-      }));
+      departamentoService.create({ data: data as DepartamentoModel }).subscribe({
+        next: (id) => {
+          patchState(store, (state) => ({
+            ...state,
+            list: [...state.list, { ...(data as DepartamentoModel), id }],
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
 
     updateById: signalMethod(
       async ({ id, data }: { id: string; data: Partial<DepartamentoModel> }) => {
         patchState(store, { isLoading: true });
-        await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-        await departamentoService.updateById({ id, data: data as DepartamentoModel });
-        patchState(store, (state) => ({
-          ...state,
-          list: state.list.map((f) => (f.id === id ? { ...f, ...(data as DepartamentoModel) } : f)),
-          isLoading: false,
-        }));
+        departamentoService.updateById({ id, data: data as DepartamentoModel }).subscribe({
+          next: () => {
+            patchState(store, (state) => ({
+              ...state,
+              list: state.list.map((f) =>
+                f.id === id ? { ...f, ...(data as DepartamentoModel) } : f,
+              ),
+              isLoading: false,
+            }));
+          },
+          error: () => patchState(store, { isLoading: false }),
+          complete: () => patchState(store, { isLoading: false }),
+        });
       },
     ),
 
-    deleteById: signalMethod(async ({ id }: { id: string }) => {
+    deleteById: signalMethod(async (params: { id: string }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      await departamentoService.deleteById({ id: id.toString() });
-      patchState(store, (state) => ({
-        ...state,
-        list: state.list.filter((f) => f.id !== id.toString()),
-        isLoading: false,
-      }));
+      departamentoService.deleteById({ id: params.id.toString() }).subscribe({
+        next: () => {
+          patchState(store, (state) => ({
+            ...state,
+            list: state.list.filter((f) => f.id !== params.id.toString()),
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
     }),
   })),
+
   withHooks((store, empresaService = inject(EmpresaService)) => ({
     onInit() {
       effect(() => {
-        (store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string }),
-          {
-            allowSignalWrites: true,
-          });
+        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
       });
     },
   })),

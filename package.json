@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "startjs": "json-server --watch db.json --port 3001",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },
@@ -20,6 +21,7 @@
     "@angular/router": "^21.2.0",
     "@ngrx/signals": "^21.1.0",
     "firebase": "^12.12.1",
+    "json-server": "^1.0.0-beta.15",
     "ngx-mask": "^21.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

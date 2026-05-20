@@ -42,8 +42,8 @@ export const TABELA: NavigationModel = {
 
 export const NAVIGATION_LIST: NavigationModel[] = [
   DASHBOARD,
-  DEPARTAMENTO,
   EMPRESA,
+  DEPARTAMENTO,
   FUNCIONARIO,
   PRODES,
   TABELA,
