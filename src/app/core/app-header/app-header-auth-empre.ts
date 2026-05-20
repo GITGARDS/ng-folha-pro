@@ -31,9 +31,9 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
       [matMenuTriggerFor]="menu"
       aria-label="Example icon-button with a menu"
       [matTooltip]="empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial"
-      [matBadge]="totalAtivos() === false ? '0' : totalAtivos() + ''"
+      [matBadge]="totalAtivos() === null ? '0' : totalAtivos()"
     >
-      @if (totalAtivos() === false) {
+      @if (totalAtivos() === null) {
         <div class="animate-spin flex items-center justify-center">
           <mat-icon>account_circle</mat-icon>
         </div>
@@ -79,13 +79,11 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 export class AppHeaderAuthEmpre {
   funcionarioStore = inject(FuncionarioStore);
   empresaStore = inject(EmpresaStore);
-  totalAtivos = signal<number | boolean>(false);
+  totalAtivos = signal<number | null>(null);
 
   constructor() {
     effect(() => {
-      setTimeout(() => {
-        this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
-      }, 500)      
-    })
+      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+    });
   }
 }
