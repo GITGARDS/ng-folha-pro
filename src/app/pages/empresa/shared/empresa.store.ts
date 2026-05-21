@@ -5,7 +5,6 @@ import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
 import { TIME_DELAY } from "../../../core/shared/consts";
 import { MsgService } from "../../../core/shared/services/msg.service";
-import { FuncionarioStore } from "../../funcionario/shared/funcionario.store";
 import { EmpresaModel } from "./empresa.model";
 import { EmpresaService } from "./empresa.service";
 
@@ -26,15 +25,14 @@ export const EmpresaStore = signalStore(
   withState(initialState),
 
   withProps(() => ({
-    empresaService: inject(EmpresaService),
     router: inject(Router),
-    funcionarioStore: inject(FuncionarioStore),
+    empresaService: inject(EmpresaService),
     msgService: inject(MsgService),
   })),
 
   withComputed(({ list }) => ({})),
 
-  withMethods(({ msgService, funcionarioStore, empresaService, router, ...store }) => ({
+  withMethods(({ msgService, empresaService, router, ...store }) => ({
     teste: rxMethod<unknown>(pipe(delay(2000))),
 
     carregaLista: signalMethod(() => {
@@ -84,7 +82,6 @@ export const EmpresaStore = signalStore(
         .then(() => {
           patchState(store, (state) => ({
             ...state,
-            empresaLogada: data as EmpresaModel,
             isLoading: false,
           }));
           msgService.openSnackBar('Login efetuado com sucesso');
@@ -103,26 +100,17 @@ export const EmpresaStore = signalStore(
         .then(() => {
           patchState(store, (state) => ({
             ...state,
-            empresaLogada: {} as EmpresaModel | null,
             isLoading: false,
           }));
           msgService.openSnackBar('Logout efetuado com sucesso');
+          setTimeout(() => {
+            router.navigate(['empresa']);
+          }, 1000);
         })
         .catch((err) => {
           patchState(store, { isLoading: false });
           msgService.openSnackBar('Erro ao efetuar logout, ' + err.message);
         });
-      funcionarioStore.setList([]);
-      switch (router.url) {
-        case '/departamento': {
-          router.navigate(['empresa']);
-          break;
-        }
-        case '/funcionario': {
-          router.navigate(['empresa']);
-          break;
-        }
-      }
     },
 
     updateById: signalMethod(({ id, data }: { id: string; data: Partial<EmpresaModel> }) => {

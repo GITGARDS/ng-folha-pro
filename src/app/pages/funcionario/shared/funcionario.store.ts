@@ -59,8 +59,9 @@ export const FuncionarioStore = signalStore(
       });
     }),
 
-    setList: signalMethod(() => {
-      patchState(store, { list: [] });
+    resetList: signalMethod(() => {
+      patchState(store, { isLoading: true });
+      patchState(store, (state) => ({ ...state, list: [], isLoading: false }));
     }),
 
     create: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
@@ -142,6 +143,10 @@ export const FuncionarioStore = signalStore(
   withHooks(({ empresaService, ...store }) => ({
     onInit() {
       effect(() => {
+        if (!empresaService.empresaLogada()) {
+          store.resetList(null);
+          return;
+        }
         store.carregaLista({ empresa: empresaService.empresaLogada()?.id as string });
       });
     },

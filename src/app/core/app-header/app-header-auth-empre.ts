@@ -6,6 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { EmpresaService } from "../../pages/empresa/shared/empresa.service";
+import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
 import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.store";
 
 @Component({
@@ -61,7 +62,7 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
             </div>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-menu-item (click)="empresaService.logout()">
+            <button mat-menu-item (click)="empresaStore.logout()">
               <mat-icon>logout</mat-icon>
               <span>Logout</span>
             </button>
@@ -79,6 +80,7 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 export class AppHeaderAuthEmpre {
   funcionarioStore = inject(FuncionarioStore);
   empresaService = inject(EmpresaService);
+  empresaStore = inject(EmpresaStore);
   totalAtivos = signal<number | null>(null);
 
   constructor() {

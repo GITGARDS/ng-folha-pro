@@ -50,6 +50,10 @@ export const DepartamentoStore = signalStore(
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
+    resetList: signalMethod(() => {
+      patchState(store, { isLoading: true });
+      patchState(store, (state) => ({ ...state, list: [] }), { isLoading: false });
+    }),
     create: signalMethod(({ data }: { data: Partial<DepartamentoModel> }) => {
       patchState(store, { isLoading: true });
       departamentoService.create({ data: data as DepartamentoModel }).subscribe({
@@ -114,6 +118,10 @@ export const DepartamentoStore = signalStore(
   withHooks(({ empresaService, ...store }) => ({
     onInit() {
       effect(() => {
+        if (!empresaService.empresaLogada()) {
+          store.resetList(null);
+          return;
+        }
         store.carregaLista({ empresa: empresaService.empresaLogada()?.id as string });
       });
     },
