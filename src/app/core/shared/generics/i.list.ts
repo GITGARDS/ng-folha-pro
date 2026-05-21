@@ -8,7 +8,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { EmpresaService } from "../../../pages/empresa/shared/empresa.service";
+import { EmpresaStore } from "../../../pages/empresa/shared/empresa.store";
 import { TableFilter } from "../../components/table-filter";
 import { TIME_DELAY } from "../consts";
 import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.model";
@@ -70,8 +70,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                   <mat-icon>login</mat-icon>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                  @if (empresaService.empresaLogada() !== null) {
-                    @if (empresaService.empresaLogada()?.id === row.id) {
+                  @if (empresaStore.empresaLogada() !== null) {
+                    @if (empresaStore.empresaLogada()?.id === row.id) {
                       <span class="size-4 animate-pulse">
                         <div class="h-5 w-5 !bg-green-700 rounded-full"></div>
                       </span>
@@ -95,8 +95,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
 
                   <mat-menu #menu="matMenu">
                     @for (item of iActions(); track $index) {
-                      @let idLogada = empresaService.empresaLogada()?.id;
-                      @let idLogadaRow = empresaService.empresaLogada()?.id === row.id;
+                      @let idLogada = empresaStore.empresaLogada()?.id;
+                      @let idLogadaRow = empresaStore.empresaLogada()?.id === row.id;
                       @let logada = idLogada && idLogadaRow;
 
                       @if (item.label === 'Editar' && !logada) {
@@ -164,7 +164,7 @@ export class IList implements AfterViewInit {
   paginator = viewChild(MatPaginator);
   sort = viewChild(MatSort);
 
-  empresaService = inject(EmpresaService);
+  empresaStore = inject(EmpresaStore);
 
   constructor() {
     effect(() => {

@@ -1,6 +1,7 @@
 import { computed, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { MsgService } from "../../../core/shared/services/msg.service";
+import { MsgStore } from "../../../core/shared/store/msg.store";
+import { EmpresaStore } from "../../empresa/shared/empresa.store";
 import { ProdesModel } from "./prodes.model";
 import { ProdesService } from "./prodes.service";
 
@@ -21,34 +22,40 @@ export const ProdesStore = signalStore(
   withState(initialState),
 
   withProps(() => ({
+    msgStore: inject(MsgStore),
+    empresaStore: inject(EmpresaStore),
     prodesService: inject(ProdesService),
-    msgService: inject(MsgService),
   })),
 
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods(({ msgService, prodesService, ...store }) => ({
+  withMethods(({ msgStore, prodesService, ...store }) => ({
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
       prodesService.findAll({}).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,
-            list: list,
+            list,
             isLoading: false,
           }));
-          msgService.openSnackBar('Registros carregados com sucesso');
+          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao carregar registros, ' + err.message));
+            msgStore.onMsg({
+              msg: 'Erro ao carregar listagem, ' + err.message,
+            }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
-
+    resetList: signalMethod(() => {
+      patchState(store, { isLoading: true });
+      patchState(store, (state) => ({ ...state, list: [] }), { isLoading: false });
+    }),
     create: signalMethod(({ data }: { data: Partial<ProdesModel> }) => {
       patchState(store, { isLoading: true });
       prodesService.create({ data: data as ProdesModel }).subscribe({
@@ -58,12 +65,13 @@ export const ProdesStore = signalStore(
             list: [...state.list, { ...(data as ProdesModel), id }],
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro criado com sucesso');
+          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+          patchState(store, { isLoading: false });
+          msgStore.onMsg({ msg: 'Erro ao criar registro, ' + err.message });
         },
+
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -77,11 +85,11 @@ export const ProdesStore = signalStore(
             list: state.list.map((f) => (f.id === id ? { ...f, ...(data as ProdesModel) } : f)),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro alterado com sucesso');
+          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao alterar registro, ' + err.message));
+            msgStore.onMsg({ msg: 'Erro ao atualizar registro, ' + err.message }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -96,17 +104,18 @@ export const ProdesStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro excluído com sucesso');
+          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao excluir registro, ' + err.message));
+          patchState(store, { isLoading: false });
+          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
-  withHooks(({ ...store }) => ({
+
+  withHooks(({ empresaStore, ...store }) => ({
     onInit() {
       store.carregaLista(null);
     },

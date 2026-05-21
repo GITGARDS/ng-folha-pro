@@ -1,8 +1,7 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { addEntity, withEntities } from "@ngrx/signals/entities";
-import { MsgService } from "../../../core/shared/services/msg.service";
-import { EmpresaService } from "../../empresa/shared/empresa.service";
+import { MsgStore } from "../../../core/shared/store/msg.store";
+import { EmpresaStore } from "../../empresa/shared/empresa.store";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
 
@@ -20,15 +19,14 @@ export const FuncionarioStore = signalStore(
   {
     providedIn: 'root',
   },
-  withEntities<FuncionarioModel>(),
-
   withState(initialState),
 
   withProps(() => ({
-    empresaService: inject(EmpresaService),
+    msgStore: inject(MsgStore),
+    empresaStore: inject(EmpresaStore),
     funcionarioService: inject(FuncionarioService),
-    msgService: inject(MsgService),
   })),
+
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
     totalSalarioBase: computed(() =>
@@ -39,7 +37,7 @@ export const FuncionarioStore = signalStore(
     ),
   })),
 
-  withMethods(({ msgService, funcionarioService, ...store }) => ({
+  withMethods(({ msgStore, funcionarioService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       funcionarioService.findAll({ empresa: empresa }).subscribe({
@@ -49,21 +47,21 @@ export const FuncionarioStore = signalStore(
             list,
             isLoading: false,
           }));
-          msgService.openSnackBar('Registros carregados com sucesso');
+          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao carregar registros, ' + err.message);
+          (patchState(store, { isLoading: false }),
+            msgStore.onMsg({
+              msg: 'Erro ao carregar listagem, ' + err.message,
+            }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
-
     resetList: signalMethod(() => {
       patchState(store, { isLoading: true });
-      patchState(store, (state) => ({ ...state, list: [], isLoading: false }));
+      patchState(store, (state) => ({ ...state, list: [] }), { isLoading: false });
     }),
-
     create: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
       funcionarioService.create({ data: data as FuncionarioModel }).subscribe({
@@ -73,29 +71,15 @@ export const FuncionarioStore = signalStore(
             list: [...state.list, { ...(data as FuncionarioModel), id }],
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro criado com sucesso');
+          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+          patchState(store, { isLoading: false });
+          msgStore.onMsg({ msg: 'Erro ao criar registro, ' + err.message });
         },
+
         complete: () => patchState(store, { isLoading: false }),
       });
-    }),
-
-    create2: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
-      patchState(store, { isLoading: true });
-
-      const newId = crypto.randomUUID();
-      data.id = newId;
-      addEntity(data as FuncionarioModel);
-
-      patchState(store, (state) => ({
-        ...state,
-        list: [...state.list, data as FuncionarioModel],
-        isLoading: false,
-      }));
-      msgService.openSnackBar('Registro criado com sucesso');
     }),
 
     updateById: signalMethod(({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
@@ -109,11 +93,11 @@ export const FuncionarioStore = signalStore(
             ),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro atualizado com sucesso');
+          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao atualizar registro, ' + err.message));
+            msgStore.onMsg({ msg: 'Erro ao atualizar registro, ' + err.message }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -128,26 +112,25 @@ export const FuncionarioStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro excluído com sucesso');
+          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
-
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao excluir registro, ' + err.message));
+          patchState(store, { isLoading: false });
+          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
 
-  withHooks(({ empresaService, ...store }) => ({
+  withHooks(({ empresaStore, ...store }) => ({
     onInit() {
       effect(() => {
-        if (!empresaService.empresaLogada()) {
+        if (empresaStore.empresaLogada() === null) {
           store.resetList(null);
           return;
         }
-        store.carregaLista({ empresa: empresaService.empresaLogada()?.id as string });
+        store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
       });
     },
   })),

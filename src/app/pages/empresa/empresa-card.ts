@@ -2,7 +2,7 @@ import { CurrencyPipe } from "@angular/common";
 import { Component, effect, inject, signal } from "@angular/core";
 import { MiniCard } from "../../core/components/mini-card";
 import { FuncionarioStore } from "../funcionario/shared/funcionario.store";
-import { EmpresaService } from "./shared/empresa.service";
+import { EmpresaStore } from "./shared/empresa.store";
 
 @Component({
   selector: 'app-empresa-card',
@@ -32,7 +32,7 @@ import { EmpresaService } from "./shared/empresa.service";
   `,
 })
 export default class EmpresaCard {
-  empresaService = inject(EmpresaService);
+  empresaStore = inject(EmpresaStore);
   funcionarioStore = inject(FuncionarioStore);
 
   totalSalarioBase = signal(0);
@@ -41,10 +41,10 @@ export default class EmpresaCard {
   constructor() {
     effect(() => {
       this.totalSalarioBase.set(
-        this.empresaService.empresaLogada() ? this.funcionarioStore.totalSalarioBase() : 0,
+        this.empresaStore.empresaLogada() ? this.funcionarioStore.totalSalarioBase() : 0,
       );
       this.totalAtivos.set(
-        this.empresaService.empresaLogada() ? this.funcionarioStore.totalAtivos().length : 0,
+        this.empresaStore.empresaLogada() ? this.funcionarioStore.totalAtivos().length : 0,
       );
     });
   }

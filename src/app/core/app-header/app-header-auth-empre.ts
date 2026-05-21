@@ -5,7 +5,6 @@ import { MatCardModule } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { EmpresaService } from "../../pages/empresa/shared/empresa.service";
 import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
 import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.store";
 
@@ -31,7 +30,7 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
       matIconButton
       [matMenuTriggerFor]="menu"
       aria-label="Example icon-button with a menu"
-      [matTooltip]="empresaService.empresaLogada()?.nomeEmpresaRazaoSocial"
+      [matTooltip]="empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial"
       [matBadge]="totalAtivos() === null ? '0' : totalAtivos()"
     >
       @if (totalAtivos() === null) {
@@ -47,22 +46,22 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
       <div class="p-2">
         <mat-card class="overflow-hidden" appearance="outlined">
           <mat-card-header>
-            <mat-card-title>{{ empresaService.empresaLogada()?.id }}</mat-card-title>
+            <mat-card-title>{{ empresaStore.empresaLogada()?.id }}</mat-card-title>
             <mat-card-subtitle>{{
-              empresaService.empresaLogada()?.nomeEmpresaRazaoSocial
+              empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial
             }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
             <div class="flex flex-col">
-              <span>Inscricao: {{ empresaService.empresaLogada()?.inscricao }}</span>
-              <span>Email: {{ empresaService.empresaLogada()?.email }}</span>
-              <span>Telefone:{{ empresaService.empresaLogada()?.telefone }}</span>
-              <span>Cnae: {{ empresaService.empresaLogada()?.cnae }}</span>
-              <span>Fpas: {{ empresaService.empresaLogada()?.fpas }}</span>
+              <span>Inscricao: {{ empresaStore.empresaLogada()?.inscricao }}</span>
+              <span>Email: {{ empresaStore.empresaLogada()?.email }}</span>
+              <span>Telefone:{{ empresaStore.empresaLogada()?.telefone }}</span>
+              <span>Cnae: {{ empresaStore.empresaLogada()?.cnae }}</span>
+              <span>Fpas: {{ empresaStore.empresaLogada()?.fpas }}</span>
             </div>
           </mat-card-content>
           <mat-card-actions>
-            <button mat-menu-item (click)="empresaStore.logout()">
+            <button mat-menu-item (click)="empresaStore.logout(null)">
               <mat-icon>logout</mat-icon>
               <span>Logout</span>
             </button>
@@ -79,7 +78,6 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 })
 export class AppHeaderAuthEmpre {
   funcionarioStore = inject(FuncionarioStore);
-  empresaService = inject(EmpresaService);
   empresaStore = inject(EmpresaStore);
   totalAtivos = signal<number | null>(null);
 

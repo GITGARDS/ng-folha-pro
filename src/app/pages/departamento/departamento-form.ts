@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/materia
 import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
 import { DepartamentoModel } from "../departamento/shared/departamento.model";
 import { DepartamentoStore } from "../departamento/shared/departamento.store";
-import { EmpresaService } from "../empresa/shared/empresa.service";
+import { EmpresaStore } from "../empresa/shared/empresa.store";
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -82,7 +82,7 @@ export class DepartamentoForm {
   data = inject<any>(MAT_DIALOG_DATA);
   formAparence: 'fill' | 'outline' = 'fill';
   formOpcao = signal<string>('');
-  empresaService = inject(EmpresaService);
+  empresaStore = inject(EmpresaStore);
   departamentoStore = inject(DepartamentoStore);
   departamentos = signal<DepartamentoModel[]>([]);
 
@@ -112,7 +112,7 @@ export class DepartamentoForm {
   onSubmit() {
     const ret = {
       ...this.dataForm.value,
-      empresa: this.empresaService.empresaLogada()?.id as string,
+      empresa: this.empresaStore.empresaLogada()?.id as string,
     };
     this.dialogRef.close(ret);
   }

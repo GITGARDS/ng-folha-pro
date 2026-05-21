@@ -1,7 +1,7 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { MsgService } from "../../../core/shared/services/msg.service";
-import { EmpresaService } from "../../empresa/shared/empresa.service";
+import { MsgStore } from "../../../core/shared/store/msg.store";
+import { EmpresaStore } from "../../empresa/shared/empresa.store";
 import { DepartamentoModel } from "./departamento.model";
 import { DepartamentoService } from "./departamento.service";
 
@@ -22,8 +22,8 @@ export const DepartamentoStore = signalStore(
   withState(initialState),
 
   withProps(() => ({
-    msgService: inject(MsgService),
-    empresaService: inject(EmpresaService),
+    msgStore: inject(MsgStore),
+    empresaStore: inject(EmpresaStore),
     departamentoService: inject(DepartamentoService),
   })),
 
@@ -31,7 +31,7 @@ export const DepartamentoStore = signalStore(
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods(({ msgService, departamentoService, ...store }) => ({
+  withMethods(({ msgStore, departamentoService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       departamentoService.findAll({ empresa: empresa }).subscribe({
@@ -41,11 +41,13 @@ export const DepartamentoStore = signalStore(
             list,
             isLoading: false,
           }));
-          msgService.openSnackBar('Listagem carregada com sucesso');
+          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao carregar listagem, ' + err.message));
+            msgStore.onMsg({
+              msg: 'Erro ao carregar listagem, ' + err.message,
+            }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -63,11 +65,11 @@ export const DepartamentoStore = signalStore(
             list: [...state.list, { ...(data as DepartamentoModel), id }],
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro criado com sucesso');
+          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
           patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao criar registro, ' + err.message);
+          msgStore.onMsg({ msg: 'Erro ao criar registro, ' + err.message });
         },
 
         complete: () => patchState(store, { isLoading: false }),
@@ -85,11 +87,11 @@ export const DepartamentoStore = signalStore(
             ),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro atualizado com sucesso');
+          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao atualizar registro, ' + err.message));
+            msgStore.onMsg({ msg: 'Erro ao atualizar registro, ' + err.message }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -104,25 +106,25 @@ export const DepartamentoStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro excluído com sucesso');
+          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
           patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao excluir registro, ' + err.message);
+          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
 
-  withHooks(({ empresaService, ...store }) => ({
+  withHooks(({ empresaStore, ...store }) => ({
     onInit() {
       effect(() => {
-        if (!empresaService.empresaLogada()) {
+        if (empresaStore.empresaLogada() === null) {
           store.resetList(null);
           return;
         }
-        store.carregaLista({ empresa: empresaService.empresaLogada()?.id as string });
+        store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
       });
     },
   })),

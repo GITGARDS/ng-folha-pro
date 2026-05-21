@@ -3,18 +3,19 @@ import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
-import { TIME_DELAY } from "../../../core/shared/consts";
-import { MsgService } from "../../../core/shared/services/msg.service";
+import { MsgStore } from "../../../core/shared/store/msg.store";
 import { EmpresaModel } from "./empresa.model";
 import { EmpresaService } from "./empresa.service";
 
 type EmpresaState = {
   list: EmpresaModel[];
+  empresaLogada: EmpresaModel | null;
   isLoading: boolean;
 };
 
 const initialState: EmpresaState = {
   list: [],
+  empresaLogada: null,
   isLoading: false,
 };
 
@@ -27,12 +28,12 @@ export const EmpresaStore = signalStore(
   withProps(() => ({
     router: inject(Router),
     empresaService: inject(EmpresaService),
-    msgService: inject(MsgService),
+    msgStore: inject(MsgStore),
   })),
 
   withComputed(({ list }) => ({})),
 
-  withMethods(({ msgService, empresaService, router, ...store }) => ({
+  withMethods(({ msgStore, empresaService, router, ...store }) => ({
     teste: rxMethod<unknown>(pipe(delay(2000))),
 
     carregaLista: signalMethod(() => {
@@ -44,11 +45,11 @@ export const EmpresaStore = signalStore(
             list,
             isLoading: false,
           }));
-          msgService.openSnackBar('Listagem carregada com sucesso');
+          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
           patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao carregar listagem, ' + err.message);
+          msgStore.onMsg({ msg: 'Erro ao carregar listagem, ' + err.message });
         },
 
         complete: () => patchState(store, { isLoading: false }),
@@ -64,54 +65,41 @@ export const EmpresaStore = signalStore(
             list: [...state.list, { ...(data as EmpresaModel), id }],
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro criado com sucesso');
+          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+            msgStore.onMsg({
+              msg: 'Erro ao criar registro, ' + err.message,
+            }));
         },
+
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
 
-    login: signalMethod(async ({ data }: { data: Partial<EmpresaModel> }) => {
+    login: signalMethod(({ data }: { data: Partial<EmpresaModel> }) => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      await empresaService
-        .login({ empresa: data as EmpresaModel })
-        .then(() => {
-          patchState(store, (state) => ({
-            ...state,
-            isLoading: false,
-          }));
-          msgService.openSnackBar('Login efetuado com sucesso');
-        })
-        .catch((err) => {
-          patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao efetuar login, ' + err.message);
-        });
+      patchState(store, (state) => ({
+        ...state,
+        empresaLogada: data as EmpresaModel,
+        isLoading: false,
+      }));
+      msgStore.onMsg({ msg: 'Login efetuado com sucesso' });
     }),
 
-    logout: async () => {
+    logout: signalMethod(() => {
       patchState(store, { isLoading: true });
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      await empresaService
-        .logout()
-        .then(() => {
-          patchState(store, (state) => ({
-            ...state,
-            isLoading: false,
-          }));
-          msgService.openSnackBar('Logout efetuado com sucesso');
-          setTimeout(() => {
-            router.navigate(['empresa']);
-          }, 1000);
-        })
-        .catch((err) => {
-          patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao efetuar logout, ' + err.message);
-        });
-    },
+      patchState(store, (state) => ({
+        ...state,
+        empresaLogada: null,
+        isLoading: false,
+      }));
+      msgStore.onMsg({ msg: 'Logout efetuado com sucesso' });
+      setTimeout(() => {
+        router.navigate(['empresa']);
+      }, 500);
+    }),
 
     updateById: signalMethod(({ id, data }: { id: string; data: Partial<EmpresaModel> }) => {
       patchState(store, { isLoading: true });
@@ -122,11 +110,13 @@ export const EmpresaStore = signalStore(
             list: state.list.map((f) => (f.id === id ? { ...f, ...(data as EmpresaModel) } : f)),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro atualizado com sucesso');
+          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
           (patchState(store, { isLoading: false }),
-            msgService.openSnackBar('Erro ao atualizar registro, ' + err.message));
+            msgStore.onMsg({
+              msg: 'Erro ao atualizar registro, ' + err.message,
+            }));
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -141,11 +131,11 @@ export const EmpresaStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
-          msgService.openSnackBar('Registro excluído com sucesso');
+          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
           patchState(store, { isLoading: false });
-          msgService.openSnackBar('Erro ao excluir registro, ' + err.message);
+          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
         },
 
         complete: () => patchState(store, { isLoading: false }),

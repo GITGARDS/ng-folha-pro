@@ -2,7 +2,7 @@ import { Component, inject, input, output } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatToolbar } from "@angular/material/toolbar";
-import { EmpresaService } from "../../pages/empresa/shared/empresa.service";
+import { EmpresaStore } from "../../pages/empresa/shared/empresa.store";
 import { AppHeaderAuthEmpre } from "./app-header-auth-empre";
 import { AppHeaderLogo } from "./app-header-logo";
 import { AppHeaderTheme } from "./app-header-theme";
@@ -43,7 +43,7 @@ import { AppHeaderTitle } from "./app-header-title";
         </div>
       </div>
 
-      @if (empresaService.empresaLogada() !== null) {
+      @if (empresaStore.empresaLogada() !== null) {
         <app-header-auth-empre />
       }
 
@@ -59,7 +59,7 @@ import { AppHeaderTitle } from "./app-header-title";
   `,
 })
 export class AppHeader {
-  empresaService = inject(EmpresaService);
+  empresaStore = inject(EmpresaStore);
   isHandset = input.required<boolean>();
   drawerToggle = output<void>();
 }
