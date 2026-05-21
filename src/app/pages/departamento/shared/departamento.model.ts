@@ -18,13 +18,13 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Empresa',
     field: 'empresa',
     type: 'string',
-    display: true,
+    display: false,
   },
   {
     label: 'Id',
     field: 'id',
     type: 'string',
-    display: true,
+    display: false,
   },
   {
     label: 'Nome',

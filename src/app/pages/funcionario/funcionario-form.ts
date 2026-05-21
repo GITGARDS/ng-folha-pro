@@ -32,7 +32,7 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
     NgxMaskDirective,
     MatIcon,
     UpperCasePipe,
-    MatStepperModule,
+    MatStepperModule,    
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
@@ -66,16 +66,19 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
                 <div class="grid grid-cols-6 gap-2">
                   <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                     <mat-label>Departamento</mat-label>
-                    <mat-select formControlName="departamento">
+                    <mat-select
+                      formControlName="departamento"
+                      [compareWith]="compareDepartamentos"
+                    >
                       @for (item of departamentos(); track item.id) {
-                        <mat-option [value]="item.id">{{ item.nome }}</mat-option>
+                        <mat-option [value]="item">{{ item.nome }}</mat-option>
                       }
                     </mat-select>
                     @if (dataForm.controls['departamento'].hasError('required')) {
                       <mat-error><strong>required</strong></mat-error>
                     }
                   </mat-form-field>
-                  {{ dataForm.value.departamento }}
+                  <!-- {{ dataForm.value.departamento | json }} -->
                 </div>
 
                 <div class="grid grid-cols-6 gap-2">
@@ -640,6 +643,9 @@ export class FuncionarioForm {
   empresaService = inject(EmpresaService);
   departamentoStore = inject(DepartamentoStore);
   departamentos = signal<DepartamentoModel[]>([]);
+  compareDepartamentos(o1: any, o2: any): boolean {
+    return o1 && o2 ? o1.id === o2.id : o1 === o2;
+  }
 
   constructor() {
     effect(() => {
@@ -661,7 +667,7 @@ export class FuncionarioForm {
   dataForm = this.fb.group({
     id: [{ value: '', disabled: true }],
     nome: ['', Validators.required],
-    departamento: ['', Validators.required],
+    departamento: [{} as DepartamentoModel, Validators.required],
     cpf: [''],
     dataNascimento: ['', Validators.required],
     nomeMae: [''],

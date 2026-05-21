@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, JsonPipe } from "@angular/common";
+import { CurrencyPipe, DatePipe } from "@angular/common";
 import { AfterViewInit, Component, effect, inject, input, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -25,7 +25,6 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     MatIconButton,
     CurrencyPipe,
     DatePipe,
-    JsonPipe,
     MatCard,
   ],
   template: `
@@ -55,7 +54,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                         {{ row[item.field] | currency: 'BRL' }}
                       }
                       @case ('json') {
-                        {{ row[item.field] | json }}
+                        {{ row[item.field].nome }}
                       }
                       @default {
                         {{ row[item.field] }}
