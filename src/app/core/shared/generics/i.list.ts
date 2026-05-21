@@ -25,7 +25,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     MatIconButton,
     CurrencyPipe,
     DatePipe,
-    MatCard,
+    MatCard
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -70,8 +70,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                   <mat-icon>login</mat-icon>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                  @if (empresaService.idEmpresaLogada()) {
-                    @if (empresaService.idEmpresaLogada() === row.id) {
+                  @if (empresaService.empresaLogada() !== null) {
+                    @if (empresaService.empresaLogada()?.id === row.id) {
                       <span class="size-4 animate-pulse">
                         <div class="h-5 w-5 !bg-green-700 rounded-full"></div>
                       </span>
@@ -95,8 +95,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
 
                   <mat-menu #menu="matMenu">
                     @for (item of iActions(); track $index) {
-                      @let idLogada = empresaService.idEmpresaLogada();
-                      @let idLogadaRow = empresaService.idEmpresaLogada() === row.id;
+                      @let idLogada = empresaService.empresaLogada()?.id;
+                      @let idLogadaRow = empresaService.empresaLogada()?.id === row.id;
                       @let logada = idLogada && idLogadaRow;
 
                       @if (item.label === 'Editar' && !logada) {

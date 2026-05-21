@@ -1,6 +1,5 @@
 import { computed, inject } from "@angular/core";
-import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { TIME_DELAY } from "../../../core/shared/consts";
+import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { ProdesModel } from "./prodes.model";
 import { ProdesService } from "./prodes.service";
 
@@ -20,11 +19,15 @@ export const ProdesStore = signalStore(
   },
   withState(initialState),
 
+  withProps(() => ({
+    prodesService: inject(ProdesService),
+  })),
+
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods((store, prodesService = inject(ProdesService)) => ({
+  withMethods(({ prodesService, ...store }) => ({
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
       prodesService.findAll({}).subscribe({
@@ -39,15 +42,8 @@ export const ProdesStore = signalStore(
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
-    carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      patchState(store, (state) => ({
-        ...state,
-        list: [],
-      }));
-    }),
 
-    create: signalMethod(async ({ data }: { data: Partial<ProdesModel> }) => {
+    create: signalMethod(({ data }: { data: Partial<ProdesModel> }) => {
       patchState(store, { isLoading: true });
       prodesService.create({ data: data as ProdesModel }).subscribe({
         next: (id) => {
@@ -62,7 +58,7 @@ export const ProdesStore = signalStore(
       });
     }),
 
-    updateById: signalMethod(async ({ id, data }: { id: string; data: Partial<ProdesModel> }) => {
+    updateById: signalMethod(({ id, data }: { id: string; data: Partial<ProdesModel> }) => {
       patchState(store, { isLoading: true });
       prodesService.updateById({ id, data: data as ProdesModel }).subscribe({
         next: () => {
@@ -77,7 +73,7 @@ export const ProdesStore = signalStore(
       });
     }),
 
-    deleteById: signalMethod(async (params: { id: string }) => {
+    deleteById: signalMethod((params: { id: string }) => {
       patchState(store, { isLoading: true });
       prodesService.deleteById({ id: params.id.toString() }).subscribe({
         next: () => {
@@ -92,7 +88,7 @@ export const ProdesStore = signalStore(
       });
     }),
   })),
-  withHooks((store) => ({
+  withHooks(({ ...store }) => ({
     onInit() {
       store.carregaLista(null);
     },

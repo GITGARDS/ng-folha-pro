@@ -18,7 +18,7 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Empresa',
     field: 'empresa',
     type: 'string',
-    display: false,
+    display: true,
   },
   {
     label: 'Id',

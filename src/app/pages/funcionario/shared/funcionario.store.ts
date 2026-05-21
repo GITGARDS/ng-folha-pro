@@ -1,7 +1,6 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { addEntity, withEntities } from "@ngrx/signals/entities";
-import { TIME_DELAY } from "../../../core/shared/consts";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -53,15 +52,12 @@ export const FuncionarioStore = signalStore(
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
-    carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      patchState(store, (state) => ({
-        ...state,
-        list: [],
-      }));
+
+    setList: signalMethod(() => {
+      patchState(store, { list: [] });
     }),
 
-    create: signalMethod(async ({ data }: { data: Partial<FuncionarioModel> }) => {
+    create: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
       funcionarioService.create({ data: data as FuncionarioModel }).subscribe({
         next: (id) => {
@@ -90,26 +86,24 @@ export const FuncionarioStore = signalStore(
       }));
     }),
 
-    updateById: signalMethod(
-      async ({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
-        patchState(store, { isLoading: true });
-        funcionarioService.updateById({ id, data: data as FuncionarioModel }).subscribe({
-          next: () => {
-            patchState(store, (state) => ({
-              ...state,
-              list: state.list.map((f) =>
-                f.id === id ? { ...f, ...(data as FuncionarioModel) } : f,
-              ),
-              isLoading: false,
-            }));
-          },
-          error: () => patchState(store, { isLoading: false }),
-          complete: () => patchState(store, { isLoading: false }),
-        });
-      },
-    ),
+    updateById: signalMethod(({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
+      patchState(store, { isLoading: true });
+      funcionarioService.updateById({ id, data: data as FuncionarioModel }).subscribe({
+        next: () => {
+          patchState(store, (state) => ({
+            ...state,
+            list: state.list.map((f) =>
+              f.id === id ? { ...f, ...(data as FuncionarioModel) } : f,
+            ),
+            isLoading: false,
+          }));
+        },
+        error: () => patchState(store, { isLoading: false }),
+        complete: () => patchState(store, { isLoading: false }),
+      });
+    }),
 
-    deleteById: signalMethod(async (params: { id: string }) => {
+    deleteById: signalMethod((params: { id: string }) => {
       patchState(store, { isLoading: true });
       funcionarioService.deleteById({ id: params.id.toString() }).subscribe({
         next: () => {
@@ -128,7 +122,7 @@ export const FuncionarioStore = signalStore(
   withHooks(({ empresaService, ...store }) => ({
     onInit() {
       effect(() => {
-        store.carregaLista({ empresa: empresaService.idEmpresaLogada() as string });
+        store.carregaLista({ empresa: empresaService.empresaLogada()?.id as string });
       });
     },
   })),

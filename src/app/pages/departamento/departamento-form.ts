@@ -112,7 +112,7 @@ export class DepartamentoForm {
   onSubmit() {
     const ret = {
       ...this.dataForm.value,
-      empresa: this.empresaService.idEmpresaLogada() as string,
+      empresa: this.empresaService.empresaLogada()?.id as string,
     };
     this.dialogRef.close(ret);
   }

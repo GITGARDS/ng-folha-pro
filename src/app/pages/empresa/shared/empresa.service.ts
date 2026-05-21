@@ -7,17 +7,17 @@ import { EmpresaModel } from "./empresa.model";
   providedIn: 'root',
 })
 export class EmpresaService<T> extends IService<T> {
-  idEmpresaLogada = signal<string | number | null>(null);
+  empresaLogada = signal<EmpresaModel | null>(null);
+
   constructor() {
-    // super('empresa', TIME_DELAY);
     super('empresa', 'nomeEmpresaRazaoSocial', 'asc', TIME_DELAY);
   }
 
   async login({ empresa }: { empresa: EmpresaModel }) {
-    this.idEmpresaLogada.set(empresa.id);
+    this.empresaLogada.set(empresa);
   }
 
   async logout() {
-    this.idEmpresaLogada.set(null);
+    this.empresaLogada.set(null);
   }
 }

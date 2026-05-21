@@ -41,10 +41,10 @@ export default class EmpresaCard {
   constructor() {
     effect(() => {
       this.totalSalarioBase.set(
-        this.empresaService.idEmpresaLogada() ? this.funcionarioStore.totalSalarioBase() : 0,
+        this.empresaService.empresaLogada() ? this.funcionarioStore.totalSalarioBase() : 0,
       );
       this.totalAtivos.set(
-        this.empresaService.idEmpresaLogada() ? this.funcionarioStore.totalAtivos().length : 0,
+        this.empresaService.empresaLogada() ? this.funcionarioStore.totalAtivos().length : 0,
       );
     });
   }

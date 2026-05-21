@@ -5,7 +5,7 @@ import { EmpresaService } from "./empresa.service";
 export const empresaGuard: CanActivateFn = (route, state) => {
   const empresaService = inject(EmpresaService);
 
-  if (!empresaService.idEmpresaLogada()) {
+  if (empresaService.empresaLogada() === null) {
     alert('Você precisa estar logado para acessar essa página');
     return false;    
   }

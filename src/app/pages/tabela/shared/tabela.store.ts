@@ -1,6 +1,5 @@
 import { inject } from "@angular/core";
-import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withState } from "@ngrx/signals";
-import { TIME_DELAY } from "../../../core/shared/consts";
+import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { TabelaModel } from "./tabela.model";
 import { TabelaService } from "./tabela.service";
 
@@ -20,9 +19,13 @@ export const TabelaStore = signalStore(
   },
   withState(initialState),
 
+  withProps(() => ({
+    tabelaService: inject(TabelaService),
+  })),
+  
   withComputed(({ list }) => ({})),
 
-  withMethods((store, tabelaService = inject(TabelaService)) => ({
+  withMethods(({ tabelaService, ...store }) => ({
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
       tabelaService.findAll({}).subscribe({
@@ -37,15 +40,8 @@ export const TabelaStore = signalStore(
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
-    carregaListaVazia: signalMethod(async () => {
-      await new Promise((resolve) => setTimeout(resolve, TIME_DELAY));
-      patchState(store, (state) => ({
-        ...state,
-        list: [],
-      }));
-    }),
 
-    create: signalMethod(async ({ data }: { data: Partial<TabelaModel> }) => {
+    create: signalMethod(({ data }: { data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
       tabelaService.create({ data: data as TabelaModel }).subscribe({
         next: (id) => {
@@ -60,7 +56,7 @@ export const TabelaStore = signalStore(
       });
     }),
 
-    updateById: signalMethod(async ({ id, data }: { id: string; data: Partial<TabelaModel> }) => {
+    updateById: signalMethod(({ id, data }: { id: string; data: Partial<TabelaModel> }) => {
       patchState(store, { isLoading: true });
       tabelaService.updateById({ id, data: data as TabelaModel }).subscribe({
         next: () => {
@@ -75,7 +71,7 @@ export const TabelaStore = signalStore(
       });
     }),
 
-    deleteById: signalMethod(async (params: { id: string }) => {
+    deleteById: signalMethod((params: { id: string }) => {
       patchState(store, { isLoading: true });
       tabelaService.deleteById({ id: params.id.toString() }).subscribe({
         next: () => {
@@ -90,7 +86,7 @@ export const TabelaStore = signalStore(
       });
     }),
   })),
-  withHooks((store) => ({
+  withHooks(({ ...store }) => ({
     onInit() {
       store.carregaLista(null);
     },

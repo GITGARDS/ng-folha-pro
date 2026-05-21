@@ -43,7 +43,7 @@ import { AppHeaderTitle } from "./app-header-title";
         </div>
       </div>
 
-      @if (empresaService.idEmpresaLogada() !== null) {
+      @if (empresaService.empresaLogada() !== null) {
         <app-header-auth-empre />
       }
 
