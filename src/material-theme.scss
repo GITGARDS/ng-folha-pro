@@ -17,7 +17,7 @@ html {
       ),
       // color: (primary: mat.$cyan-palette, tertiary: mat.$blue-palette),
       typography: Roboto,
-      density: 0
+      density: 0,
     )
   );
 }
@@ -27,6 +27,15 @@ html {
   )
 );
 
+@include mat.snack-bar-overrides(
+  (
+
+    container-color: var(--mat-sys-secondary),
+    button-color: var(--mat-sys-on-secondary),
+    supporting-text-color: var(--mat-sys-on-secondary),
+    container-shape: 8px,
+  )
+);
 
 body {
   // Default the application to a light color theme. This can be changed to

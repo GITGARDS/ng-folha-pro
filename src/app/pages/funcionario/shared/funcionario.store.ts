@@ -1,6 +1,7 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { addEntity, withEntities } from "@ngrx/signals/entities";
+import { MsgService } from "../../../core/shared/services/msg.service";
 import { EmpresaService } from "../../empresa/shared/empresa.service";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -26,6 +27,7 @@ export const FuncionarioStore = signalStore(
   withProps(() => ({
     empresaService: inject(EmpresaService),
     funcionarioService: inject(FuncionarioService),
+    msgService: inject(MsgService),
   })),
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
@@ -37,7 +39,7 @@ export const FuncionarioStore = signalStore(
     ),
   })),
 
-  withMethods(({ funcionarioService, ...store }) => ({
+  withMethods(({ msgService, funcionarioService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       funcionarioService.findAll({ empresa: empresa }).subscribe({
@@ -47,8 +49,12 @@ export const FuncionarioStore = signalStore(
             list,
             isLoading: false,
           }));
+          msgService.openSnackBar('Registros carregados com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          patchState(store, { isLoading: false });
+          msgService.openSnackBar('Erro ao carregar registros, ' + err.message);
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -66,8 +72,12 @@ export const FuncionarioStore = signalStore(
             list: [...state.list, { ...(data as FuncionarioModel), id }],
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro criado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -84,6 +94,7 @@ export const FuncionarioStore = signalStore(
         list: [...state.list, data as FuncionarioModel],
         isLoading: false,
       }));
+      msgService.openSnackBar('Registro criado com sucesso');
     }),
 
     updateById: signalMethod(({ id, data }: { id: string; data: Partial<FuncionarioModel> }) => {
@@ -97,8 +108,12 @@ export const FuncionarioStore = signalStore(
             ),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro atualizado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao atualizar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -112,8 +127,13 @@ export const FuncionarioStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro excluído com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao excluir registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),

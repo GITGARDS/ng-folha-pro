@@ -1,5 +1,6 @@
 import { computed, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
+import { MsgService } from "../../../core/shared/services/msg.service";
 import { ProdesModel } from "./prodes.model";
 import { ProdesService } from "./prodes.service";
 
@@ -21,13 +22,14 @@ export const ProdesStore = signalStore(
 
   withProps(() => ({
     prodesService: inject(ProdesService),
+    msgService: inject(MsgService),
   })),
 
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods(({ prodesService, ...store }) => ({
+  withMethods(({ msgService, prodesService, ...store }) => ({
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
       prodesService.findAll({}).subscribe({
@@ -37,8 +39,12 @@ export const ProdesStore = signalStore(
             list: list,
             isLoading: false,
           }));
+          msgService.openSnackBar('Registros carregados com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao carregar registros, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -52,8 +58,12 @@ export const ProdesStore = signalStore(
             list: [...state.list, { ...(data as ProdesModel), id }],
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro criado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -67,8 +77,12 @@ export const ProdesStore = signalStore(
             list: state.list.map((f) => (f.id === id ? { ...f, ...(data as ProdesModel) } : f)),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro alterado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao alterar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -82,8 +96,12 @@ export const ProdesStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro excluído com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao excluir registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),

@@ -1,5 +1,6 @@
 import { inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
+import { MsgService } from "../../../core/shared/services/msg.service";
 import { TabelaModel } from "./tabela.model";
 import { TabelaService } from "./tabela.service";
 
@@ -21,11 +22,12 @@ export const TabelaStore = signalStore(
 
   withProps(() => ({
     tabelaService: inject(TabelaService),
+    msgService: inject(MsgService),
   })),
-  
+
   withComputed(({ list }) => ({})),
 
-  withMethods(({ tabelaService, ...store }) => ({
+  withMethods(({ msgService, tabelaService, ...store }) => ({
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
       tabelaService.findAll({}).subscribe({
@@ -35,8 +37,12 @@ export const TabelaStore = signalStore(
             list: list,
             isLoading: false,
           }));
+          msgService.openSnackBar('Listagem carregada com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao carregar listagem, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -50,8 +56,12 @@ export const TabelaStore = signalStore(
             list: [...state.list, { ...(data as TabelaModel), id }],
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro criado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao criar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -65,8 +75,12 @@ export const TabelaStore = signalStore(
             list: state.list.map((f) => (f.id === id ? { ...f, ...(data as TabelaModel) } : f)),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro atualizado com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao atualizar registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -80,8 +94,12 @@ export const TabelaStore = signalStore(
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
           }));
+          msgService.openSnackBar('Registro excluído com sucesso');
         },
-        error: () => patchState(store, { isLoading: false }),
+        error: (err) => {
+          (patchState(store, { isLoading: false }),
+            msgService.openSnackBar('Erro ao excluir registro, ' + err.message));
+        },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
