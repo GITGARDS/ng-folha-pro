@@ -32,7 +32,7 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
     NgxMaskDirective,
     MatIcon,
     UpperCasePipe,
-    MatStepperModule,    
+    MatStepperModule,
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
@@ -63,13 +63,10 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
                   </div>
                 </div>
 
-                <div class="grid grid-cols-6 gap-2">
+                <div class="grid grid-cols-6 gap-2 relative">
                   <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                     <mat-label>Departamento</mat-label>
-                    <mat-select
-                      formControlName="departamento"
-                      [compareWith]="compareDepartamentos"
-                    >
+                    <mat-select formControlName="departamento" [compareWith]="compareDepartamentos">
                       @for (item of departamentos(); track item.id) {
                         <mat-option [value]="item">{{ item.nome }}</mat-option>
                       }
@@ -77,8 +74,18 @@ import { EmpresaService } from "../empresa/shared/empresa.service";
                     @if (dataForm.controls['departamento'].hasError('required')) {
                       <mat-error><strong>required</strong></mat-error>
                     }
+                    <!-- {{ dataForm.value.departamento | json }} -->
                   </mat-form-field>
-                  <!-- {{ dataForm.value.departamento | json }} -->
+
+                  @if (departamentos2() === false) {
+                    <div
+                      class="absolute h-14 w-51 border-4 border-dotted border-gray-400 bg-clip-border backdrop-blur-sm flex items-center justify-center"
+                    >
+                      <div class="flex items-center animate-spin">
+                        <mat-icon>autorenew</mat-icon>
+                      </div>
+                    </div>
+                  }
                 </div>
 
                 <div class="grid grid-cols-6 gap-2">
@@ -642,7 +649,10 @@ export class FuncionarioForm {
   formOpcao = signal<string>('');
   empresaService = inject(EmpresaService);
   departamentoStore = inject(DepartamentoStore);
+
   departamentos = signal<DepartamentoModel[]>([]);
+  departamentos2 = signal<boolean>(false);
+
   compareDepartamentos(o1: any, o2: any): boolean {
     return o1 && o2 ? o1.id === o2.id : o1 === o2;
   }
@@ -651,6 +661,9 @@ export class FuncionarioForm {
     effect(() => {
       this.departamentos.set(this.departamentoStore.list());
     });
+    setTimeout(() => {
+      this.departamentos2.set(true);
+    }, 1000);
   }
 
   ngOnInit() {
@@ -720,7 +733,6 @@ export class FuncionarioForm {
     const ret = {
       ...this.dataForm.value,
       empresa: this.empresaService.empresaLogada()?.id as string,
-
     };
     this.dialogRef.close(ret);
   }

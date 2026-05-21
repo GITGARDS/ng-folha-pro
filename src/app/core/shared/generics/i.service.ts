@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
-import { Observable, delay } from "rxjs";
+import { Observable, delay, take } from "rxjs";
 import { db } from "../../../../firebase";
 
 interface iService<T> {
@@ -41,7 +41,7 @@ export class IService<T> implements iService<T> {
         observer.next(items);
       });
     // }).pipe(delay(this.visDelay as number + 500));
-    }).pipe(delay(this.visDelay as number * 3));
+    }).pipe(delay(this.visDelay as number * 3), take(1));
   }
   create({ data }: { data: T }): Observable<string> {
     return new Observable<string>((observer) => {

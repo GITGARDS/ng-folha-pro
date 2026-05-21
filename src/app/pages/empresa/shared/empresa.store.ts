@@ -89,6 +89,10 @@ export const EmpresaStore = signalStore(
       });
       funcionarioStore.setList([]);
       switch (router.url) {
+        case '/departamento': {
+          router.navigate(['empresa']);
+          break;
+        }
         case '/funcionario': {
           router.navigate(['empresa']);
           break;
