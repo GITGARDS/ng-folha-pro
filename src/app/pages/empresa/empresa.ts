@@ -5,7 +5,7 @@ import { InfoCard } from "../../core/components/info-card";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { EMPRESA } from "../../core/navigation/shared/navigation-model";
-import EmpresaCard from "./empresa-card";
+import FuncionarioCard from "../funcionario/funcionario-card";
 import { EmpresaForm } from "./empresa-form";
 import { EmpresaList } from "./empresa-list/empresa-list";
 import { EmpresaStore } from "./shared/empresa.store";
@@ -16,14 +16,14 @@ import { EmpresaStore } from "./shared/empresa.store";
     NavigationTitle,
     IsLoading,
     EmpresaList,
-    EmpresaCard,
     InfoCard,
     ButtonNovo,
+    FuncionarioCard
   ],
   template: `
     <div class="flex flex-col gap-2">
       <app-navigation-title [title]="title" />
-      <app-empresa-card />
+      <app-funcionario-card />
       <app-button-novo (onCreate)="onCreate()" />      
       <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="empresaStore.isLoading()" />
