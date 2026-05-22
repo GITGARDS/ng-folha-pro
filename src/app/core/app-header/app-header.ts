@@ -7,6 +7,7 @@ import { AppHeaderAuthEmpre } from "./app-header-auth-empre";
 import { AppHeaderLogo } from "./app-header-logo";
 import { AppHeaderTheme } from "./app-header-theme";
 import { AppHeaderTitle } from "./app-header-title";
+import { AppHeaderVersao } from "./app-header-versao";
 
 @Component({
   selector: 'app-header',
@@ -18,7 +19,8 @@ import { AppHeaderTitle } from "./app-header-title";
     MatIconButton,
     MatIcon,
     AppHeaderAuthEmpre,
-  ],
+    AppHeaderVersao
+],
 
   template: `
     <mat-toolbar class="flex items-center justify-between gap-2">
@@ -41,6 +43,7 @@ import { AppHeaderTitle } from "./app-header-title";
             <app-header-title />
           }
         </div>
+        <app-header-versao />
       </div>
 
       @if (empresaStore.empresaLogada() !== null) {
