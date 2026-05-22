@@ -53,6 +53,6 @@ export class MiniCard {
   constructor() {
     setTimeout(() => {
       this.valor2.set(this.valor());
-    }, TIME_DELAY);
+    }, TIME_DELAY * 10);
   }
 }
