@@ -1,6 +1,6 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { MsgStore } from "../../../core/shared/store/msg.store";
+import { AppService } from "../../../core/shared/services/app.service";
 import { EmpresaStore } from "../../empresa/shared/empresa.store";
 import { DepartamentoModel } from "./departamento.model";
 import { DepartamentoService } from "./departamento.service";
@@ -8,11 +8,13 @@ import { DepartamentoService } from "./departamento.service";
 type DepartamentoState = {
   list: DepartamentoModel[];
   isLoading: boolean;
+  msg: string;
 };
 
 const initialState: DepartamentoState = {
   list: [],
   isLoading: false,
+  msg: '',
 };
 
 export const DepartamentoStore = signalStore(
@@ -22,16 +24,16 @@ export const DepartamentoStore = signalStore(
   withState(initialState),
 
   withProps(() => ({
-    msgStore: inject(MsgStore),
     empresaStore: inject(EmpresaStore),
     departamentoService: inject(DepartamentoService),
+    appService: inject(AppService),
   })),
 
   withComputed(({ list }) => ({
     totalAtivos: computed(() => list().filter((f) => f.ativo === true)),
   })),
 
-  withMethods(({ msgStore, departamentoService, ...store }) => ({
+  withMethods(({ departamentoService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       departamentoService.findAll({ empresa: empresa }).subscribe({
@@ -40,15 +42,17 @@ export const DepartamentoStore = signalStore(
             ...state,
             list,
             isLoading: false,
+            msg: 'Registros carregados com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({
-              msg: 'Erro ao carregar listagem, ' + err.message,
-            }));
+          patchState(
+            store,
+            { msg: 'Erro ao carregar listagem, ' + err.message },
+            { isLoading: false },
+          );
         },
+
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -64,14 +68,18 @@ export const DepartamentoStore = signalStore(
             ...state,
             list: [...state.list, { ...(data as DepartamentoModel), id }],
             isLoading: false,
+            msg: 'Registro criado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao criar registro, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            {
+              msg: 'Erro ao criar registro, ' + err.message,
+            },
+          );
         },
-
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -86,12 +94,15 @@ export const DepartamentoStore = signalStore(
               f.id === id ? { ...f, ...(data as DepartamentoModel) } : f,
             ),
             isLoading: false,
+            msg: 'Registro atualizado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({ msg: 'Erro ao atualizar registro, ' + err.message }));
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao atualizar registro, ' + err.message },
+          );
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -105,19 +116,24 @@ export const DepartamentoStore = signalStore(
             ...state,
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
+            msg: 'Registro excluído com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            {
+              msg: 'Erro ao excluir registro, ' + err.message,
+            },
+          );
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
 
-  withHooks(({ empresaStore, ...store }) => ({
+  withHooks(({ appService, empresaStore, ...store }) => ({
     onInit() {
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
@@ -125,6 +141,7 @@ export const DepartamentoStore = signalStore(
           return;
         }
         store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
+        appService.openSnackBar(store.msg());
       });
     },
   })),

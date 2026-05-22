@@ -1,9 +1,9 @@
-import { inject } from "@angular/core";
+import { effect, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { delay, pipe } from "rxjs";
-import { MsgStore } from "../../../core/shared/store/msg.store";
+import { AppService } from "../../../core/shared/services/app.service";
 import { EmpresaModel } from "./empresa.model";
 import { EmpresaService } from "./empresa.service";
 
@@ -11,12 +11,14 @@ type EmpresaState = {
   list: EmpresaModel[];
   empresaLogada: EmpresaModel | null;
   isLoading: boolean;
+  msg: string;
 };
 
 const initialState: EmpresaState = {
   list: [],
   empresaLogada: null,
   isLoading: false,
+  msg: '',
 };
 
 export const EmpresaStore = signalStore(
@@ -28,12 +30,12 @@ export const EmpresaStore = signalStore(
   withProps(() => ({
     router: inject(Router),
     empresaService: inject(EmpresaService),
-    msgStore: inject(MsgStore),
+    appService: inject(AppService),
   })),
 
   withComputed(({ list }) => ({})),
 
-  withMethods(({ msgStore, empresaService, router, ...store }) => ({
+  withMethods(({ empresaService, router, ...store }) => ({
     teste: rxMethod<unknown>(pipe(delay(2000))),
 
     carregaLista: signalMethod(() => {
@@ -44,12 +46,15 @@ export const EmpresaStore = signalStore(
             ...state,
             list,
             isLoading: false,
+            msg: 'Listagem carregada com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao carregar listagem, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao carregar listagem, ' + err.message },
+          );
         },
 
         complete: () => patchState(store, { isLoading: false }),
@@ -64,16 +69,16 @@ export const EmpresaStore = signalStore(
             ...state,
             list: [...state.list, { ...(data as EmpresaModel), id }],
             isLoading: false,
+            msg: 'Registro criado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({
-              msg: 'Erro ao criar registro, ' + err.message,
-            }));
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao criar registro, ' + err.message },
+          );
         },
-
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -84,8 +89,8 @@ export const EmpresaStore = signalStore(
         ...state,
         empresaLogada: data as EmpresaModel,
         isLoading: false,
+        msg: 'Login efetuado com sucesso',
       }));
-      msgStore.onMsg({ msg: 'Login efetuado com sucesso' });
     }),
 
     logout: signalMethod(() => {
@@ -94,8 +99,8 @@ export const EmpresaStore = signalStore(
         ...state,
         empresaLogada: null,
         isLoading: false,
+        msg: 'Logout efetuado com sucesso',
       }));
-      msgStore.onMsg({ msg: 'Logout efetuado com sucesso' });
       setTimeout(() => {
         router.navigate(['empresa']);
       }, 500);
@@ -109,14 +114,15 @@ export const EmpresaStore = signalStore(
             ...state,
             list: state.list.map((f) => (f.id === id ? { ...f, ...(data as EmpresaModel) } : f)),
             isLoading: false,
+            msg: 'Registro atualizado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({
-              msg: 'Erro ao atualizar registro, ' + err.message,
-            }));
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao atualizar registro, ' + err.message },
+          );
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -130,21 +136,24 @@ export const EmpresaStore = signalStore(
             ...state,
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
+            msg: 'Registro excluído com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao excluir registro, ' + err.message },
+          );
         },
-
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
-  withHooks(({ ...store }) => ({
+  withHooks(({ appService, ...store }) => ({
     onInit() {
       store.carregaLista(null);
+      effect(() => appService.openSnackBar(store.msg()));
     },
   })),
 );

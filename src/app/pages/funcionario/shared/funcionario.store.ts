@@ -1,6 +1,6 @@
 import { computed, effect, inject } from "@angular/core";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
-import { MsgStore } from "../../../core/shared/store/msg.store";
+import { AppService } from "../../../core/shared/services/app.service";
 import { EmpresaStore } from "../../empresa/shared/empresa.store";
 import { FuncionarioModel } from "./funcionario.model";
 import { FuncionarioService } from "./funcionario.service";
@@ -8,11 +8,13 @@ import { FuncionarioService } from "./funcionario.service";
 type FuncionarioState = {
   list: FuncionarioModel[];
   isLoading: boolean;
+  msg: string;
 };
 
 const initialState: FuncionarioState = {
   list: [],
   isLoading: false,
+  msg: '',
 };
 
 export const FuncionarioStore = signalStore(
@@ -22,9 +24,9 @@ export const FuncionarioStore = signalStore(
   withState(initialState),
 
   withProps(() => ({
-    msgStore: inject(MsgStore),
     empresaStore: inject(EmpresaStore),
     funcionarioService: inject(FuncionarioService),
+    appService: inject(AppService),
   })),
 
   withComputed(({ list }) => ({
@@ -37,7 +39,7 @@ export const FuncionarioStore = signalStore(
     ),
   })),
 
-  withMethods(({ msgStore, funcionarioService, ...store }) => ({
+  withMethods(({ funcionarioService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
       funcionarioService.findAll({ empresa: empresa }).subscribe({
@@ -46,15 +48,17 @@ export const FuncionarioStore = signalStore(
             ...state,
             list,
             isLoading: false,
+            msg: 'Registros carregados com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Listagem carregada com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({
-              msg: 'Erro ao carregar listagem, ' + err.message,
-            }));
+          patchState(
+            store,
+            { msg: 'Erro ao carregar listagem, ' + err.message },
+            { isLoading: false },
+          );
         },
+
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -70,14 +74,18 @@ export const FuncionarioStore = signalStore(
             ...state,
             list: [...state.list, { ...(data as FuncionarioModel), id }],
             isLoading: false,
+            msg: 'Registro criado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro criado com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao criar registro, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            {
+              msg: 'Erro ao criar registro, ' + err.message,
+            },
+          );
         },
-
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
@@ -92,12 +100,15 @@ export const FuncionarioStore = signalStore(
               f.id === id ? { ...f, ...(data as FuncionarioModel) } : f,
             ),
             isLoading: false,
+            msg: 'Registro atualizado com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro atualizado com sucesso' });
         },
         error: (err) => {
-          (patchState(store, { isLoading: false }),
-            msgStore.onMsg({ msg: 'Erro ao atualizar registro, ' + err.message }));
+          patchState(
+            store,
+            { isLoading: false },
+            { msg: 'Erro ao atualizar registro, ' + err.message },
+          );
         },
         complete: () => patchState(store, { isLoading: false }),
       });
@@ -111,19 +122,24 @@ export const FuncionarioStore = signalStore(
             ...state,
             list: state.list.filter((f) => f.id !== params.id.toString()),
             isLoading: false,
+            msg: 'Registro excluído com sucesso',
           }));
-          msgStore.onMsg({ msg: 'Registro excluído com sucesso' });
         },
         error: (err) => {
-          patchState(store, { isLoading: false });
-          msgStore.onMsg({ msg: 'Erro ao excluir registro, ' + err.message });
+          patchState(
+            store,
+            { isLoading: false },
+            {
+              msg: 'Erro ao excluir registro, ' + err.message,
+            },
+          );
         },
         complete: () => patchState(store, { isLoading: false }),
       });
     }),
   })),
 
-  withHooks(({ empresaStore, ...store }) => ({
+  withHooks(({ appService, empresaStore, ...store }) => ({
     onInit() {
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
@@ -131,6 +147,7 @@ export const FuncionarioStore = signalStore(
           return;
         }
         store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
+        appService.openSnackBar(store.msg());
       });
     },
   })),
