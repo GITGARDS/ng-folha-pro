@@ -4,10 +4,11 @@ import { MatBadgeModule } from "@angular/material/badge";
 import { MatCardModule } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { TIME_DELAY } from "../shared/consts";
+import { CountUpDirective } from "../shared/directives/count-up.directive";
 
 @Component({
   selector: 'app-mini-card',
-  imports: [MatIcon, MatBadgeModule, MatCardModule, TitleCasePipe],
+  imports: [MatIcon, MatBadgeModule, MatCardModule, TitleCasePipe, CountUpDirective],
   template: `
     <mat-card appearance="filled" class="relative select-none cursor-alias">
       <div
@@ -24,7 +25,7 @@ import { TIME_DELAY } from "../shared/consts";
         </mat-card-title>
         <mat-card-subtitle class="self-end">
           @if (valor2() !== false) {
-            <div class="font-bold">{{ valor() }}</div>
+            <div class="font-bold" [appCountUpDirective]="valor()" [duration]="2" >{{ valor() }}</div>
           } @else {
             <div class="animate-spin size-6 flex items-center justify-center">
               <mat-icon>change_circle</mat-icon>
