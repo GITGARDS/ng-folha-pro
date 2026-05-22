@@ -25,7 +25,7 @@ import { CountUpDirective } from "../shared/directives/count-up.directive";
         </mat-card-title>
         <mat-card-subtitle class="self-end">
           @if (valor2() !== false) {
-            <div class="font-bold" [appCountUpDirective]="valor()" [duration]="2" >{{ valor() }}</div>
+            <div class="font-bold" [appCountUpDirective]="valor()" [duration]="2">{{ valor() }}</div>
           } @else {
             <div class="animate-spin size-6 flex items-center justify-center">
               <mat-icon>change_circle</mat-icon>
