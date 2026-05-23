@@ -20,13 +20,13 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Id',
     field: 'id',
     type: 'string',
-    display: false,
+    display: true,
   },
   {
     label: 'Empresa',
     field: 'empresa',
     type: 'string',
-    display: true,
+    display: false,
   },
   {
     label: 'Nome',
