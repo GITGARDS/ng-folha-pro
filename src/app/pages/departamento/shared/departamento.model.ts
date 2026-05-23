@@ -46,11 +46,18 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
   },
 ];
 
-export type DepartamentoModel = {
+export interface DepartamentoModel {
   id: string;
   empresa: string;
-  nome: string;  
+  nome: string;
   ativo: boolean;
+};
+
+export const DepartamentoModelInit: DepartamentoModel = {
+  id: '',
+  empresa: '',
+  nome: '',
+  ativo: true,
 };
 
 export const MOCK_DEPARTAMENTOS: DepartamentoModel[] = [
