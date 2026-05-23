@@ -1,16 +1,15 @@
-import { MatDialog } from "@angular/material/dialog";
 import { Component, inject } from "@angular/core";
-
-import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
-import { NavigationTitle } from "../../core/navigation/navigation-title";
-import { DepartamentoList } from "./departamento-list/departamento-list";
-import { DepartamentoStore } from "./shared/departamento.store";
+import { MatDialog } from "@angular/material/dialog";
 import { ButtonNovo } from "../../core/components/button-novo";
-import { IsLoading } from "../../core/components/isLoading";
 import { InfoCard } from "../../core/components/info-card";
-import { DepartamentoForm } from "./departamento-form";
+import { IsLoading } from "../../core/components/isLoading";
+import { NavigationTitle } from "../../core/navigation/navigation-title";
+import { DEPARTAMENTO } from "../../core/navigation/shared/navigation-model";
 import DepartamentoCard from "./departamento-card";
-
+import { DepartamentoForm } from "./departamento-form";
+import { DepartamentoList } from "./departamento-list/departamento-list";
+import { DEPARTAMENTO_MODEL_EMPTY, DepartamentoModel } from "./shared/departamento.model";
+import { DepartamentoStore } from "./shared/departamento.store";
 
 @Component({
   selector: 'app-departamento',
@@ -19,7 +18,7 @@ import DepartamentoCard from "./departamento-card";
     <div class="flex flex-col gap-2">
       <app-navigation-title [title]="title" />
       <app-departamento-card />
-      <app-button-novo (onCreate)="onCreate()"/>
+      <app-button-novo (onCreate)="onCreate()" />
       <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="departamentoStore.isLoading()" />
         <div class="h-[60vh] overflow-hidden">
@@ -47,8 +46,12 @@ export default class Departamento {
   readonly dialog = inject(MatDialog);
   onCreate() {
     const ultimoTabela = this.departamentoStore.list().length + 1;
-    const novo: Partial<any> = {} as any;
-    this.openDialog('new', novo as any);
+    const novo: DepartamentoModel = {
+      ...DEPARTAMENTO_MODEL_EMPTY,
+      nome: `Departamento ${ultimoTabela}`,
+    };
+
+    this.openDialog('new', novo);
   }
   openDialog(opcao: string, data: any) {
     const dialogRef = this.dialog.open(DepartamentoForm, {

@@ -53,7 +53,7 @@ export interface DepartamentoModel {
   ativo: boolean;
 };
 
-export const DepartamentoModelInit: DepartamentoModel = {
+export const DEPARTAMENTO_MODEL_EMPTY: DepartamentoModel = {
   id: '',
   empresa: '',
   nome: '',

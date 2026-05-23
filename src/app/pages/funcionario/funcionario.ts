@@ -9,23 +9,17 @@ import { FUNCIONARIO } from "../../core/navigation/shared/navigation-model";
 import FuncionarioCard from "./funcionario-card";
 import { FuncionarioForm } from "./funcionario-form";
 import { FuncionarioList } from "./funcionario-list/funcionario-list";
+import { FUNCIONARIO_MODEL_EMPTY, FuncionarioModel } from "./shared/funcionario.model";
 import { FuncionarioStore } from "./shared/funcionario.store";
 
 @Component({
   selector: 'app-funcionario',
-  imports: [
-    NavigationTitle,
-    IsLoading,
-    FuncionarioList,
-    FuncionarioCard,
-    InfoCard,
-    ButtonNovo
-],
+  imports: [NavigationTitle, IsLoading, FuncionarioList, FuncionarioCard, InfoCard, ButtonNovo],
   template: `
     <div class="flex flex-col gap-2">
       <app-navigation-title [title]="title" />
       <app-funcionario-card />
-      <app-button-novo (onCreate)="onCreate()"/>
+      <app-button-novo (onCreate)="onCreate()" />
       <div class="h-[60vh] relative rounded-lg flex flex-col">
         <app-is-loading [isLoading]="funcionarioStore.isLoading()" />
         <div class="h-[60vh] overflow-hidden">
@@ -54,18 +48,17 @@ export default class Funcionario {
   onCreate() {
     const ultimoTabela = this.funcionarioStore.list().length + 1;
     const novaData = new DatePipe('en-US').transform(new Date(), 'dd-MM-yyyy');
-    const novo: Partial<any> = {
-      departamento: 'departamento 1',
+    const novo: FuncionarioModel = { ...FUNCIONARIO_MODEL_EMPTY,
       nome: `Funcionario ${ultimoTabela}`,
-      dataNascimento: novaData,
+      dataNascimento: novaData + '',
       nacionalidade: 'Brasileira',
       naturalidade: 'Brasília',
       racaCor: 'Branca',
       estadoCivil: 'Solteiro',
-      dataAdmissao: novaData,
+      dataAdmissao: novaData + '',
       salarioBase: ultimoTabela * 1000,
-    } as any;
-    this.openDialog('new', novo as any);
+    };
+    this.openDialog('new', novo);
   }
   openDialog(opcao: string, data: any) {
     const dialogRef = this.dialog.open(FuncionarioForm, {
