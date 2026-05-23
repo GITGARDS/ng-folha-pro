@@ -43,11 +43,13 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
       {{ dataForm.value.nome }}
     </h2>
 
+    @let mt = 'mt-10';
+
     <mat-dialog-content class="mat-typography">
       <form [formGroup]="dataForm">
         <mat-tab-group>
           <mat-tab label="Dados Pessoais">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-4" [appearance]="formAparence">
                   <mat-label>Id</mat-label>
@@ -194,7 +196,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
             </div>
           </mat-tab>
           <mat-tab label="Documentação">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                   <mat-label>Rg</mat-label>
@@ -249,7 +251,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
           </mat-tab>
 
           <mat-tab label="Endereço">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6" [appearance]="formAparence">
                   <mat-label>Endereço</mat-label>
@@ -327,7 +329,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
           </mat-tab>
 
           <mat-tab label="Dados Contratuais e Profissionais">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                   <mat-label>Data Admissão</mat-label>
@@ -409,7 +411,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
           </mat-tab>
 
           <mat-tab label="Dados de Remuneração e Bancários">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                   <mat-label>Salário Base</mat-label>
@@ -468,7 +470,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
           </mat-tab>
 
           <mat-tab label="Informações de Benefícios e Saúde">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                   <mat-label>Plano de Saude</mat-label>
@@ -521,7 +523,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
           </mat-tab>
 
           <mat-tab label="Layout Folha sefip 84">
-            <div class="mt-2">
+            <div [class]="mt">
               <div class="grid grid-cols-6 gap-2">
                 <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                   <mat-label>Matricula</mat-label>

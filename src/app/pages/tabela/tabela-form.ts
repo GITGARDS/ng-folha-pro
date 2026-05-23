@@ -38,6 +38,7 @@ import { MatTabsModule } from "@angular/material/tabs";
       /
       {{ dataForm.value.nome }}
     </h2>
+    @let mt = 'mt-10';
 
     <mat-dialog-content class="mat-typography">
       <form [formGroup]="dataForm">
@@ -75,7 +76,7 @@ import { MatTabsModule } from "@angular/material/tabs";
           <h2 class="font-medium text-2xl text-center">Tabelas</h2>
           <mat-tab-group headerPosition="above" dynamicHeight>
             <mat-tab label="FTGS">
-              <div class="mt-5">
+              <div [class]='mt'>
                 <div formArrayName="fgts">
                   <div class="grid grid-cols-3 gap-2">
                     <mat-form-field class="col-span-1" [appearance]="formAparence">
@@ -95,7 +96,7 @@ import { MatTabsModule } from "@angular/material/tabs";
               </div>
             </mat-tab>
             <mat-tab label="INSS">
-              <div class="mt-5">
+              <div [class]='mt'>
                 <table formArrayName="inss">
                   <tr class="grid grid-cols-2 gap-2">
                     <th class="col-span-1">Salário de Contribuição (R$)</th>
@@ -121,7 +122,7 @@ import { MatTabsModule } from "@angular/material/tabs";
               </div>
             </mat-tab>
             <mat-tab label="IRPF">
-              <div class="mt-5">
+              <div [class]='mt'>
                 <table formArrayName="irrf">
                   <tr class="grid grid-cols-3 gap-2">
                     <th class="col-span-1">Salário de Contribuição (R$)</th>
