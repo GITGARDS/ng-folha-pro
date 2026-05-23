@@ -1,7 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-
 import { ButtonNovo } from "../../core/components/button-novo";
 import { InfoCard } from "../../core/components/info-card";
 import { IsLoading } from "../../core/components/isLoading";
@@ -11,7 +10,6 @@ import FuncionarioCard from "./funcionario-card";
 import { FuncionarioForm } from "./funcionario-form";
 import { FuncionarioList } from "./funcionario-list/funcionario-list";
 import { FuncionarioStore } from "./shared/funcionario.store";
-
 
 @Component({
   selector: 'app-funcionario',
@@ -71,7 +69,7 @@ export default class Funcionario {
   }
   openDialog(opcao: string, data: any) {
     const dialogRef = this.dialog.open(FuncionarioForm, {
-      width: 'auto',
+      width: '750px',
       height: '750px',
       enterAnimationDuration: '300ms',
       exitAnimationDuration: '300ms',

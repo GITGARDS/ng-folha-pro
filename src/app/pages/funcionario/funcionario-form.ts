@@ -8,6 +8,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatStepperModule } from "@angular/material/stepper";
+import { MatTabsModule } from "@angular/material/tabs";
 import { NgxMaskDirective } from "ngx-mask";
 import { DepartamentoModel } from "../departamento/shared/departamento.model";
 import { DepartamentoStore } from "../departamento/shared/departamento.store";
@@ -33,6 +34,7 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
     MatIcon,
     UpperCasePipe,
     MatStepperModule,
+    MatTabsModule,
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
@@ -43,593 +45,556 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
 
     <mat-dialog-content class="mat-typography">
       <form [formGroup]="dataForm">
-        <mat-stepper orientation="vertical">
-          <mat-step>
-            <ng-template matStepLabel>Dados Pessoais</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-4" [appearance]="formAparence">
-                    <mat-label>Id</mat-label>
-                    <input readonly matInput formControlName="id" />
-                    <mat-icon matPrefix>badge</mat-icon>
-                  </mat-form-field>
+        <mat-tab-group>
+          <mat-tab label="Dados Pessoais">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-4" [appearance]="formAparence">
+                  <mat-label>Id</mat-label>
+                  <input readonly matInput formControlName="id" />
+                  <mat-icon matPrefix>badge</mat-icon>
+                </mat-form-field>
 
-                  <div class="col-span-2">
-                    <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
-                    @if (dataForm.controls['ativo'].hasError('required')) {
-                      <mat-error>ativo is <strong>required</strong></mat-error>
-                    }
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  @if ((departamentos() && departamentos().length > 0) && !departamentoIsLoading()) {
-                    <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                      <mat-label>Departamento</mat-label>
-                      <mat-select
-                        formControlName="departamento"
-                        [compareWith]="compareDepartamentos"
-                      >
-                        @for (item of departamentos(); track item.id) {
-                          <mat-option [value]="item">{{ item.nome }}</mat-option>
-                        }
-                      </mat-select>
-                      @if (dataForm.controls['departamento'].hasError('required')) {
-                        <mat-error><strong>required</strong></mat-error>
-                      }
-                      <!-- {{ dataForm.value.departamento | json }} -->
-                    </mat-form-field>
-                  } @else {
-                    <div
-                      class="col-span-6 md:col-span-3 w-full h-14 mb-5 bg-gray-300 border-b rounded-t-sm"
-                    >
-                      <div class="w-full h-full flex justify-center items-center animate-spin">
-                        <mat-icon>autorenew</mat-icon>
-                      </div>
-                    </div>
+                <div class="col-span-2">
+                  <mat-checkbox formControlName="ativo">Ativo</mat-checkbox>
+                  @if (dataForm.controls['ativo'].hasError('required')) {
+                    <mat-error>ativo is <strong>required</strong></mat-error>
                   }
                 </div>
+              </div>
 
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Nome</mat-label>
-                    <input matInput formControlName="nome" />
-                    <mat-icon matPrefix>person</mat-icon>
-                    @if (dataForm.controls['nome'].hasError('required')) {
-                      <mat-error>Nome is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
+              <div class="grid grid-cols-6 gap-2">
+                @if (departamentos() && departamentos().length > 0 && !departamentoIsLoading()) {
                   <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>CPF</mat-label>
-                    <input matInput type="text" formControlName="cpf" mask="000.000.000-00" />
-                    @if (dataForm.controls['cpf'].hasError('required')) {
-                      <mat-error>Cpf is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Data Nascimento</mat-label>
-                    <input matInput type="date" formControlName="dataNascimento" />
-                    @if (dataForm.controls['dataNascimento'].hasError('required')) {
-                      <mat-error>dataNascimento is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Nome Mae</mat-label>
-                    <input matInput formControlName="nomeMae" />
-                    @if (dataForm.controls['nomeMae'].hasError('required')) {
-                      <mat-error>nomeMae is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Nacionalidade</mat-label>
-                    <input matInput formControlName="nacionalidade" />
-                    @if (dataForm.controls['nacionalidade'].hasError('required')) {
-                      <mat-error>nacionalidade is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Naturalidade</mat-label>
-                    <input matInput formControlName="naturalidade" />
-                    @if (dataForm.controls['naturalidade'].hasError('required')) {
-                      <mat-error>naturalidade is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Genero</mat-label>
-
-                    <mat-select formControlName="genero">
-                      <mat-option value="M">Masculino</mat-option>
-                      <mat-option value="F">Feminino</mat-option>
-                    </mat-select>
-
-                    @if (dataForm.controls['genero'].hasError('required')) {
-                      <mat-error>genero is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Raca Cor</mat-label>
-                    <mat-select formControlName="racaCor">
-                      @for (item of racaCorSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    <mat-label>Departamento</mat-label>
+                    <mat-select formControlName="departamento" [compareWith]="compareDepartamentos">
+                      @for (item of departamentos(); track item.id) {
+                        <mat-option [value]="item">{{ item.nome }}</mat-option>
                       }
                     </mat-select>
-                    @if (dataForm.controls['racaCor'].hasError('required')) {
-                      <mat-error>racaCor is <strong>required</strong></mat-error>
+                    @if (dataForm.controls['departamento'].hasError('required')) {
+                      <mat-error><strong>required</strong></mat-error>
                     }
+                    <!-- {{ dataForm.value.departamento | json }} -->
                   </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Estado Civil</mat-label>
-                    <mat-select formControlName="estadoCivil">
-                      @for (item of estadoCivilSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (dataForm.controls['estadoCivil'].hasError('required')) {
-                      <mat-error>estadoCivil is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+                } @else {
+                  <div
+                    class="col-span-6 md:col-span-3 w-full h-14 mb-5 bg-gray-300 border-b rounded-t-sm"
+                  >
+                    <div class="w-full h-full flex justify-center items-center animate-spin">
+                      <mat-icon>autorenew</mat-icon>
+                    </div>
+                  </div>
+                }
               </div>
-              <button matButton="filled" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Documentação</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Rg</mat-label>
-                    <input matInput formControlName="rg" />
-                    @if (dataForm.controls['rg'].hasError('required')) {
-                      <mat-error>Rg is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Ctps</mat-label>
-                    <input matInput formControlName="ctpsDigital" />
-                    @if (dataForm.controls['ctpsDigital'].hasError('required')) {
-                      <mat-error>ctpsDigital is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Pis/Pasep</mat-label>
-                    <mat-icon matPrefix>search</mat-icon>
-                    <input matInput formControlName="pisPasep" />
-                    @if (dataForm.controls['pisPasep'].hasError('required')) {
-                      <mat-error>pisPasep is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Titulo Eleitor</mat-label>
-                    <mat-icon matPrefix>search</mat-icon>
-                    <input matInput formControlName="tituloEleitor" />
-                    @if (dataForm.controls['tituloEleitor'].hasError('required')) {
-                      <mat-error>tituloEleitor is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Reservista</mat-label>
-                    <input matInput formControlName="certificadoReservista" />
-                    @if (dataForm.controls['certificadoReservista'].hasError('required')) {
-                      <mat-error>certificadoReservista is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Nome</mat-label>
+                  <input matInput formControlName="nome" />
+                  <mat-icon matPrefix>person</mat-icon>
+                  @if (dataForm.controls['nome'].hasError('required')) {
+                    <mat-error>Nome is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Endereço</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Endereço</mat-label>
-                    <mat-icon matPrefix>home</mat-icon>
-                    <input matInput formControlName="endereco" />
-                    @if (dataForm.controls['endereco'].hasError('required')) {
-                      <mat-error>endereco is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Bairro</mat-label>
-                    <input matInput formControlName="bairro" />
-                    @if (dataForm.controls['bairro'].hasError('required')) {
-                      <mat-error>bairrois <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Cidade</mat-label>
-                    <mat-icon matPrefix>location_city</mat-icon>
-                    <input matInput formControlName="cidade" />
-                    @if (dataForm.controls['cidade'].hasError('required')) {
-                      <mat-error>cidade is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>CEP</mat-label>
-                    <input matInput formControlName="cep" mask="00000-000" />
-                    @if (dataForm.controls['cep'].hasError('required')) {
-                      <mat-error>cep is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Telefone</mat-label>
-                    <mat-icon matPrefix>phone</mat-icon>
-                    <input matInput formControlName="telefone" mask="(00) 00000-0000" />
-
-                    @if (dataForm.controls['telefone'].hasError('required')) {
-                      <mat-error>telefone is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Celular</mat-label>
-                    <mat-icon matPrefix>phone</mat-icon>
-                    <input matInput formControlName="celular" mask="(00) 00000-0000" />
-                    @if (dataForm.controls['celular'].hasError('required')) {
-                      <mat-error>celular is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Email</mat-label>
-                    <mat-icon matPrefix>email</mat-icon>
-                    <input matInput formControlName="email" />
-                    @if (dataForm.controls['email'].hasError('required')) {
-                      <mat-error>email is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>CPF</mat-label>
+                  <input matInput type="text" formControlName="cpf" mask="000.000.000-00" />
+                  @if (dataForm.controls['cpf'].hasError('required')) {
+                    <mat-error>Cpf is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Dados Contratuais e Profissionais</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Data Admissão</mat-label>
-                    <input matInput type="date" formControlName="dataAdmissao" />
-                    @if (dataForm.controls['dataAdmissao'].hasError('required')) {
-                      <mat-error>dataAdmissao is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Cargo/Função Desempenhada</mat-label>
-                    <input matInput formControlName="cargoFuncaoDesempenhada" />
-                    @if (dataForm.controls['cargoFuncaoDesempenhada'].hasError('required')) {
-                      <mat-error>cargoFuncaoDesempenhada is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Categoria Trabalhador</mat-label>
-                    <mat-select formControlName="categoriaTrabalhador">
-                      @for (item of categoriaTrabalhadorSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (dataForm.controls['categoriaTrabalhador'].hasError('required')) {
-                      <mat-error>categoriaTrabalhador is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Tipo Contrato</mat-label>
-                    <mat-select formControlName="tipoContrato">
-                      @for (item of tipoContratoSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (dataForm.controls['tipoContrato'].hasError('required')) {
-                      <mat-error>tipoContrato is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Jornada de Trabalho</mat-label>
-                    <input matInput formControlName="jornadaTrabalho" />
-                    @if (dataForm.controls['jornadaTrabalho'].hasError('required')) {
-                      <mat-error>jornadaTrabalho is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Vinculo Sindicato</mat-label>
-                    <input matInput formControlName="vinculoSindicato" />
-                    @if (dataForm.controls['vinculoSindicato'].hasError('required')) {
-                      <mat-error>vinculoSindicato is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Departamento/Centro de Custo</mat-label>
-                    <input matInput formControlName="departamentoCentroCusto" />
-                    @if (dataForm.controls['departamentoCentroCusto'].hasError('required')) {
-                      <mat-error>departamentoCentroCusto is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Data Nascimento</mat-label>
+                  <input matInput type="date" formControlName="dataNascimento" />
+                  @if (dataForm.controls['dataNascimento'].hasError('required')) {
+                    <mat-error>dataNascimento is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Dados de Remuneração e Bancários</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Salário Base</mat-label>
-                    <mat-icon matPrefix>attach_money</mat-icon>
-                    <input matInput type="number" formControlName="salarioBase" />
-                    @if (dataForm.controls['salarioBase'].hasError('required')) {
-                      <mat-error>salarioBase is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Tipo Conta</mat-label>
-                    <mat-select formControlName="tipoConta">
-                      @for (item of tipoContaSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (dataForm.controls['tipoConta'].hasError('required')) {
-                      <mat-error>tipoConta is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Tipo Banco</mat-label>
-                    <input matInput formControlName="banco" />
-                    @if (dataForm.controls['banco'].hasError('required')) {
-                      <mat-error>banco is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Agência</mat-label>
-                    <input matInput formControlName="agencia" />
-                    @if (dataForm.controls['agencia'].hasError('required')) {
-                      <mat-error>agencia is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Conta</mat-label>
-                    <input matInput formControlName="conta" />
-                    @if (dataForm.controls['conta'].hasError('required')) {
-                      <mat-error>conta is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Nome Mae</mat-label>
+                  <input matInput formControlName="nomeMae" />
+                  @if (dataForm.controls['nomeMae'].hasError('required')) {
+                    <mat-error>nomeMae is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Informações de Benefícios e Saúde</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Plano de Saude</mat-label>
-                    <input matInput formControlName="planoSaude" />
-                    @if (dataForm.controls['planoSaude'].hasError('required')) {
-                      <mat-error>planoSaude is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Plano Odontológico</mat-label>
-                    <input matInput formControlName="planoOdontologico" />
-                    @if (dataForm.controls['planoOdontologico'].hasError('required')) {
-                      <mat-error>planoOdontologico is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Plano de Saude</mat-label>
-                    <input matInput formControlName="valeTransporte" />
-                    @if (dataForm.controls['valeTransporte'].hasError('required')) {
-                      <mat-error>valeTransporte is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Insalubridade</mat-label>
-                    <input matInput formControlName="insalubridade" />
-                    @if (dataForm.controls['insalubridade'].hasError('required')) {
-                      <mat-error>insalubridade is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Suporte Top Ponto</mat-label>
-                    <input matInput formControlName="suporteTopPonto" />
-                    @if (dataForm.controls['suporteTopPonto'].hasError('required')) {
-                      <mat-error>suporteTopPonto is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Nacionalidade</mat-label>
+                  <input matInput formControlName="nacionalidade" />
+                  @if (dataForm.controls['nacionalidade'].hasError('required')) {
+                    <mat-error>nacionalidade is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
 
-          <mat-step>
-            <ng-template matStepLabel>Layout Folha sefip 84</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Matricula</mat-label>
-                    <input matInput type="text" formControlName="matricula" />
-                    @if (dataForm.controls['matricula'].hasError('required')) {
-                      <mat-error>Matricula is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-3 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Ctps</mat-label>
-                    <input matInput formControlName="ctps" />
-                    @if (dataForm.controls['ctps'].hasError('required')) {
-                      <mat-error>ctps is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                  <mat-form-field class="col-span-3 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Serie Ctps</mat-label>
-                    <input matInput formControlName="serieCtps" />
-                    @if (dataForm.controls['serieCtps'].hasError('required')) {
-                      <mat-error>Serie Ctps is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Data Opcao</mat-label>
-                    <input matInput type="text" formControlName="dataOpcao" mask="00/00/0000" />
-                    @if (dataForm.controls['dataOpcao'].hasError('required')) {
-                      <mat-error>Data Opcao is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>CBO</mat-label>
-                    <input matInput formControlName="cbo" type="text" mask="0-0000" />
-                    @if (dataForm.controls['cbo'].hasError('required')) {
-                      <mat-error>CBO is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
-                    <mat-label>Classe de contribuicao</mat-label>
-                    <input matInput formControlName="classeDeContribuicao" />
-                    @if (dataForm.controls['classeDeContribuicao'].hasError('required')) {
-                      <mat-error>classeDeContribuicao is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <div class="grid grid-cols-6 gap-2">
-                  <mat-form-field class="col-span-6" [appearance]="formAparence">
-                    <mat-label>Ocorrencia</mat-label>
-                    <mat-select formControlName="ocorrencia">
-                      @for (item of ocorrenciaSelect(); track $index) {
-                        <mat-option [value]="item.valor">{{ item.label }}</mat-option>
-                      }
-                    </mat-select>
-                    @if (dataForm.controls['ocorrencia'].hasError('required')) {
-                      <mat-error>Ocorrencia is <strong>required</strong></mat-error>
-                    }
-                  </mat-form-field>
-                </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Naturalidade</mat-label>
+                  <input matInput formControlName="naturalidade" />
+                  @if (dataForm.controls['naturalidade'].hasError('required')) {
+                    <mat-error>naturalidade is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-            </ng-template>
-          </mat-step>
-        </mat-stepper>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Genero</mat-label>
+
+                  <mat-select formControlName="genero">
+                    <mat-option value="M">Masculino</mat-option>
+                    <mat-option value="F">Feminino</mat-option>
+                  </mat-select>
+
+                  @if (dataForm.controls['genero'].hasError('required')) {
+                    <mat-error>genero is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Raca Cor</mat-label>
+                  <mat-select formControlName="racaCor">
+                    @for (item of racaCorSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['racaCor'].hasError('required')) {
+                    <mat-error>racaCor is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Estado Civil</mat-label>
+                  <mat-select formControlName="estadoCivil">
+                    @for (item of estadoCivilSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['estadoCivil'].hasError('required')) {
+                    <mat-error>estadoCivil is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Documentação">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Rg</mat-label>
+                  <input matInput formControlName="rg" />
+                  @if (dataForm.controls['rg'].hasError('required')) {
+                    <mat-error>Rg is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Ctps</mat-label>
+                  <input matInput formControlName="ctpsDigital" />
+                  @if (dataForm.controls['ctpsDigital'].hasError('required')) {
+                    <mat-error>ctpsDigital is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Pis/Pasep</mat-label>
+                  <mat-icon matPrefix>search</mat-icon>
+                  <input matInput formControlName="pisPasep" />
+                  @if (dataForm.controls['pisPasep'].hasError('required')) {
+                    <mat-error>pisPasep is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Titulo Eleitor</mat-label>
+                  <mat-icon matPrefix>search</mat-icon>
+                  <input matInput formControlName="tituloEleitor" />
+                  @if (dataForm.controls['tituloEleitor'].hasError('required')) {
+                    <mat-error>tituloEleitor is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Reservista</mat-label>
+                  <input matInput formControlName="certificadoReservista" />
+                  @if (dataForm.controls['certificadoReservista'].hasError('required')) {
+                    <mat-error>certificadoReservista is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Endereço">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Endereço</mat-label>
+                  <mat-icon matPrefix>home</mat-icon>
+                  <input matInput formControlName="endereco" />
+                  @if (dataForm.controls['endereco'].hasError('required')) {
+                    <mat-error>endereco is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Bairro</mat-label>
+                  <input matInput formControlName="bairro" />
+                  @if (dataForm.controls['bairro'].hasError('required')) {
+                    <mat-error>bairrois <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Cidade</mat-label>
+                  <mat-icon matPrefix>location_city</mat-icon>
+                  <input matInput formControlName="cidade" />
+                  @if (dataForm.controls['cidade'].hasError('required')) {
+                    <mat-error>cidade is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>CEP</mat-label>
+                  <input matInput formControlName="cep" mask="00000-000" />
+                  @if (dataForm.controls['cep'].hasError('required')) {
+                    <mat-error>cep is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Telefone</mat-label>
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <input matInput formControlName="telefone" mask="(00) 00000-0000" />
+
+                  @if (dataForm.controls['telefone'].hasError('required')) {
+                    <mat-error>telefone is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Celular</mat-label>
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <input matInput formControlName="celular" mask="(00) 00000-0000" />
+                  @if (dataForm.controls['celular'].hasError('required')) {
+                    <mat-error>celular is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Email</mat-label>
+                  <mat-icon matPrefix>email</mat-icon>
+                  <input matInput formControlName="email" />
+                  @if (dataForm.controls['email'].hasError('required')) {
+                    <mat-error>email is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Dados Contratuais e Profissionais">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Data Admissão</mat-label>
+                  <input matInput type="date" formControlName="dataAdmissao" />
+                  @if (dataForm.controls['dataAdmissao'].hasError('required')) {
+                    <mat-error>dataAdmissao is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Cargo/Função Desempenhada</mat-label>
+                  <input matInput formControlName="cargoFuncaoDesempenhada" />
+                  @if (dataForm.controls['cargoFuncaoDesempenhada'].hasError('required')) {
+                    <mat-error>cargoFuncaoDesempenhada is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Categoria Trabalhador</mat-label>
+                  <mat-select formControlName="categoriaTrabalhador">
+                    @for (item of categoriaTrabalhadorSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['categoriaTrabalhador'].hasError('required')) {
+                    <mat-error>categoriaTrabalhador is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Tipo Contrato</mat-label>
+                  <mat-select formControlName="tipoContrato">
+                    @for (item of tipoContratoSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['tipoContrato'].hasError('required')) {
+                    <mat-error>tipoContrato is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Jornada de Trabalho</mat-label>
+                  <input matInput formControlName="jornadaTrabalho" />
+                  @if (dataForm.controls['jornadaTrabalho'].hasError('required')) {
+                    <mat-error>jornadaTrabalho is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Vinculo Sindicato</mat-label>
+                  <input matInput formControlName="vinculoSindicato" />
+                  @if (dataForm.controls['vinculoSindicato'].hasError('required')) {
+                    <mat-error>vinculoSindicato is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Departamento/Centro de Custo</mat-label>
+                  <input matInput formControlName="departamentoCentroCusto" />
+                  @if (dataForm.controls['departamentoCentroCusto'].hasError('required')) {
+                    <mat-error>departamentoCentroCusto is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Dados de Remuneração e Bancários">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Salário Base</mat-label>
+                  <mat-icon matPrefix>attach_money</mat-icon>
+                  <input matInput type="number" formControlName="salarioBase" />
+                  @if (dataForm.controls['salarioBase'].hasError('required')) {
+                    <mat-error>salarioBase is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Tipo Conta</mat-label>
+                  <mat-select formControlName="tipoConta">
+                    @for (item of tipoContaSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['tipoConta'].hasError('required')) {
+                    <mat-error>tipoConta is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Tipo Banco</mat-label>
+                  <input matInput formControlName="banco" />
+                  @if (dataForm.controls['banco'].hasError('required')) {
+                    <mat-error>banco is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Agência</mat-label>
+                  <input matInput formControlName="agencia" />
+                  @if (dataForm.controls['agencia'].hasError('required')) {
+                    <mat-error>agencia is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Conta</mat-label>
+                  <input matInput formControlName="conta" />
+                  @if (dataForm.controls['conta'].hasError('required')) {
+                    <mat-error>conta is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Informações de Benefícios e Saúde">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Plano de Saude</mat-label>
+                  <input matInput formControlName="planoSaude" />
+                  @if (dataForm.controls['planoSaude'].hasError('required')) {
+                    <mat-error>planoSaude is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Plano Odontológico</mat-label>
+                  <input matInput formControlName="planoOdontologico" />
+                  @if (dataForm.controls['planoOdontologico'].hasError('required')) {
+                    <mat-error>planoOdontologico is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Plano de Saude</mat-label>
+                  <input matInput formControlName="valeTransporte" />
+                  @if (dataForm.controls['valeTransporte'].hasError('required')) {
+                    <mat-error>valeTransporte is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Insalubridade</mat-label>
+                  <input matInput formControlName="insalubridade" />
+                  @if (dataForm.controls['insalubridade'].hasError('required')) {
+                    <mat-error>insalubridade is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Suporte Top Ponto</mat-label>
+                  <input matInput formControlName="suporteTopPonto" />
+                  @if (dataForm.controls['suporteTopPonto'].hasError('required')) {
+                    <mat-error>suporteTopPonto is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Layout Folha sefip 84">
+            <div class="mt-2">
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Matricula</mat-label>
+                  <input matInput type="text" formControlName="matricula" />
+                  @if (dataForm.controls['matricula'].hasError('required')) {
+                    <mat-error>Matricula is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-3 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Ctps</mat-label>
+                  <input matInput formControlName="ctps" />
+                  @if (dataForm.controls['ctps'].hasError('required')) {
+                    <mat-error>ctps is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field class="col-span-3 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Serie Ctps</mat-label>
+                  <input matInput formControlName="serieCtps" />
+                  @if (dataForm.controls['serieCtps'].hasError('required')) {
+                    <mat-error>Serie Ctps is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Data Opcao</mat-label>
+                  <input matInput type="text" formControlName="dataOpcao" mask="00/00/0000" />
+                  @if (dataForm.controls['dataOpcao'].hasError('required')) {
+                    <mat-error>Data Opcao is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>CBO</mat-label>
+                  <input matInput formControlName="cbo" type="text" mask="0-0000" />
+                  @if (dataForm.controls['cbo'].hasError('required')) {
+                    <mat-error>CBO is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
+                  <mat-label>Classe de contribuicao</mat-label>
+                  <input matInput formControlName="classeDeContribuicao" />
+                  @if (dataForm.controls['classeDeContribuicao'].hasError('required')) {
+                    <mat-error>classeDeContribuicao is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="grid grid-cols-6 gap-2">
+                <mat-form-field class="col-span-6" [appearance]="formAparence">
+                  <mat-label>Ocorrencia</mat-label>
+                  <mat-select formControlName="ocorrencia">
+                    @for (item of ocorrenciaSelect(); track $index) {
+                      <mat-option [value]="item.valor">{{ item.label }}</mat-option>
+                    }
+                  </mat-select>
+                  @if (dataForm.controls['ocorrencia'].hasError('required')) {
+                    <mat-error>Ocorrencia is <strong>required</strong></mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
       </form>
     </mat-dialog-content>
     <!-- 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal' -->

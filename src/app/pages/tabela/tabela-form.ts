@@ -2,11 +2,14 @@ import { UpperCasePipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatDivider } from "@angular/material/divider";
 import { MatIcon } from "@angular/material/icon";
 import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
 import { MatStepperModule } from "@angular/material/stepper";
+import { MatTabsModule } from "@angular/material/tabs";
 
 /**
  * @title Dialog with header, scrollable content and actions
@@ -25,6 +28,9 @@ import { MatStepperModule } from "@angular/material/stepper";
     MatIcon,
     UpperCasePipe,
     MatStepperModule,
+    MatTabsModule,
+    MatCardModule,
+    MatDivider,
   ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
@@ -61,12 +67,15 @@ import { MatStepperModule } from "@angular/material/stepper";
             }
           </mat-form-field>
         </div>
+        <div class="mt-5">
+          <mat-divider/>
+        </div>
 
-        <mat-stepper orientation="vertical">
-          <mat-step>
-            <ng-template matStepLabel>Resumo do Depósito Mensal (FGTS) </ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
+        <div class="mt-5" appearance="filled">
+          <h2 class="font-medium text-2xl text-center">Tabelas</h2>
+          <mat-tab-group headerPosition="above" dynamicHeight>
+            <mat-tab label="FTGS">
+              <div class="mt-5">
                 <div formArrayName="fgts">
                   <div class="grid grid-cols-3 gap-2">
                     <mat-form-field class="col-span-1" [appearance]="formAparence">
@@ -84,14 +93,9 @@ import { MatStepperModule } from "@angular/material/stepper";
                   </div>
                 </div>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>Tabela de Contribuição INSS</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
+            </mat-tab>
+            <mat-tab label="INSS">
+              <div class="mt-5">
                 <table formArrayName="inss">
                   <tr class="grid grid-cols-2 gap-2">
                     <th class="col-span-1">Salário de Contribuição (R$)</th>
@@ -115,14 +119,9 @@ import { MatStepperModule } from "@angular/material/stepper";
                   }
                 </table>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-              <button matButton="filled" class="ml-2" matStepperNext>Next</button>
-            </ng-template>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>Tabela Mensal IRPF 2026</ng-template>
-            <ng-template matStepContent>
-              <div class="mt-2">
+            </mat-tab>
+            <mat-tab label="IRPF">
+              <div class="mt-5">
                 <table formArrayName="irrf">
                   <tr class="grid grid-cols-3 gap-2">
                     <th class="col-span-1">Salário de Contribuição (R$)</th>
@@ -153,10 +152,9 @@ import { MatStepperModule } from "@angular/material/stepper";
                   }
                 </table>
               </div>
-              <button matButton="tonal" matStepperPrevious>Back</button>
-            </ng-template>
-          </mat-step>
-        </mat-stepper>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
       </form>
     </mat-dialog-content>
     <!-- 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal' -->
