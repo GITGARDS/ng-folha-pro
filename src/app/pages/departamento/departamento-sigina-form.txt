@@ -1,68 +1,61 @@
 import { UpperCasePipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
-import { FormField, form, required } from "@angular/forms/signals";
+import { FormField, disabled, form, required } from "@angular/forms/signals";
 import { MatButton } from "@angular/material/button";
-import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { MatError, MatFormField, MatInputModule, MatLabel } from "@angular/material/input";
-import { DepartamentoModel, DepartamentoModelInit } from "../departamento/shared/departamento.model";
+import { MatIcon } from "@angular/material/icon";
 import { DepartamentoStore } from "../departamento/shared/departamento.store";
 import { EmpresaStore } from "../empresa/shared/empresa.store";
+import { DepartamentoModel, DepartamentoModelInit } from "./shared/departamento.model";
 
 /**
  * @title Dialog with header, scrollable content and actions
  */
 @Component({
   selector: 'app-departamento-form',
-  imports: [
-    MatButton,
-    MatDialogModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatInputModule,
-    MatError,
-    MatLabel,
-    UpperCasePipe,
-    MatCheckboxModule,
-    FormField,
-  ],
+  imports: [FormField, UpperCasePipe, MatDialogModule, MatButton, MatIcon],
   template: `
     <h2 mat-dialog-title class="!font-bold">
       {{ formOpcao() === 'new' ? 'Novo' : ('Editar' | uppercase) }}
       /
-      {{ departamentoModel().nome }}
+      {{ model().nome }}
     </h2>
 
     <mat-dialog-content class="mat-typography">
       <form>
         <div class="mt-2">
           <div class="grid grid-cols-6 gap-2">
-            <mat-form-field class="col-span-4" [appearance]="formAparence">
-              <mat-label>Id</mat-label>
-              <input matInput [formField]="departamentoForm.id" />
+            <div class="col-span-4">
+              <label>Id</label>
+              <input type="text" [formField]="form.id" />
               <mat-icon matPrefix>123</mat-icon>
-              @for (error of departamentoForm.id().errors(); track error ) {
-                <mat-error><strong>{{error.message}}</strong></mat-error>
+              @for (error of form.id().errors(); track error) {
+                <span
+                  ><strong>{{ error.message }}</strong></span
+                >
               }
-            </mat-form-field>
+            </div>
 
             <div class="col-span-2">
-              <mat-checkbox [formField]="departamentoForm.ativo">Ativo</mat-checkbox>
-              @for (error of departamentoForm.ativo().errors(); track error ) {
-                <mat-error><strong>{{error.message}}</strong></mat-error>
+              <input type="checkbox" [formField]="form.ativo" />
+              @for (error of form.ativo().errors(); track error) {
+                <span
+                  ><strong>{{ error.message }}</strong></span
+                >
               }
             </div>
           </div>
 
           <div class="grid grid-cols-6 gap-2">
-            <mat-form-field class="col-span-6" [appearance]="formAparence">
-              <mat-label>Nome</mat-label>
-              <input matInput [formField]="departamentoForm.nome" />
-              @for (error of departamentoForm.nome().errors(); track error ) {
-                <mat-error><strong>{{error.message}}</strong></mat-error>
+            <div class="col-span-6">
+              <label>Nome</label>
+              <input type="text" [formField]="form.nome" />
+              @for (error of form.nome().errors(); track error) {
+                <span
+                  ><strong>{{ error.message }}</strong></span
+                >
               }
-            </mat-form-field>
+            </div>
           </div>
         </div>
       </form>
@@ -70,11 +63,30 @@ import { EmpresaStore } from "../empresa/shared/empresa.store";
     <div class="border-t">
       <mat-dialog-actions align="center">
         <button matButton="tonal" mat-dialog-close>Cancel</button>
-        <button matButton="filled" [disabled]="departamentoForm().invalid" (click)="onSubmit()">
+        <button matButton="filled" [disabled]="form().invalid()" (click)="onSubmit()">
           Confirma
         </button>
       </mat-dialog-actions>
     </div>
+  `,
+  styles: `
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-weight: 500;
+    }
+    input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4285f4;
+    }
   `,
 
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,21 +101,24 @@ export class DepartamentoForm {
 
   constructor() {}
 
-  departamentoModel = signal<DepartamentoModel>(DepartamentoModelInit);
+  model = signal<DepartamentoModel>(DepartamentoModelInit);
 
-  departamentoForm = form(this.departamentoModel, (schemaPath) => {
+  form = form(this.model, (schemaPath) => {
+    disabled(schemaPath.id);
+    disabled(schemaPath.empresa);
     required(schemaPath.nome, { message: 'Requerido' });
     required(schemaPath.ativo, { message: 'Requerido' });
   });
   ngOnInit() {
     const { data } = this.data;
-    this.departamentoModel.set(data);
+    this.model.set(data);
+    this.form().markAsDirty();
     this.formOpcao.set(this.data.opcao);
   }
 
   onSubmit() {
     const ret = {
-      ...this.departamentoModel(),
+      ...this.model(),
       empresa: this.empresaStore.empresaLogada()?.id as string,
     };
     this.dialogRef.close(ret);
