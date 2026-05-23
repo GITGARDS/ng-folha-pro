@@ -83,7 +83,6 @@ export class DepartamentoForm {
   dataForm = form<DepartamentoModel>(this.fb, (schemaPath) => {
     disabled(schemaPath.id);
     required(schemaPath.nome, { message: 'Requerido' });
-    required(schemaPath.ativo, { message: 'Requerido' });
   });
   ngOnInit() {
     const { data } = this.data;

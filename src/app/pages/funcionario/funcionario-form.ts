@@ -566,7 +566,6 @@ export class FuncionarioForm {
     required(fields.racaCor, { message: 'Requerido' });
     required(fields.estadoCivil, { message: 'Requerido' });
     required(fields.dataAdmissao, { message: 'Requerido' });
-    required(fields.ativo, { message: 'Requerido' });
     required(fields.salarioBase, { message: 'Requerido' });
     email(fields.email, { message: 'Email invalido' });
   });

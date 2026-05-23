@@ -40,7 +40,7 @@ export const EmpresaStore = signalStore(
 
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
-      empresaService.findAll({}).subscribe({
+      empresaService.findAll({ collection: 'empresa' }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,

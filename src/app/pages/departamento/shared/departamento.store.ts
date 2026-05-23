@@ -36,7 +36,7 @@ export const DepartamentoStore = signalStore(
   withMethods(({ departamentoService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
-      departamentoService.findAll({ empresa: empresa }).subscribe({
+      departamentoService.findAll({ empresa: empresa, collection: 'departamento' }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,
@@ -55,10 +55,6 @@ export const DepartamentoStore = signalStore(
 
         complete: () => patchState(store, { isLoading: false }),
       });
-    }),
-    resetList: signalMethod(() => {
-      patchState(store, { isLoading: true });
-      patchState(store, (state) => ({ ...state, list: [] }), { isLoading: false });
     }),
     create: signalMethod(({ data }: { data: Partial<DepartamentoModel> }) => {
       patchState(store, { isLoading: true });
@@ -137,10 +133,10 @@ export const DepartamentoStore = signalStore(
     onInit() {
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
-          store.resetList(null);
-          return;
+          patchState(store, { list: [] });
+        } else {
+          store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         }
-        store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         appService.openSnackBar(store.msg());
       });
     },

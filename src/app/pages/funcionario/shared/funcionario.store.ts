@@ -42,7 +42,7 @@ export const FuncionarioStore = signalStore(
   withMethods(({ funcionarioService, ...store }) => ({
     carregaLista: signalMethod(({ empresa }: { empresa: string }) => {
       patchState(store, { isLoading: true });
-      funcionarioService.findAll({ empresa: empresa }).subscribe({
+      funcionarioService.findAll({ empresa: empresa, collection: 'funcionarios' }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,
@@ -61,10 +61,6 @@ export const FuncionarioStore = signalStore(
 
         complete: () => patchState(store, { isLoading: false }),
       });
-    }),
-    resetList: signalMethod(() => {
-      patchState(store, { isLoading: true });
-      patchState(store, (state) => ({ ...state, list: [] }), { isLoading: false });
     }),
     create: signalMethod(({ data }: { data: Partial<FuncionarioModel> }) => {
       patchState(store, { isLoading: true });
@@ -143,10 +139,10 @@ export const FuncionarioStore = signalStore(
     onInit() {
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
-          store.resetList(null);
-          return;
+          patchState(store, { list: [] });
+        } else {
+          store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         }
-        store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         appService.openSnackBar(store.msg());
       });
     },

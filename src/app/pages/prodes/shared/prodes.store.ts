@@ -42,7 +42,7 @@ export const ProdesStore = signalStore(
 
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
-      prodesService.findAll({}).subscribe({
+      prodesService.findAll({ collection: 'prodes' }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,

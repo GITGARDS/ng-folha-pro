@@ -40,7 +40,7 @@ export const TabelaStore = signalStore(
 
     carregaLista: signalMethod(() => {
       patchState(store, { isLoading: true });
-      tabelaService.findAll({}).subscribe({
+      tabelaService.findAll({ collection: 'tabela' }).subscribe({
         next: (list) => {
           patchState(store, (state) => ({
             ...state,

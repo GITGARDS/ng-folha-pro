@@ -28,12 +28,13 @@ export class IService<T> implements iService<T> {
     this.vFirestore = collection(db, vcollection as string);
   }
 
-  findAll({ empresa }: { empresa?: string }): Observable<T[]> {
+  findAll({ empresa, collection }: { empresa?: string, collection: string }): Observable<T[]> {
     const q = query(
       this.vFirestore as any,
       orderBy(this.vorderBy as string, this.vorder as 'asc' | 'desc'),
     );
     return new Observable<T[]>((observer) => {
+      console.log("findAll", collection);
       onSnapshot(q, (snapshot) => {
         const items: T[] = snapshot.docs
           .filter((f: any) => (empresa ? f.data().empresa === empresa : f))
