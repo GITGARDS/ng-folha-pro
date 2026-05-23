@@ -23,12 +23,6 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     display: true,
   },
   {
-    label: 'Empresa',
-    field: 'empresa',
-    type: 'string',
-    display: false,
-  },
-  {
     label: 'Nome',
     field: 'nome',
     type: 'string',
@@ -81,6 +75,12 @@ export const FUNCIONARIO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Ativo',
     field: 'ativo',
     type: 'boolean',
+    display: true,
+  },
+  {
+    label: 'Empresa',
+    field: 'empresa',
+    type: 'string',
     display: true,
   },
   {

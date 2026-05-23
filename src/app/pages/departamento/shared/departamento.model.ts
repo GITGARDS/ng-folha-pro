@@ -21,12 +21,6 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     display: true,
   },
   {
-    label: 'Empresa',
-    field: 'empresa',
-    type: 'string',
-    display: true,
-  },
-  {
     label: 'Nome',
     field: 'nome',
     type: 'string',
@@ -36,6 +30,12 @@ export const DEPARTAMENTO_DISPLAYED_COLUMNS: TableColumnsModel[] = [
     label: 'Ativo',
     field: 'ativo',
     type: 'boolean',
+    display: true,
+  },
+  {
+    label: 'Empresa',
+    field: 'empresa',
+    type: 'string',
     display: true,
   },
   {
@@ -51,7 +51,7 @@ export interface DepartamentoModel {
   empresa: string;
   nome: string;
   ativo: boolean;
-};
+}
 
 export const DEPARTAMENTO_MODEL_EMPTY: DepartamentoModel = {
   id: '',

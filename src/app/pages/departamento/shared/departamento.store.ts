@@ -134,6 +134,7 @@ export const DepartamentoStore = signalStore(
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
           patchState(store, { list: [] });
+          return;
         } else {
           store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         }

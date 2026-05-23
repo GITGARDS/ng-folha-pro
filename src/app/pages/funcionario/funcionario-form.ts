@@ -70,8 +70,8 @@ import { FUNCIONARIO_MODEL_EMPTY, FuncionarioModel } from "./shared/funcionario.
                   <mat-form-field class="col-span-6 md:col-span-3" [appearance]="formAparence">
                     <mat-label>Departamento</mat-label>
                     <mat-select
-                      [formField]="dataForm.departamento"
-                      [compareWith]="compareDepartamentos"
+                    [formField]="dataForm.departamento"
+                    [compareWith]="compareDepartamentos"
                     >
                       @for (item of departamentos(); track item.id) {
                         <mat-option [value]="item">{{ item.nome }}</mat-option>

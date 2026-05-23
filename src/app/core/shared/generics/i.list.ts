@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from "@angular/common";
+import { CurrencyPipe, DatePipe, JsonPipe } from "@angular/common";
 import { AfterViewInit, Component, effect, inject, input, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -25,7 +25,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     MatIconButton,
     CurrencyPipe,
     DatePipe,
-    MatCard
+    MatCard,
+    JsonPipe
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -54,7 +55,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                         {{ row[item.field] | currency: 'BRL' }}
                       }
                       @case ('json') {
-                        {{ row[item.field].nome }}
+                        {{ row[item.field] | json }}
                       }
                       @default {
                         {{ row[item.field] }}
