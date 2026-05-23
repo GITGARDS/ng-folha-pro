@@ -21,8 +21,8 @@ import { DEPARTAMENTO_MODEL_EMPTY, DepartamentoModel } from "./shared/departamen
     UpperCasePipe,
     MatCheckboxModule,
     FormField,
-    FormErrors
-],
+    FormErrors,
+  ],
   template: `
     <h2 mat-dialog-title class="!font-bold">
       {{ formOpcao() === 'new' ? 'Novo' : ('Editar' | uppercase) }}
@@ -78,9 +78,8 @@ export class DepartamentoForm {
   empresaStore = inject(EmpresaStore);
   departamentoStore = inject(DepartamentoStore);
 
-  private fb = signal<DepartamentoModel>(DEPARTAMENTO_MODEL_EMPTY);
-
-  dataForm = form<DepartamentoModel>(this.fb, (schemaPath) => {
+  private fb = signal<DepartamentoModel>(DEPARTAMENTO_MODEL_EMPTY as DepartamentoModel);
+  dataForm = form<DepartamentoModel>(this.fb as any, (schemaPath) => {
     disabled(schemaPath.id);
     required(schemaPath.nome, { message: 'Requerido' });
   });

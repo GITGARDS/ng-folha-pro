@@ -48,7 +48,8 @@ export default class Funcionario {
   onCreate() {
     const ultimoTabela = this.funcionarioStore.list().length + 1;
     const novaData = new DatePipe('en-US').transform(new Date(), 'dd-MM-yyyy');
-    const novo: FuncionarioModel = { ...FUNCIONARIO_MODEL_EMPTY,
+    const novo: FuncionarioModel = {
+      ...FUNCIONARIO_MODEL_EMPTY,
       nome: `Funcionario ${ultimoTabela}`,
       dataNascimento: novaData + '',
       nacionalidade: 'Brasileira',
@@ -72,8 +73,9 @@ export default class Funcionario {
       if (!result) {
         return;
       }
+      const { id, ...novo } = result;
       this.funcionarioStore.create({
-        data: result as any,
+        data: novo as FuncionarioModel,
       });
     });
   }

@@ -47,7 +47,7 @@ export default class Departamento {
   onCreate() {
     const ultimoTabela = this.departamentoStore.list().length + 1;
     const novo: DepartamentoModel = {
-      ...DEPARTAMENTO_MODEL_EMPTY,
+      ...DEPARTAMENTO_MODEL_EMPTY as DepartamentoModel,
       nome: `Departamento ${ultimoTabela}`,
     };
 
@@ -65,9 +65,9 @@ export default class Departamento {
       if (!result) {
         return;
       }
-      this.departamentoStore.create({
-        data: result as any,
-      });
+      // retirar campo id
+      const { id, ...novo } = result;
+      this.departamentoStore.create({ data: novo as DepartamentoModel });
     });
   }
 }
