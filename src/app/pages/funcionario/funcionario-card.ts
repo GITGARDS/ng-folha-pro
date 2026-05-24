@@ -1,6 +1,5 @@
 import { Component, effect, inject, signal } from "@angular/core";
 import { MiniCard } from "../../core/components/mini-card";
-import { TIME_DELAY } from "../../core/shared/consts";
 import { FuncionarioStore } from "./shared/funcionario.store";
 
 @Component({
@@ -33,17 +32,17 @@ import { FuncionarioStore } from "./shared/funcionario.store";
 })
 export default class FuncionarioCard {
   funcionarioStore = inject(FuncionarioStore);
-  totalSalarioBase = signal<any>(false);
-  totalAtivos = signal<any>(false);
-
+  totalAtivos = signal<number | boolean>(false);
+  totalSalarioBase = signal<number | boolean>(false);
   constructor() {
+    this.totalAtivos.set(false);
     effect(() => {
-      this.totalAtivos.set(false);
-      this.totalSalarioBase.set(false);
-      setTimeout(() => {
-        this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
-        this.totalSalarioBase.set(this.funcionarioStore.totalSalarioBase());
-      }, TIME_DELAY);
-    });
+      this.totalAtivos.set(this.funcionarioStore.totalAtivos().length);
+    })
+    this.totalSalarioBase.set(false);
+    effect(() => {
+      this.totalSalarioBase.set(this.funcionarioStore.totalSalarioBase());
+    })
   }
+
 }

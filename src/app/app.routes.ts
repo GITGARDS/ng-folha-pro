@@ -33,4 +33,8 @@ export const routes: Routes = [
     path: 'tabela',
     loadComponent: () => import('./pages/tabela/tabela'),
   },
+  {
+    path: 'teste_count',
+    loadComponent: () => import('./pages/teste-count/teste-count'),
+  },
 ];

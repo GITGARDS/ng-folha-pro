@@ -40,6 +40,12 @@ export const TABELA: NavigationModel = {
   url: '/tabela',
 };
 
+export const TESTE_COUNT: NavigationModel = {
+  label: 'Teste_count',
+  icon: 'table_chart',
+  url: '/teste_count',
+};
+
 export const NAVIGATION_LIST: NavigationModel[] = [
   DASHBOARD,
   EMPRESA,
@@ -47,4 +53,5 @@ export const NAVIGATION_LIST: NavigationModel[] = [
   FUNCIONARIO,
   PRODES,
   TABELA,
+  TESTE_COUNT
 ];

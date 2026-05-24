@@ -2,15 +2,16 @@ import { AfterViewInit, Directive, ElementRef, Input, OnInit } from "@angular/co
 import { CountUp } from "countup.js";
 
 @Directive({
-  selector: '[appCountUpDirective]',
+  selector: '[countUp]',
 })
 export class CountUpDirective implements OnInit, AfterViewInit {
-  @Input('appCountUpDirective') endVal!: number;
+  @Input('countUp') endVal!: number;
   @Input() duration: number = 2;
-  private countUp!: CountUp;
+
+  public countUp!: CountUp;
 
   constructor(private el: ElementRef) {}
-  
+
   ngOnInit() {
     this.countUp = new CountUp(this.el.nativeElement, this.endVal, {
       duration: this.duration,

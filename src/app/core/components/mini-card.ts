@@ -1,13 +1,13 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { AfterViewInit, Component, effect, input, viewChild } from "@angular/core";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatCardModule } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
-import { CountUpDirective } from "../shared/directives/count-up.directive";
+import { CountUp } from "countup.js";
 
 @Component({
   selector: 'app-mini-card',
-  imports: [MatIcon, MatBadgeModule, MatCardModule, TitleCasePipe, CountUpDirective],
+  imports: [MatIcon, MatBadgeModule, MatCardModule, TitleCasePipe],
   template: `
     <mat-card appearance="filled" class="relative select-none cursor-alias">
       <div
@@ -24,7 +24,7 @@ import { CountUpDirective } from "../shared/directives/count-up.directive";
         </mat-card-title>
         <mat-card-subtitle class="self-end">
           @if (valor() !== false) {
-            <div class="font-bold" [appCountUpDirective]="valor()" [duration]="2">
+            <div class="font-bold" id="myCountUp">
               {{ valor() }}
             </div>
           } @else {
@@ -43,11 +43,25 @@ import { CountUpDirective } from "../shared/directives/count-up.directive";
     }
   `,
 })
-export class MiniCard {
+export class MiniCard implements AfterViewInit {
   icone = input.required<string>();
   title = input.required<string>();
-  valor = input<any>(false);
+  valor = input<number | boolean>(false);
   bg = input<string>('bg-blue-900');
   text = input<string>('text-gray-100');
 
+  countUpRef = viewChild('myCountUp');
+
+  constructor() {
+    effect(() => {
+      this.onCountUp(this.valor() as number | 0);
+    });
+  }
+  ngAfterViewInit(): void {
+    this.onCountUp(this.valor() as number | 0);
+  }
+  onCountUp(valor: number) {
+    const novoCountUp = new CountUp('myCountUp', valor, { duration: 2 });
+    novoCountUp.start();
+  }
 }
