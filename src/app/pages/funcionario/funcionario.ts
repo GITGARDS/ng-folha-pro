@@ -6,7 +6,7 @@ import { InfoCard } from "../../core/components/info-card";
 import { IsLoading } from "../../core/components/isLoading";
 import { NavigationTitle } from "../../core/navigation/navigation-title";
 import { FUNCIONARIO } from "../../core/navigation/shared/navigation-model";
-import FuncionarioCard from "./funcionario-card";
+import { FuncionarioCard } from "./funcionario-card";
 import { FuncionarioForm } from "./funcionario-form";
 import { FuncionarioList } from "./funcionario-list/funcionario-list";
 import { FUNCIONARIO_MODEL_EMPTY, FuncionarioModel } from "./shared/funcionario.model";
@@ -14,7 +14,7 @@ import { FuncionarioStore } from "./shared/funcionario.store";
 
 @Component({
   selector: 'app-funcionario',
-  imports: [NavigationTitle, IsLoading, FuncionarioList, FuncionarioCard, InfoCard, ButtonNovo],
+  imports: [NavigationTitle, IsLoading, FuncionarioList, InfoCard, ButtonNovo, FuncionarioCard],
   template: `
     <div class="flex flex-col gap-2">
       <app-navigation-title [title]="title" />
