@@ -34,7 +34,7 @@ export class IService<T> implements iService<T> {
       orderBy(this.vorderBy as string, this.vorder as 'asc' | 'desc'),
     );
     return new Observable<T[]>((observer) => {
-      console.log("findAll", collection);
+      // console.log("findAll", collection);
       onSnapshot(q, (snapshot) => {
         const items: T[] = snapshot.docs
           .filter((f: any) => (empresa ? f.data().empresa === empresa : f))

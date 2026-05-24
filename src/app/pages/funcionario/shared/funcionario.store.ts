@@ -140,10 +140,14 @@ export const FuncionarioStore = signalStore(
       effect(() => {
         if (empresaStore.empresaLogada() === null) {
           patchState(store, { list: [] });
-          return;
-        } else {
+        }
+      });
+      effect(() => {
+        if (empresaStore.empresaLogada() !== null) {
           store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         }
+      });
+      effect(() => {
         appService.openSnackBar(store.msg());
       });
     },

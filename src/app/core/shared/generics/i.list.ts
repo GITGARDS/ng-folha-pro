@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, JsonPipe } from "@angular/common";
-import { AfterViewInit, Component, effect, inject, input, viewChild } from "@angular/core";
+import { Component, OnInit, effect, inject, input, viewChild } from "@angular/core";
 import { MatIconButton } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
 import { MatDialog } from "@angular/material/dialog";
@@ -26,7 +26,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     CurrencyPipe,
     DatePipe,
     MatCard,
-    JsonPipe
+    JsonPipe,
   ],
   template: `
     <div class="h-full flex flex-col justify-between gap-2">
@@ -152,7 +152,7 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
   `,
   styles: ``,
 })
-export class IList implements AfterViewInit {
+export class IList implements OnInit {
   iStore = input<any>();
   iForm = input<any>();
   iDataSource = input<MatTableDataSource<any>>(new MatTableDataSource<any>([]));
@@ -176,7 +176,7 @@ export class IList implements AfterViewInit {
       }, TIME_DELAY);
     });
   }
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.displayedColumns = this.iColumns()
       ?.filter((f) => f.display)
       ?.map((col) => col.field) as string[];
