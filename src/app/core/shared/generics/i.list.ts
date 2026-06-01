@@ -71,8 +71,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                   <mat-icon>login</mat-icon>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                  @if (empresaStore.empresaLogada() !== null) {
-                    @if (empresaStore.empresaLogada()?.id === row.id) {
+                  @if (empresaStore.getEmpresaLogada() !== null) {
+                    @if (empresaStore.getEmpresaLogada()?.id === row.id) {
                       <span class="size-4 animate-pulse">
                         <div class="h-5 w-5 !bg-green-700 rounded-full"></div>
                       </span>
@@ -96,8 +96,8 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
 
                   <mat-menu #menu="matMenu">
                     @for (item of iActions(); track $index) {
-                      @let idLogada = empresaStore.empresaLogada()?.id;
-                      @let idLogadaRow = empresaStore.empresaLogada()?.id === row.id;
+                      @let idLogada = empresaStore.getEmpresaLogada()?.id;
+                      @let idLogadaRow = empresaStore.getEmpresaLogada()?.id === row.id;
                       @let logada = idLogada && idLogadaRow;
 
                       @if (item.label === 'Editar' && !logada) {
