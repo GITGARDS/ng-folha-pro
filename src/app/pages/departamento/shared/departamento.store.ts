@@ -132,14 +132,13 @@ export const DepartamentoStore = signalStore(
   withHooks(({ appService, empresaStore, ...store }) => ({
     onInit() {
       effect(() => {
-        if (empresaStore.getEmpresaLogada() === null) {
+        if (empresaStore.empresaLogada() === null) {
           patchState(store, { list: [] });
         }
       });
-      effect(() => {        
-        const empresaLogada = empresaStore.getEmpresaLogada();
-        if (empresaLogada !== null) {
-          store.carregaLista({ empresa: empresaLogada?.id as string });
+      effect(() => {
+        if (empresaStore.empresaLogada() !== null) {
+          store.carregaLista({ empresa: empresaStore.empresaLogada()?.id as string });
         }
       });
       effect(() => {

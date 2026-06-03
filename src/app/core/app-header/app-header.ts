@@ -46,7 +46,7 @@ import { AppHeaderVersao } from "./app-header-versao";
         <app-header-versao />
       </div>
 
-      @if (empresaStore.getEmpresaLogada() !== null) {
+      @if (empresaStore.empresaLogada() !== null) {
         <app-header-auth-empre />
       }
 

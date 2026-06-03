@@ -1,4 +1,4 @@
-import { computed, effect, inject } from "@angular/core";
+import { effect, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { patchState, signalMethod, signalStore, withComputed, withHooks, withMethods, withProps, withState } from "@ngrx/signals";
 import { rxMethod } from "@ngrx/signals/rxjs-interop";
@@ -9,12 +9,14 @@ import { EmpresaService } from "./empresa.service";
 
 type EmpresaState = {
   list: EmpresaModel[];
+  empresaLogada: EmpresaModel | null;
   isLoading: boolean;
   msg: string;
 };
 
 const initialState: EmpresaState = {
   list: [],
+  empresaLogada: null,
   isLoading: false,
   msg: '',
 };
@@ -31,12 +33,7 @@ export const EmpresaStore = signalStore(
     appService: inject(AppService),
   })),
 
-  withComputed(({ empresaService, list }) => ({
-    getEmpresaLogada: computed(() => {
-      const empresa = empresaService.getEmpresa();
-      return empresa ? empresa : null;
-    }),
-  })),
+  withComputed(({ list }) => ({})),
 
   withMethods(({ empresaService, router, ...store }) => ({
     teste: rxMethod<unknown>(pipe(delay(2000))),
@@ -88,20 +85,20 @@ export const EmpresaStore = signalStore(
 
     login: signalMethod(({ data }: { data: Partial<EmpresaModel> }) => {
       patchState(store, { isLoading: true });
-      empresaService.login({ empresa: data as EmpresaModel });
       patchState(store, (state) => ({
         ...state,
         isLoading: false,
+        empresaLogada: data as EmpresaModel,
         msg: 'Login efetuado com sucesso',
       }));
     }),
 
     logout: signalMethod(() => {
       patchState(store, { isLoading: true });
-      empresaService.logout();
       patchState(store, (state) => ({
         ...state,
         isLoading: false,
+        empresaLogada: null,
         msg: 'Logout efetuado com sucesso',
       }));
       setTimeout(() => {

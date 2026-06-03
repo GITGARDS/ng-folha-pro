@@ -29,6 +29,9 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
     JsonPipe,
   ],
   template: `
+    @let let_empresaLogada = empresaStore.empresaLogada() !== null;
+    @let let_empresaLogada_id = empresaStore.empresaLogada()?.id;
+
     <div class="h-full flex flex-col justify-between gap-2">
       <section class="h-[10vh]">
         <app-table-filter (applyFilter)="applyFilter($event)" />
@@ -71,8 +74,9 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
                   <mat-icon>login</mat-icon>
                 </th>
                 <td mat-cell *matCellDef="let row">
-                  @if (empresaStore.getEmpresaLogada() !== null) {
-                    @if (empresaStore.getEmpresaLogada()?.id === row.id) {
+                  @let let_empresaLogada_equals_rowid = empresaStore.empresaLogada()?.id === row.id;
+                  @if (let_empresaLogada) {
+                    @if (let_empresaLogada_equals_rowid) {
                       <span class="size-4 animate-pulse">
                         <div class="h-5 w-5 !bg-green-700 rounded-full"></div>
                       </span>
@@ -96,25 +100,27 @@ import { TableActionsModel, TableColumnsModel } from "../models/tablecolumns.mod
 
                   <mat-menu #menu="matMenu">
                     @for (item of iActions(); track $index) {
-                      @let idLogada = empresaStore.getEmpresaLogada()?.id;
-                      @let idLogadaRow = empresaStore.getEmpresaLogada()?.id === row.id;
-                      @let logada = idLogada && idLogadaRow;
+                      @let let_empresaLogada_equals_rowid =
+                        empresaStore.empresaLogada()?.id === row.id;
 
-                      @if (item.label === 'Editar' && !logada) {
+                      @let let_empresaLogada_id_and_rowid =
+                        let_empresaLogada_id && let_empresaLogada_equals_rowid;
+
+                      @if (item.label === 'Editar' && !let_empresaLogada_id_and_rowid) {
                         <button mat-menu-item (click)="onUpdateById(row)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
                         </button>
                       }
-                      @if (item.label === 'Excluir' && !logada) {
+                      @if (item.label === 'Excluir' && !let_empresaLogada_id_and_rowid) {
                         <button mat-menu-item (click)="onDeleteById(row.id)">
                           <mat-icon>{{ item.icon }}</mat-icon>
                           <span>{{ item.label }}</span>
                         </button>
                       }
                       @if (item.label === 'Login') {
-                        @if (idLogada) {
-                          @if (idLogadaRow) {
+                        @if (let_empresaLogada_id) {
+                          @if (let_empresaLogada_equals_rowid) {
                             <button mat-menu-item (click)="onLogout()">
                               <mat-icon>logout</mat-icon>
                               <span>Logout</span>

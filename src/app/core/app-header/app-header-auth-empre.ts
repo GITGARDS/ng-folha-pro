@@ -26,12 +26,11 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
 
     <!-- </div> -->
 
-    @let empresaLogada = empresaStore.getEmpresaLogada();
     <button
       matIconButton
       [matMenuTriggerFor]="menu"
       aria-label="Example icon-button with a menu"
-      [matTooltip]="empresaLogada?.nomeEmpresaRazaoSocial"
+      [matTooltip]="empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial"
       [matBadge]="totalAtivos() === null ? '0' : totalAtivos()"
     >
       @if (totalAtivos() === null) {
@@ -43,23 +42,22 @@ import { FuncionarioStore } from "../../pages/funcionario/shared/funcionario.sto
       }
     </button>
 
-
     <mat-menu #menu="matMenu">
       <div class="p-2">
         <mat-card class="overflow-hidden" appearance="outlined">
           <mat-card-header>
-            <mat-card-title>{{ empresaLogada?.id }}</mat-card-title>
+            <mat-card-title>{{ empresaStore.empresaLogada()?.id }}</mat-card-title>
             <mat-card-subtitle>{{
-              empresaLogada?.nomeEmpresaRazaoSocial
+              empresaStore.empresaLogada()?.nomeEmpresaRazaoSocial
             }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
             <div class="flex flex-col">
-              <span>Inscricao: {{ empresaLogada?.inscricao }}</span>
-              <span>Email: {{ empresaLogada?.email }}</span>
-              <span>Telefone:{{ empresaLogada?.telefone }}</span>
-              <span>Cnae: {{ empresaLogada?.cnae }}</span>
-              <span>Fpas: {{ empresaLogada?.fpas }}</span>
+              <span>Inscricao: {{ empresaStore.empresaLogada()?.inscricao }}</span>
+              <span>Email: {{ empresaStore.empresaLogada()?.email }}</span>
+              <span>Telefone:{{ empresaStore.empresaLogada()?.telefone }}</span>
+              <span>Cnae: {{ empresaStore.empresaLogada()?.cnae }}</span>
+              <span>Fpas: {{ empresaStore.empresaLogada()?.fpas }}</span>
             </div>
           </mat-card-content>
           <mat-card-actions>

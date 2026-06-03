@@ -573,7 +573,7 @@ export class FuncionarioForm {
   onSubmit() {
     const ret = {
       ...this.dataForm().value(),
-      empresa: this.empresaStore.getEmpresaLogada()?.id as string,
+      empresa: this.empresaStore.empresaLogada()?.id as string,
     };
     this.dialogRef.close(ret);
   }
